@@ -1,0 +1,78 @@
+
+._1gLVd_0 {
+  width: 1024px;
+  height: 200px;
+  margin: 0 auto;
+  background-color: #0c24fb;
+}
+@media (max-width: 1024px) {
+._1gLVd_0 {
+      width: 320px;
+}
+}
+.xVRCZ_0 {
+  width: 328px;
+  height: 492px;
+  background-color: #0c24fb;
+}
+@media (max-width: 1024px) {
+.xVRCZ_0 {
+      width: 240px;
+      height: 370px;
+}
+}
+._3FQSp_0, ._1gLVd_0._2bez7_0, .xVRCZ_0._2bez7_0 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  padding: 20px;
+  background-color: #fff;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center center;
+}
+._1gLVd_0._2bez7_0 {
+  width: 340px;
+  height: 640px;
+  background-image: url("/auf-media/assets/ed7367afbd6aab44a54e0cf0.png");
+}
+.xVRCZ_0._2bez7_0 {
+  width: 1064px;
+  height: 200px;
+  background-image: url("/auf-media/assets/bfbbb1c2a0a306d4f980c4e2.png");
+}
+@media (max-width: 1064px) {
+.xVRCZ_0._2bez7_0 {
+      width: 320px !important;
+      height: 50px !important;
+      background-image: none;
+      padding: 0;
+}
+}
+._1CUAd_0._2bez7_0 {
+  width: 100%;
+  height: 740px;
+  background-color: #0c24fb;
+}
+@media (max-width: 480px) {
+._1CUAd_0._2bez7_0 {
+      width: 320px !important;
+      height: 267px !important;
+}
+}
+.OX04Z_0 {
+  width: 100%;
+  height: 100%;
+}

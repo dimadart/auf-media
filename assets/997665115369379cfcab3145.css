@@ -1,0 +1,35 @@
+
+.-K1kQ_0 {
+  display: block !important;
+}
+._2kqjb_0 {
+  margin-top: 70px !important;
+  overflow: visible;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 20px;
+  z-index: 999;
+}
+._3zg94_0 {
+  width: 100%;
+  -webkit-box-flex: 1;
+      -ms-flex: 1 1 100%;
+          flex: 1 1 100%;
+}
+._2kBq-_0 {
+  background-color: #424242;
+  width: 100%;
+}
+._2R3Ug_0 {
+  width: 100%;
+  padding: 30px 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+}

@@ -1,0 +1,35 @@
+
+._33pPI_0 {
+  -webkit-animation: _1uJ_q_0  1s 1.3s ease-in-out infinite;
+          animation: _1uJ_q_0  1s 1.3s ease-in-out infinite;
+}
+.AGZ_9_0 {
+  -webkit-animation: _1uJ_q_0  1s 1.5s ease-in-out infinite;
+          animation: _1uJ_q_0  1s 1.5s ease-in-out infinite;
+}
+.uKDhC_0 {
+  -webkit-animation: _1uJ_q_0  1s 1.7s ease-in-out infinite;
+          animation: _1uJ_q_0  1s 1.7s ease-in-out infinite;
+}
+@-webkit-keyframes _1uJ_q_0 {
+0% {
+    opacity: 0;
+}
+80% {
+    opacity: 1;
+}
+100% {
+    opacity: 0;
+}
+}
+@keyframes _1uJ_q_0 {
+0% {
+    opacity: 0;
+}
+80% {
+    opacity: 1;
+}
+100% {
+    opacity: 0;
+}
+}

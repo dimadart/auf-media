@@ -1,0 +1,112 @@
+
+._3S0Ql_0 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: stretch;
+      -ms-flex-align: stretch;
+          align-items: stretch;
+  -webkit-box-pack: start;
+      -ms-flex-pack: start;
+          justify-content: flex-start;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column;
+  -ms-flex-wrap: nowrap;
+      flex-wrap: nowrap;
+  border-bottom: 3px solid #fff;
+  padding-bottom: 10px;
+  width: 240px;
+  text-decoration: none;
+  -webkit-transition: all 0.5s;
+  -o-transition: all 0.5s;
+  transition: all 0.5s;
+}
+@media (min-width: 1025px) {
+._3S0Ql_0:hover {
+      -webkit-transform: scale(1.1, 1.2);
+          -ms-transform: scale(1.1, 1.2);
+              transform: scale(1.1, 1.2);
+      -webkit-box-shadow: 0 0 1px 0 #000;
+              box-shadow: 0 0 1px 0 #000;
+}
+}
+@media (max-width: 480px) {
+._3S0Ql_0 {
+      width: 300px;
+}
+}
+@media (max-width: 320px) {
+._3S0Ql_0 {
+      width: 270px;
+}
+}
+._3x-6p_0 {
+  width: 100%;
+  height: 178px;
+  position: relative;
+  z-index: 1;
+  background-color: #0c24fb;
+}
+@media (max-width: 480px) {
+._3x-6p_0 {
+      height: 200px;
+}
+}
+._2bLkN_0 {
+  line-height: 25px;
+  font-size: 18px;
+  color: #fff;
+  font-weight: 400;
+  text-align: left;
+  margin-bottom: 30px;
+  text-transform: uppercase;
+}
+@media (max-width: 320px) {
+._2bLkN_0 {
+      line-height: 25px;
+      font-size: 15px;
+      color: #fff;
+      font-weight: 400;
+      text-align: left;
+}
+}
+._3GJIp_0 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: justify;
+      -ms-flex-pack: justify;
+          justify-content: space-between;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+  width: 100%;
+}
+.ZTL79_0 {
+  padding-left: 5px;
+}
+.qjUyD_0 {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  -webkit-box-pack: center;
+      -ms-flex-pack: center;
+          justify-content: center;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: row;
+          flex-direction: row;
+  -ms-flex-wrap: wrap;
+      flex-wrap: wrap;
+}

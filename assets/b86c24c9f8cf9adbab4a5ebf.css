@@ -1,0 +1,112 @@
+
+._2ymbf_0 {
+  background: #0c24fb;
+  padding: 80px 0;
+  width: 100%;
+  margin: 60px auto;
+}
+@media (max-width: 480px) {
+._2ymbf_0 {
+      padding: 80px 0 30px;
+}
+}
+._1BMG6_0 {
+  position: relative;
+  width: 100%;
+  max-width: 1060px;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+._3NICz_0 {
+  width: 100%;
+  min-width: 100%;
+}
+.We3Ij_0 {
+  display: inline-block;
+  vertical-align: top;
+  width: 300px;
+  margin-right: 35px;
+  padding-top: 80px;
+}
+@media (max-width: 1280px) {
+.We3Ij_0 {
+      margin-bottom: 50px;
+      display: block;
+      width: 100%;
+}
+}
+@media (max-width: 480px) {
+.We3Ij_0 {
+      margin-bottom: 20px;
+}
+}
+._3MRKp_0 {
+  color: #fff;
+  font-size: 13px;
+  line-height: 1.4;
+  min-height: 50px;
+  margin-bottom: 30px;
+}
+@media (max-width: 480px) {
+._3MRKp_0 {
+      min-height: auto;
+}
+}
+._3GWT8_0 {
+  font-size: 20px;
+}
+@media (max-width: 1280px) {
+._3GWT8_0 {
+      position: absolute;
+      right: 80px;
+      top: 0;
+}
+}
+._3GWT8_0 {
+  font-size: 30px;
+  color: #fff;
+  margin: 0;
+}
+._2jpSm_0 {
+  position: absolute;
+  top: -130px;
+  display: inline-block;
+  vertical-align: top;
+  width: calc(100% - 320px);
+  height: 420px;
+}
+@media (max-width: 1280px) {
+._2jpSm_0 {
+      position: relative;
+      top: auto;
+      display: block;
+      width: 100%;
+      max-width: 700px;
+      margin: 0 auto;
+}
+}
+@media (max-width: 480px) {
+._2jpSm_0 {
+      height: auto;
+      width: calc(100% - 40px);
+}
+}
+._2Aigl_0 {
+  position: absolute;
+  left: -16px;
+  z-index: 1;
+  top: 15px;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: url("/auf-media/assets/95ca2cbe5d3a64043504f34d.png");
+}
+._2jpSm_0 img {
+  position: relative;
+  z-index: 2;
+  display: block;
+  width: 100%;
+  height: 100%;
+  -o-object-fit: contain;
+     object-fit: contain;
+}

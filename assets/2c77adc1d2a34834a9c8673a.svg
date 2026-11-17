@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px"
+	 enable-background="new 0 0 20 20" xml:space="preserve" width="20px" height="20px">
+<path fill="#F4840F" d="M14.5,0h4C19.3,0,20,0.7,20,1.5v17c0,0.8-0.7,1.5-1.5,1.5H13V1.5C13,0.7,13.7,0,14.5,0z"/>
+<path fill="#FFC414" d="M7.5,6H13v14H6V7.5C6,6.7,6.7,6,7.5,6z"/>
+<path fill="#FFC414" d="M1.5,13H6v7H1.5C0.7,20,0,19.3,0,18.5v-4C0,13.7,0.7,13,1.5,13z"/>
+</svg>
