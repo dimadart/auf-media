@@ -208,6 +208,13 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 #contact::placeholder { color: #8b8b8b; font-weight: 400; }
 #contact:focus-visible { border-color: var(--yellow); box-shadow: 4px 4px 0 var(--pink); }
 @media (max-width: 460px) { #contact { flex: none; height: 54px; } }
+/* v10: after sign-up */
+.done { margin-top: clamp(18px, 3.4svh, 36px); outline: 0; }
+.done[hidden], form[hidden] { display: none; }
+.done-title { margin: 0; font-size: clamp(30px, 4.4vw, 62px); font-weight: 900; line-height: 1; text-transform: uppercase; }
+.done-title span { display: block; width: fit-content; padding: .12em .26em .16em; background: var(--yellow); color: #000; transform: rotate(-2deg); animation: stamp .35s cubic-bezier(.2, .9, .3, 1.3); }
+.done-text { max-width: 24em; margin: 22px 0 0; font: 400 clamp(16px, 1.4vw, 21px)/1.45 Arial, sans-serif; color: #fff; }
+@keyframes stamp { from { opacity: 0; transform: rotate(-9deg) scale(1.5); } }
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
@@ -222,6 +229,7 @@ dialog .deco { left: auto !important; right: -30px; bottom: -34px !important; tr
 dialog h2 span:nth-child(1) { font-size: 1em; }
 @media (prefers-reduced-motion: reduce) {
   body::before { animation: none !important; }
+  .done-title span { animation: none; }
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
 }
 </style>
@@ -248,6 +256,11 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
       </div>
       <p class="note" id="note" role="status">Одно сообщение в&nbsp;день запуска. Без спама.</p>
     </form>
+  
+    <div class="done" id="done" role="status" tabindex="-1" hidden>
+      <p class="done-title"><span>Ты в списке.</span></p>
+      <p class="done-text">Как только AUF появится на&nbsp;свет, ты узнаешь первым. До&nbsp;встречи!</p>
+    </div>
   </div>
   <div class="art"><span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span></div>
 </main>
@@ -441,9 +454,9 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ channel: kind, contact: value, source: 'auf-soon' }) })
       .then(function (response) {
         if (!response.ok) throw new Error(response.status);
-        say('Записали. Напишем в день запуска.', 'ok');
-        input.value = '';
         var box = button.getBoundingClientRect();
+        var done = document.getElementById('done');
+        form.hidden = true; done.hidden = false; done.focus();
         spread(box.left + box.width / 2, box.top, 12);
       })
       .catch(function () { say('Не получилось отправить. Попробуй ещё раз чуть позже.', 'error'); })
