@@ -194,8 +194,12 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 .lede { margin-top: 0 !important; }
 @media (min-width: 861px) { main { padding-top: clamp(18px, 4svh, 44px); } .lede { font-size: clamp(16px, 1.35vw, 20px); } }
 /* v6: no tagline strip, no ribbon */
-.tagline, .ribbon { display: none !important; }
+.tagline { display: none !important; }
 @media (min-width: 861px) { .foot { bottom: 22px; } .brand { padding-top: 26px; } }
+/* v8: thin yellow ribbon on top */
+.ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
+.ribbon div { padding: 7px 0; animation-duration: 70s; }
+@media (min-width: 861px) { .ribbon { position: fixed; top: 0; bottom: auto; left: 0; right: 0; } }
 /* v7: bigger brand, lower */
 .brand { gap: 18px; font-size: clamp(24px, 2.6vw, 40px); letter-spacing: .1em; }
 .brand img { width: clamp(70px, 6.4vw, 104px); }
@@ -267,7 +271,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
   var parts = [], last = 0, running = false, MAX = 90;
 
   // ribbon: repeat the phrase so the loop is seamless
-  var phrase = 'СКОРО ОТКРЫТИЕ ✦ AUF MEDIA ✦ READ. WATCH. AUF ✦ NEW YORK ✦ ';
+  var phrase = 'NEW YORK · INDEPENDENT CULTURE MAGAZINE · COMING SOON · ';
   document.getElementById('ribbon').textContent = new Array(13).join(phrase);
 
   // collection counter
