@@ -244,7 +244,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
       </fieldset>
       <div class="row">
         <input id="contact" name="contact" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" aria-label="Почта" required aria-describedby="note">
-        <button type="submit">Позовите меня</button>
+        <button type="submit">Держите в курсе</button>
       </div>
       <p class="note" id="note" role="status">Одно сообщение в&nbsp;день запуска. Без спама.</p>
     </form>
@@ -252,11 +252,11 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
   <div class="art"><span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span></div>
 </main>
 
-<div class="foot"><button type="button" class="authors" id="authors-open">Для авторов →</button></div>
+<div class="foot"><button type="button" class="authors" id="authors-open">Стать автором →</button></div>
 
 <dialog id="authors" aria-labelledby="authors-title">
   <div class="sheet">
-    <p class="eyebrow">Для авторов</p>
+    <p class="eyebrow">Стать автором</p>
     <h2 id="authors-title"><span>Давайте знакомиться</span></h2>
     <p class="txt">AUF открыт для новых авторов, журналистов, фотографов и&nbsp;людей, которым есть что рассказать.</p>
     <form id="pitch" novalidate data-endpoint="">
@@ -371,7 +371,10 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
   }
 
   document.addEventListener('pointerdown', function (event) {
-    if (event.button > 0 || (event.target.closest && event.target.closest('form, a, button, dialog'))) return;
+    var target = event.target && event.target.nodeType === 1 ? event.target : event.target && event.target.parentElement;
+    var under = document.elementFromPoint(event.clientX, event.clientY);
+    var ui = 'form, fieldset, label, input, textarea, a, button, dialog, .copy, .foot, .brand';
+    if (event.button > 0 || (target && target.closest(ui)) || (under && under.closest(ui))) return;
     spread(event.clientX, event.clientY, 5 + (Math.random() * 3 | 0));
   });
   document.addEventListener('keydown', function (event) {
