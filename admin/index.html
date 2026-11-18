@@ -124,6 +124,31 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   .invite, .grid2 { grid-template-columns: 1fr; }
   .day { min-height: 70px; padding: 3px; } .chip { font-size: 10px; padding: 3px; } .cal .dow { padding: 6px 3px; font-size: 8.5px; }
 }
+.nav-h { padding: 6px 12px; font: 700 9px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); opacity: .75; }
+.nav-h:not(:first-child) { margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
+.people { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
+.pcard { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--panel); border: 1px solid var(--line); text-align: left; cursor: pointer; min-width: 0; }
+.pcard:hover { border-color: var(--ghost); }
+.pcard:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
+.pcard .ph { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.pcard strong { font-size: 16px; line-height: 1.2; overflow-wrap: anywhere; }
+.pcard .w { font-size: 13px; color: var(--mute); overflow-wrap: anywhere; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; }
+.ava { flex: none; display: grid; place-items: center; width: 40px; height: 40px; background: var(--yellow); color: #000; font: 800 13px/1 Unbounded, Arial, sans-serif; }
+.ava.big { width: 72px; height: 72px; font-size: 22px; }
+.phead { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
+.phead .pi { flex: 1 1 240px; min-width: 0; }
+.phead h2 { font-size: 20px; overflow-wrap: anywhere; }
+.phead p { margin: 8px 0 0; overflow-wrap: anywhere; }
+.pre { white-space: pre-wrap; margin: 0; overflow-wrap: anywhere; }
+.acc { display: grid; grid-template-columns: 130px minmax(0, 1fr) auto; gap: 6px; margin-bottom: 6px; }
+.list li span { overflow-wrap: anywhere; min-width: 0; }
+@media (max-width: 860px) {
+  nav { align-items: center; }
+  .nav-h, .nav-h:not(:first-child) { margin: 0; padding: 0 2px 0 10px; border: 0; border-left: 1px solid var(--line); white-space: nowrap; }
+  .nav-h:first-child { border-left: 0; padding-left: 0; }
+  .acc { grid-template-columns: 105px minmax(0, 1fr) auto; }
+}
 .tgl { padding: 8px 10px; border: 1px solid var(--ghost); background: none; font-size: 12px; color: var(--text); cursor: pointer; white-space: nowrap; }
 .tgl:hover { border-color: var(--text); }
 .tgl:focus-visible { outline: 2px solid var(--text); outline-offset: 2px; }
@@ -277,7 +302,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   ];
   var ROLES = [
     { id: 'owner', name: 'MAIN', about: 'Один главный аккаунт: настройки, команда, роли и все разделы. Удалить нельзя.' },
-    { id: 'chief', name: 'C-Level', about: 'До трёх аккаунтов. Вся редакция и материалы, плюс бизнес-разделы: аналитика, шоп, финансы. Приглашает редакторов и журналистов.' },
+    { id: 'chief', name: 'C-Level', about: 'До трёх аккаунтов. Вся редакция и материалы, плюс блок «Проект»: задачи проекта, контакты, аналитика, шоп, финансы. Приглашает редакторов и журналистов.' },
     { id: 'editor', name: 'Редактор', about: 'Правит и двигает любые материалы, ставит даты, выпускает, видит заявки авторов. Команду и бизнес-разделы не видит.' },
     { id: 'reporter', name: 'Журналист', about: 'Создаёт свои материалы и ведёт их до редактуры. Чужие видит, но не меняет.' }
   ];
@@ -291,6 +316,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     ['Видеть заявки авторов', 1, 1, 1, 0],
     ['Удалять материалы', 1, 1, 0, 0],
     ['Видеть подписчиков на запуск', 1, 1, 0, 0],
+    ['Задачи проекта и контакты', 1, 1, 0, 0],
     ['Аналитика, шоп, финансы', 1, 1, 0, 0],
     ['Приглашать людей и менять роли', 1, 2, 0, 0],
     ['Назначать C-Level', 1, 0, 0, 0],
@@ -298,8 +324,9 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   ];
   var RUBRICS = ['Музыка', 'Мода', 'Кино', 'Технологии', 'Арт', 'Город', 'Изнутри', 'Наш радар', 'Фотография', 'Секс и наука', 'Культура', 'На репите', 'Видео'];
   var FORMATS = ['Текст', 'Интервью', 'Репортаж', 'Видео', 'Фото', 'Подборка'];
-  var VIEWS = [['home', 'Обзор'], ['board', 'Доска'], ['calendar', 'Календарь'], ['items', 'Материалы'], ['inbox', 'Заявки'], ['stats', 'Аналитика'], ['shop', 'Шоп'], ['money', 'Финансы'], ['team', 'Команда'], ['settings', 'Настройки'], ['plan', 'Как запустить']];
-  var NEED = { inbox: 'editor', stats: 'chief', shop: 'chief', money: 'chief', settings: 'owner' };
+  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска материалов', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Как запустить', 'adm']];
+  var GROUPS = [['ed', 'Редакция'], ['biz', 'Проект'], ['adm', 'Управление']];
+  var NEED = { inbox: 'editor', tasks: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', settings: 'owner' };
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -313,24 +340,26 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
       v: 1, me: me, viewAs: 'owner', view: 'home', month: TODAY.slice(0, 7),
       team: [{ id: me, name: 'Dima Dart', email: '', role: 'owner', status: 'active' }],
       cards: SEED.map(function (m) { return { id: uid(), title: m.title, rubric: m.category, stage: 'published', author: me, editor: '', deadline: '', publish: '', format: m.video ? 'Видео' : 'Текст', notes: 'Демо-черновик, уже на сайте.', demo: true }; }),
-      subs: [], apps: []
+      subs: [], apps: [], tasks: [], contacts: []
     };
   }
   var state;
   try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
   if (!state || state.v !== 1) state = fresh();
   // What a window is looking at is its own business; materials and team are shared between windows.
-  var TABKEY = 'auf-admin-tab', TABF = ['viewAs', 'view', 'month', 'editing'], PALETTE = ['#ff3d8b', '#4d63ff', '#12a36b', '#ff7a00', '#9b5cff', '#0097b8'], tab = null;
+  var TABKEY = 'auf-admin-tab', TABF = ['viewAs', 'view', 'month', 'editing', 'person'], PALETTE = ['#ff3d8b', '#4d63ff', '#12a36b', '#ff7a00', '#9b5cff', '#0097b8'], tab = null;
   try { tab = JSON.parse(sessionStorage.getItem(TABKEY)); } catch (e) {}
   if (!tab || typeof tab.id !== 'string') tab = { id: uid(), color: PALETTE[Math.floor(Math.random() * PALETTE.length)] };
   TABF.forEach(function (k) { if (k in tab) state[k] = tab[k]; });
   state.editing = tab.editing || null;
   if (!RANK[state.viewAs]) state.viewAs = 'reporter';
   state.team.forEach(function (m) { if (!RANK[m.role]) m.role = 'reporter'; });
+  if (!Array.isArray(state.tasks)) state.tasks = [];
+  if (!Array.isArray(state.contacts)) state.contacts = [];
   function save() {
     TABF.forEach(function (k) { tab[k] = state[k]; });
     try { sessionStorage.setItem(TABKEY, JSON.stringify(tab)); } catch (e) {}
-    try { localStorage.setItem(KEY, JSON.stringify(Object.assign({}, state, { editing: null }))); return true; } catch (e) { return false; }
+    try { localStorage.setItem(KEY, JSON.stringify(Object.assign({}, state, { editing: null, person: null }))); return true; } catch (e) { return false; }
   }
 
   var role = function () { return state.viewAs; };
@@ -345,13 +374,13 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   function canMove(c, to) { if (atLeast('editor')) return true; return isMine(c) && stageIx(to) <= 2 && stageIx(c.stage) <= 2; }
 
   var view = document.getElementById('view'), title = document.getElementById('title'), nav = document.getElementById('nav'), dlg = document.getElementById('dlg'), dlgbody = document.getElementById('dlgbody');
-  var filters = { q: '', rubric: '', stage: '', author: '', mine: false }, inboxTab = 'apps', lastInvite = null;
+  var filters = { q: '', rubric: '', stage: '', author: '', mine: false, tkind: '', twho: '', pq: '', pcat: '' }, inboxTab = 'apps', lastInvite = null;
 
   function toast(text) {
     var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = text;
     document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600);
   }
-  function go(v) { state.view = v; save(); render(); scrollTo(0, 0); }
+  function go(v) { state.view = v; if (v === 'people') state.person = null; save(); render(); scrollTo(0, 0); }
   function cardById(id) { return state.cards.filter(function (x) { return x.id === id; })[0]; }
   function countWords(html) { var d = document.createElement('div'); d.innerHTML = html || ''; return (d.textContent.match(/[\p{L}\p{N}]+/gu) || []).length; }
   function nfmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0'); }
@@ -362,9 +391,12 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   }
 
   function renderNav() {
-    var counts = { board: state.cards.filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length };
-    nav.innerHTML = VIEWS.filter(function (v) { return allowed(v[0]); }).map(function (v) {
-      return '<button type="button" data-go="' + v[0] + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '>' + v[1] + (counts[v[0]] ? '<i>' + counts[v[0]] + '</i>' : '') + '</button>';
+    var counts = { board: state.cards.filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length, tasks: state.tasks.filter(function (t) { return t.stage !== 'done'; }).length, people: state.contacts.length };
+    nav.innerHTML = GROUPS.map(function (g) {
+      var items = VIEWS.filter(function (v) { return v[2] === g[0] && allowed(v[0]); });
+      return items.length ? '<span class="nav-h">' + g[1] + '</span>' + items.map(function (v) {
+        return '<button type="button" data-go="' + v[0] + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '>' + v[1] + (counts[v[0]] ? '<i>' + counts[v[0]] + '</i>' : '') + '</button>';
+      }).join('') : '';
     }).join('');
   }
   var sel = document.getElementById('viewas');
@@ -405,7 +437,8 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
         + '<div class="panel"><h2>Мои материалы</h2>' + (mine.length ? '<ul class="list">' + mine.map(li).join('') + '</ul>' : '<p class="empty">У вас нет материалов в работе. Начните с идеи на доске.</p>') + '</div>'
         + '<div class="panel"><h2>Выходит на этой неделе</h2>' + (soon.length ? '<ul class="list">' + soon.map(li).join('') + '</ul>' : '<p class="empty">На ближайшие 7 дней дат публикации нет.</p>') + '</div>'
         + (late.length ? '<div class="panel"><h2>Просрочено</h2><ul class="list">' + late.map(li).join('') + '</ul></div>' : '')
-        + '<div class="panel"><button type="button" class="btn" data-new>+ Новый материал</button> <button type="button" class="btn ghost" data-go="board">Открыть доску</button></div>';
+        + (allowed('tasks') ? (function () { var my = state.tasks.filter(function (t) { return t.stage !== 'done' && t.who === state.me; }); return '<div class="panel"><h2>Задачи проекта на мне</h2>' + (my.length ? '<ul class="list">' + my.map(function (t) { return '<li><a href="#" data-task="' + t.id + '">' + esc(t.title) + '</a><span><span class="tag">' + esc(t.kind) + '</span>' + (t.due ? ' срок ' + human(t.due) : '') + '</span></li>'; }).join('') + '</ul>' : '<p class="empty">На вас нет открытых задач проекта.</p>') + '</div>'; })() : '')
+        + '<div class="panel"><button type="button" class="btn" data-new>+ Новый материал</button> <button type="button" class="btn ghost" data-go="board">Открыть доску материалов</button>' + (allowed('tasks') ? ' <button type="button" class="btn ghost" data-go="tasks">Задачи проекта</button>' : '') + '</div>';
     },
     board: function () {
       var cards = filtered();
@@ -477,11 +510,149 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
         + '<h2>Что нужно от вас — около 10 минут</h2><ol><li>Зарегистрироваться на supabase.com и создать проект.</li><li>Прислать адрес проекта и два ключа из его настроек.</li><li>Сказать, с какого домена слать письма (или купить домен для журнала).</li></ol>'
         + '<h2>Что будет после подключения</h2><ul><li>Вход по почте и паролю, приглашение письмом из раздела «Команда».</li><li>Общая доска: изменения видят все сразу.</li><li>Роли из таблицы «Кто что может» начинают действовать по-настоящему.</li><li>Заявки с сайта падают в «Заявки».</li></ul>'
         + '<h2>Редактор текста</h2><p>У каждого материала есть текст: откройте карточку и нажмите «Открыть текст». Черновик сохраняется сам, но пока тоже только в этом браузере. Фото с компьютера уменьшается и хранится там же, поэтому места хватит на несколько десятков снимков.</p>'
+        + '<h2>Задачи проекта и контакты</h2><p>Блок «Проект» в меню видят только MAIN и C-Level. «Задачи проекта» — отдельная доска для всего, что не про тексты: что купить, что сделать, кому написать. «Контакты» — список людей по категориям, у каждого своя анкета с соцсетями, заметками и связанными задачами. Сейчас это тоже хранится в браузере; с общей базой список станет общим для C-Level, а доступ к нему будет закрыт на уровне базы.</p>'
         + '<h2>Совместная работа</h2><p>В одном тексте могут быть сразу несколько человек: видно, кто открыт в материале, где стоит чужой курсор и что человек выделил, правки появляются на лету. Сейчас это работает между окнами одного браузера, потому что общей базы ещё нет. Чтобы попробовать, откройте админку во втором окне, выберите там «Смотреть как: Редактор» и откройте тот же материал. После подключения Supabase тот же механизм свяжет разных людей на разных компьютерах.</p><p>Ограничение прототипа: если двое одновременно печатают в одном и том же абзаце, побеждает последняя правка и буква может потеряться. В разных абзацах правки не мешают друг другу.</p>'
         + '<h2>Чего здесь нет намеренно</h2><p>Публикации на сайт кнопкой. Сейчас сайт собирается скриптами и выкладывается вручную, поэтому этап «Опубликовано» на доске — это отметка, а не выпуск. Связать редактор с сайтом — отдельный этап после того, как заработает общая база.</p>'
         + '</div>';
     }
   };
+
+  // ---------- project board and contacts (MAIN and C-Level only) ----------
+  var TSTAGES = [['todo', 'Надо сделать'], ['doing', 'В работе'], ['wait', 'Ждём ответа'], ['done', 'Готово']];
+  var TKINDS = ['Сделать', 'Купить', 'Написать', 'Созвон или встреча', 'Другое'];
+  var NETS = ['Instagram', 'Telegram', 'YouTube', 'TikTok', 'X', 'Facebook', 'LinkedIn', 'Сайт', 'Другое'];
+  var PSTAT = ['В списке', 'Написали', 'На связи', 'Уже работали'];
+  var PCATS = ['Музыка', 'Мода', 'Кино', 'Арт', 'Фотография', 'Технологии', 'Медиа', 'Бизнес', 'Партнёры'];
+  function taskById(id) { return state.tasks.filter(function (x) { return x.id === id; })[0]; }
+  function personById(id) { return state.contacts.filter(function (x) { return x.id === id; })[0]; }
+  function pcats() { return PCATS.concat(state.contacts.map(function (p) { return p.cat; })).filter(function (r, i, a) { return r && a.indexOf(r) === i; }); }
+  function initials(n) { return String(n || '').trim().split(/\s+/).slice(0, 2).map(function (w) { return w.charAt(0); }).join('').toUpperCase() || '?'; }
+  function selOpts(list, val, blank) { return (blank ? '<option value="">' + blank + '</option>' : '') + list.map(function (o) { var v = o.id || o, n = o.name || o; return '<option value="' + esc(v) + '"' + (val === v ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join(''); }
+  // A handle becomes a link only for networks whose address format is known; anything else stays plain text.
+  function accUrl(net, val) {
+    var v = String(val || '').trim();
+    if (/^https?:\/\//i.test(v)) return okUrl(v) ? v : '';
+    if (net === 'Сайт' && /^[a-z0-9-]+(\.[a-z0-9-]+)+(\/\S*)?$/i.test(v)) return 'https://' + v;
+    var h = v.replace(/^@/, '');
+    if (!/^[A-Za-z0-9_.-]{1,60}$/.test(h)) return '';
+    var base = { Instagram: 'https://instagram.com/', Telegram: 'https://t.me/', YouTube: 'https://youtube.com/@', TikTok: 'https://www.tiktok.com/@', X: 'https://x.com/' }[net];
+    return base ? base + h : '';
+  }
+  function taskHtml(t) {
+    var late = t.due && t.due < TODAY && t.stage !== 'done', p = t.contact && personById(t.contact);
+    return '<button type="button" class="card' + (t.who === state.me ? ' mine' : '') + '" data-task="' + t.id + '" draggable="true"><strong>' + esc(t.title) + '</strong><span class="meta">'
+      + '<span class="tag">' + esc(t.kind) + '</span>' + (t.who ? '<span>' + esc(mname(t.who)) + '</span>' : '<span>без ответственного</span>')
+      + (t.due ? '<span class="' + (late ? 'late' : '') + '">срок ' + human(t.due) + '</span>' : '') + (p ? '<span>↔ ' + esc(p.name) + '</span>' : '') + (t.sum ? '<span>' + esc(t.sum) + '</span>' : '') + '</span></button>';
+  }
+  var bosses = function () { return state.team.filter(function (m) { return RANK[m.role] >= RANK.chief; }); };
+
+  RENDER.tasks = function () {
+    var list = state.tasks.filter(function (t) { return (!filters.tkind || t.kind === filters.tkind) && (!filters.twho || t.who === filters.twho); });
+    return '<div class="bar"><select data-f="tkind" aria-label="Тип задачи">' + selOpts(TKINDS, filters.tkind, 'Все типы') + '</select><select data-f="twho" aria-label="Ответственный">' + selOpts(bosses(), filters.twho, 'Все ответственные') + '</select><span class="grow"></span><button type="button" class="btn" data-newtask>+ Задача</button></div>'
+      + '<div class="board">' + TSTAGES.map(function (s) {
+        var col = list.filter(function (t) { return t.stage === s[0]; });
+        return '<section class="col" data-tstage="' + s[0] + '"><header><b>' + s[1] + '</b><i>' + col.length + '</i></header><div class="drop">' + col.map(taskHtml).join('') + '</div></section>';
+      }).join('') + '</div><p class="note">Доска проекта — всё, что не про тексты: что купить, что сделать, кому написать. Её видят только MAIN и C-Level. Перетаскивайте карточки между колонками; на телефоне откройте карточку и смените этап в ней. Материалы живут отдельно, на «Доске материалов».</p>';
+  };
+
+  RENDER.people = function () {
+    var p = state.person && personById(state.person);
+    if (!p) {
+      var q = (filters.pq || '').trim().toLowerCase();
+      var list = state.contacts.filter(function (c) { return (!q || (c.name + ' ' + c.who + ' ' + c.city + ' ' + c.notes).toLowerCase().indexOf(q) > -1) && (!filters.pcat || c.cat === filters.pcat); })
+        .sort(function (a, b) { return a.name.localeCompare(b.name, 'ru'); });
+      return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
+        + (list.length ? '<div class="people">' + list.map(function (c) {
+          return '<button type="button" class="pcard" data-person="' + c.id + '"><span class="ph"><span class="ava">' + esc(initials(c.name)) + '</span><strong>' + esc(c.name) + '</strong></span>'
+            + (c.who ? '<span class="w">' + esc(c.who) + '</span>' : '') + '<span class="tags">' + (c.cat ? '<span class="tag y">' + esc(c.cat) + '</span>' : '') + (c.city ? '<span class="tag">' + esc(c.city) + '</span>' : '')
+            + c.accs.map(function (a) { return '<span class="tag o">' + esc(a.net) + '</span>'; }).join('') + '</span></button>';
+        }).join('') + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">' + (state.contacts.length ? 'Никого не нашлось. Измените поиск или категорию.' : 'Контактов пока нет. Добавьте первого человека: имя, категорию и его аккаунты.') + '</p></div>')
+        + '<p class="note">Всего: ' + list.length + ' из ' + state.contacts.length + '. Список видят только MAIN и C-Level. Пока он хранится в этом браузере.</p>';
+    }
+    var tasks = state.tasks.filter(function (t) { return t.contact === p.id; });
+    var accs = p.accs.map(function (a) { var u = accUrl(a.net, a.val); return '<li><b>' + esc(a.net) + '</b><span>' + (u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(a.val) + '</a>' : esc(a.val)) + '</span></li>'; }).join('');
+    var reach = (p.email ? '<li><b>Почта</b><span><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></span></li>' : '') + (p.phone ? '<li><b>Телефон</b><span>' + esc(p.phone) + '</span></li>' : '');
+    return '<p style="margin:0 0 14px"><button type="button" class="btn ghost" data-peopleback>← Все контакты</button></p>'
+      + '<div class="panel phead" style="margin-top:0"><span class="ava big">' + esc(initials(p.name)) + '</span><div class="pi"><h2>' + esc(p.name) + '</h2>' + (p.who ? '<p>' + esc(p.who) + '</p>' : '')
+      + '<p class="tags">' + (p.cat ? '<span class="tag y">' + esc(p.cat) + '</span>' : '') + (p.city ? '<span class="tag">' + esc(p.city) + '</span>' : '') + '<span class="tag p">' + esc(p.status || PSTAT[0]) + '</span></p></div>'
+      + '<span class="pact"><button type="button" class="btn" data-editperson="' + p.id + '">Изменить</button></span></div>'
+      + '<div class="panel"><h2>Соцсети и аккаунты</h2>' + (accs ? '<ul class="list">' + accs + '</ul>' : '<p class="empty">Аккаунты не добавлены.</p>') + '</div>'
+      + '<div class="panel"><h2>Как связаться</h2>' + (reach ? '<ul class="list">' + reach + '</ul>' : '<p class="empty">Почта и телефон не указаны.</p>') + '</div>'
+      + '<div class="panel"><h2>Заметки</h2>' + (p.notes ? '<p class="pre">' + esc(p.notes) + '</p>' : '<p class="empty">Заметок нет.</p>') + '</div>'
+      + '<div class="panel"><h2>Задачи по этому человеку</h2>' + (tasks.length ? '<ul class="list">' + tasks.map(function (t) { return '<li><a href="#" data-task="' + t.id + '">' + esc(t.title) + '</a><span><span class="tag">' + TSTAGES.filter(function (s) { return s[0] === t.stage; })[0][1] + '</span>' + (t.due ? ' срок ' + human(t.due) : '') + '</span></li>'; }).join('') + '</ul>' : '<p class="empty">Задач нет.</p>')
+      + '<p style="margin:12px 0 0"><button type="button" class="btn ghost" data-newtask="' + p.id + '">+ Задача: написать или встретиться</button></p></div>'
+      + '<p class="note">Анкету добавил(а) ' + esc(mname(p.by)) + (p.added ? ', ' + human(p.added) : '') + '.</p>';
+  };
+
+  function openTask(id, preset) {
+    if (!allowed('tasks')) return;
+    var isNew = !id, t = isNew ? Object.assign({ id: uid(), title: '', kind: TKINDS[0], stage: 'todo', who: state.me, due: '', contact: '', sum: '', notes: '' }, preset || {}) : taskById(id);
+    if (!t) return;
+    dlgbody.innerHTML = '<h2>' + (isNew ? 'Новая задача' : 'Задача проекта') + '</h2><form id="taskform"><div class="grid2">'
+      + '<div class="full"><label for="tt">Что нужно сделать</label><input id="tt" name="title" type="text" required value="' + esc(t.title) + '"></div>'
+      + '<div><label for="tk">Тип</label><select id="tk" name="kind">' + selOpts(TKINDS, t.kind) + '</select></div>'
+      + '<div><label for="ts">Этап</label><select id="ts" name="stage">' + selOpts(TSTAGES.map(function (s) { return { id: s[0], name: s[1] }; }), t.stage) + '</select></div>'
+      + '<div><label for="tw">Ответственный</label><select id="tw" name="who">' + selOpts(bosses(), t.who, 'Не назначен') + '</select></div>'
+      + '<div><label for="td">Срок</label><input id="td" name="due" type="date" value="' + esc(t.due) + '"></div>'
+      + '<div><label for="tc">Связанный контакт</label><select id="tc" name="contact">' + selOpts(state.contacts, t.contact, 'Без контакта') + '</select></div>'
+      + '<div><label for="tm">Сумма, если это покупка</label><input id="tm" name="sum" type="text" value="' + esc(t.sum) + '" autocomplete="off"></div>'
+      + '<div class="full"><label for="tn">Детали: ссылки, условия, что уже сделано</label><textarea id="tn" name="notes" rows="4">' + esc(t.notes) + '</textarea></div></div>'
+      + '<div class="actions"><span>' + (isNew ? '' : '<button type="button" class="btn danger" id="taskdel">Удалить</button>') + '</span><span><button type="button" class="btn ghost" id="taskclose">Отмена</button> <button type="submit" class="btn">Сохранить</button></span></div></form>';
+    dlg.showModal();
+    var form = document.getElementById('taskform');
+    document.getElementById('taskclose').onclick = function () { dlg.close(); };
+    var del = document.getElementById('taskdel');
+    if (del) del.onclick = function () { if (confirm('Удалить задачу «' + t.title + '»? Отменить нельзя.')) { state.tasks = state.tasks.filter(function (x) { return x.id !== t.id; }); save(); dlg.close(); render(); toast('Задача удалена'); } };
+    form.onsubmit = function (event) {
+      event.preventDefault();
+      var title = form.title.value.trim(); if (!title) { form.title.focus(); return; }
+      if (!isNew) { var live = taskById(t.id); if (!live) { dlg.close(); return render(); } t = live; }
+      t.title = title; t.kind = form.kind.value; t.stage = form.stage.value; t.who = form.who.value; t.due = form.due.value; t.contact = form.contact.value; t.sum = form.sum.value.trim().slice(0, 40); t.notes = form.notes.value.trim();
+      if (isNew) state.tasks.unshift(t);
+      save(); dlg.close(); render(); toast(isNew ? 'Задача добавлена' : 'Сохранено');
+    };
+  }
+
+  function openPerson(id) {
+    if (!allowed('people')) return;
+    var isNew = !id, p = isNew ? { id: uid(), name: '', cat: '', who: '', city: '', status: PSTAT[0], accs: [], email: '', phone: '', notes: '', by: state.me, added: TODAY } : personById(id);
+    if (!p) return;
+    var row = function (a) { return '<div class="acc"><select aria-label="Соцсеть">' + selOpts(NETS, a.net) + '</select><input type="text" aria-label="Ссылка или ник" placeholder="ссылка или @ник" autocomplete="off" value="' + esc(a.val) + '"><button type="button" class="tgl" data-accdel aria-label="Убрать аккаунт">×</button></div>'; };
+    dlgbody.innerHTML = '<h2>' + (isNew ? 'Новый контакт' : 'Анкета') + '</h2><form id="personform"><div class="grid2">'
+      + '<div class="full"><label for="pn">Имя или название</label><input id="pn" name="name" type="text" required autocomplete="off" value="' + esc(p.name) + '"></div>'
+      + '<div class="full"><label for="pw">Кто это и чем интересен</label><input id="pw" name="who" type="text" autocomplete="off" value="' + esc(p.who) + '"></div>'
+      + '<div><label for="pc">Категория</label><input id="pc" name="cat" type="text" list="pcatlist" autocomplete="off" placeholder="выберите или впишите свою" value="' + esc(p.cat) + '"><datalist id="pcatlist">' + pcats().map(function (c) { return '<option value="' + esc(c) + '">'; }).join('') + '</datalist></div>'
+      + '<div><label for="pg">Город</label><input id="pg" name="city" type="text" autocomplete="off" value="' + esc(p.city) + '"></div>'
+      + '<div class="full"><label>Соцсети и другие аккаунты</label><div id="paccs">' + (p.accs.length ? p.accs : [{ net: NETS[0], val: '' }]).map(row).join('') + '</div><button type="button" class="tgl" id="accadd">+ Ещё аккаунт</button></div>'
+      + '<div><label for="pe">Почта</label><input id="pe" name="email" type="email" autocomplete="off" value="' + esc(p.email) + '"></div>'
+      + '<div><label for="pp">Телефон</label><input id="pp" name="phone" type="text" autocomplete="off" value="' + esc(p.phone) + '"></div>'
+      + '<div class="full"><label for="ps">Статус</label><select id="ps" name="status">' + selOpts(PSTAT, p.status || PSTAT[0]) + '</select></div>'
+      + '<div class="full"><label for="pt">Заметки: откуда знаем, о чём говорили, идеи</label><textarea id="pt" name="notes" rows="4">' + esc(p.notes) + '</textarea></div></div>'
+      + '<div class="actions"><span>' + (isNew ? '' : '<button type="button" class="btn danger" id="persondel">Удалить</button>') + '</span><span><button type="button" class="btn ghost" id="personclose">Отмена</button> <button type="submit" class="btn">Сохранить</button></span></div></form>';
+    dlg.showModal();
+    var form = document.getElementById('personform'), box = document.getElementById('paccs');
+    document.getElementById('personclose').onclick = function () { dlg.close(); };
+    document.getElementById('accadd').onclick = function () { box.insertAdjacentHTML('beforeend', row({ net: NETS[0], val: '' })); box.lastChild.querySelector('input').focus(); };
+    box.onclick = function (event) { var b = event.target.closest('[data-accdel]'); if (b) b.parentNode.remove(); };
+    var del = document.getElementById('persondel');
+    if (del) del.onclick = function () {
+      if (!confirm('Удалить анкету «' + p.name + '»? Отменить нельзя.')) return;
+      state.contacts = state.contacts.filter(function (x) { return x.id !== p.id; });
+      state.tasks.forEach(function (t) { if (t.contact === p.id) t.contact = ''; });
+      state.person = null; save(); dlg.close(); render(); toast('Анкета удалена');
+    };
+    form.onsubmit = function (event) {
+      event.preventDefault();
+      var name = form.name.value.trim(); if (!name) { form.name.focus(); return; }
+      if (!isNew) { var live = personById(p.id); if (!live) { dlg.close(); return render(); } p = live; }
+      p.name = name; p.who = form.who.value.trim(); p.cat = form.cat.value.trim().slice(0, 40); p.city = form.city.value.trim(); p.status = form.status.value;
+      p.email = form.email.value.trim(); p.phone = form.phone.value.trim(); p.notes = form.notes.value.trim();
+      p.accs = [].map.call(box.querySelectorAll('.acc'), function (r) { return { net: r.querySelector('select').value, val: r.querySelector('input').value.trim().slice(0, 300) }; }).filter(function (a) { return a.val; });
+      if (isNew) state.contacts.push(p);
+      state.person = p.id; state.view = 'people';
+      save(); dlg.close(); render(); toast(isNew ? 'Контакт добавлен' : 'Сохранено');
+    };
+  }
 
   function render() {
     applyTheme();
@@ -536,10 +707,16 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   }
 
   document.addEventListener('click', function (event) {
-    var t = event.target.closest('[data-go],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
+    var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
     if (!t) return;
     if ('themeToggle' in t.dataset) { var light = document.documentElement.dataset.theme !== 'light'; if (light) document.documentElement.dataset.theme = 'light'; else delete document.documentElement.dataset.theme; try { localStorage.setItem('auf-admin-theme', light ? 'light' : 'dark'); } catch (e) {} return applyTheme(); }
     if (t.dataset.go) return go(t.dataset.go);
+    if (t.dataset.task) { event.preventDefault(); return openTask(t.dataset.task); }
+    if ('newtask' in t.dataset) return openTask(null, t.dataset.newtask ? { contact: t.dataset.newtask, kind: 'Написать' } : null);
+    if (t.dataset.person) { state.person = t.dataset.person; save(); render(); return scrollTo(0, 0); }
+    if ('newperson' in t.dataset) return openPerson(null);
+    if (t.dataset.editperson) return openPerson(t.dataset.editperson);
+    if ('peopleback' in t.dataset) { state.person = null; save(); return render(); }
     if (t.dataset.card) { event.preventDefault(); return openCard(t.dataset.card); }
     if ('new' in t.dataset) return openCard(null);
     if (t.dataset.month !== undefined) {
@@ -571,12 +748,13 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   });
   // drag and drop between columns
   var dragging = null;
-  document.addEventListener('dragstart', function (event) { var c = event.target.closest && event.target.closest('.card'); if (c) { dragging = c.dataset.card; event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', dragging); } });
+  document.addEventListener('dragstart', function (event) { var c = event.target.closest && event.target.closest('.card'); if (c) { dragging = c.dataset.card || c.dataset.task; event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', dragging); } });
   document.addEventListener('dragover', function (event) { var col = event.target.closest && event.target.closest('.col'); if (col && dragging) { event.preventDefault(); col.classList.add('over'); } });
   document.addEventListener('dragleave', function (event) { var col = event.target.closest && event.target.closest('.col'); if (col && !col.contains(event.relatedTarget)) col.classList.remove('over'); });
   document.addEventListener('drop', function (event) {
     var col = event.target.closest && event.target.closest('.col'); if (!col || !dragging) return;
     event.preventDefault();
+    if (col.dataset.tstage) { var tk = taskById(dragging); dragging = null; if (tk && tk.stage !== col.dataset.tstage) { tk.stage = col.dataset.tstage; save(); toast('Перенесено: ' + TSTAGES.filter(function (x) { return x[0] === tk.stage; })[0][1]); } return render(); }
     var c = state.cards.filter(function (x) { return x.id === dragging; })[0], to = col.dataset.stage; dragging = null;
     if (!c || c.stage === to) return render();
     if (!canMove(c, to)) { render(); return toast('В этой роли сюда двигать нельзя: дальше «На редактуре» материал ведёт редактор'); }
@@ -1005,7 +1183,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     if (e.key !== KEY || !e.newValue) return;
     var s; try { s = JSON.parse(e.newValue); } catch (x) { return; }
     if (!s || s.v !== 1 || !Array.isArray(s.cards) || !Array.isArray(s.team)) return;
-    state.team = s.team; state.cards = s.cards; state.subs = s.subs || []; state.apps = s.apps || []; state.me = s.me;
+    state.team = s.team; state.cards = s.cards; state.subs = s.subs || []; state.apps = s.apps || []; state.tasks = s.tasks || []; state.contacts = s.contacts || []; state.me = s.me;
     if (edCard) {
       var live = cardById(edCard.id);
       if (!live) { edCard = null; edLoaded = null; state.editing = null; if (dlg.open) dlg.close(); save(); return render(); }
