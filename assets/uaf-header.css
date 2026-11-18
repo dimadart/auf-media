@@ -356,3 +356,13 @@ img.uaf-fade.is-loaded { filter: none; }
   .uaf-masthead { height: calc(72px + 37svh); }
   .uaf-hero-copy { padding-top: 36px; padding-bottom: 20px; }
 }
+@media (max-width: 600px) {
+  .uaf-masthead { height: calc(72px + max(40px, min(37svh, 100svh - 400px))); }
+  /* phones: sticker first, the rubric plate pasted over its lower edge, then the headline */
+  body:has(#uaf-header) section._164-5_0 ._1lFOR_0 { display: contents; }
+  body:has(#uaf-header) section._164-5_0 ._2JcRy_0 { order: 0; margin: 0; }
+  body:has(#uaf-header) section._164-5_0 .T8Oks_0 { order: 1; position: relative; z-index: 2; margin: -15px auto 12px; }
+  body:has(#uaf-header) section._164-5_0 ._3FncU_0 { order: 2; }
+  body:has(#uaf-header) section._164-5_0 .uaf-lead-excerpt { order: 3; }
+  body:has(#uaf-header) section._164-5_0 ._2-mlf_0 { order: 4; }
+}
