@@ -276,29 +276,30 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     { id: 'published', name: 'Опубликовано', hint: 'Вышло на сайте' }
   ];
   var ROLES = [
-    { id: 'owner', name: 'Владелец', about: 'Всё, включая команду, роли и настройки. Один человек, удалить нельзя.' },
-    { id: 'chief', name: 'Главный редактор', about: 'Ведёт редакцию: приглашает людей, двигает и публикует любые материалы, видит заявки.' },
-    { id: 'editor', name: 'Редактор', about: 'Правит и двигает любые материалы, ставит даты, выпускает. Команду не меняет.' },
-    { id: 'reporter', name: 'Журналист', about: 'Создаёт свои материалы и ведёт их до редактуры. Чужие видит, но не меняет.' },
-    { id: 'contributor', name: 'Автор', about: 'Внештатный автор: предлагает идеи и работает только над своими материалами.' }
+    { id: 'owner', name: 'MAIN', about: 'Один главный аккаунт: настройки, команда, роли и все разделы. Удалить нельзя.' },
+    { id: 'chief', name: 'C-Level', about: 'До трёх аккаунтов. Вся редакция и материалы, плюс бизнес-разделы: аналитика, шоп, финансы. Приглашает редакторов и журналистов.' },
+    { id: 'editor', name: 'Редактор', about: 'Правит и двигает любые материалы, ставит даты, выпускает, видит заявки авторов. Команду и бизнес-разделы не видит.' },
+    { id: 'reporter', name: 'Журналист', about: 'Создаёт свои материалы и ведёт их до редактуры. Чужие видит, но не меняет.' }
   ];
-  var RANK = { owner: 5, chief: 4, editor: 3, reporter: 2, contributor: 1 };
+  var RANK = { owner: 5, chief: 4, editor: 3, reporter: 2 }, CLEVEL_MAX = 3;
   var PERMS = [
-    ['Видеть доску и календарь', 1, 1, 1, 1, 1],
-    ['Предлагать идеи', 1, 1, 1, 1, 1],
-    ['Править свои материалы', 1, 1, 1, 1, 1],
-    ['Править чужие материалы', 1, 1, 1, 0, 0],
-    ['Отправлять свой материал на редактуру', 1, 1, 1, 1, 1],
-    ['Двигать дальше: фактчек, готово, публикация', 1, 1, 1, 0, 0],
-    ['Удалять материалы', 1, 1, 0, 0, 0],
-    ['Видеть заявки авторов', 1, 1, 1, 0, 0],
-    ['Видеть подписчиков на запуск', 1, 1, 0, 0, 0],
-    ['Приглашать людей и менять роли', 1, 2, 0, 0, 0],
-    ['Экспорт данных и сброс', 1, 0, 0, 0, 0]
+    ['Видеть доску и календарь', 1, 1, 1, 1],
+    ['Предлагать идеи и писать свои материалы', 1, 1, 1, 1],
+    ['Отправлять свой материал на редактуру', 1, 1, 1, 1],
+    ['Править чужие материалы', 1, 1, 1, 0],
+    ['Двигать дальше: фактчек, готово, публикация', 1, 1, 1, 0],
+    ['Видеть заявки авторов', 1, 1, 1, 0],
+    ['Удалять материалы', 1, 1, 0, 0],
+    ['Видеть подписчиков на запуск', 1, 1, 0, 0],
+    ['Аналитика, шоп, финансы', 1, 1, 0, 0],
+    ['Приглашать людей и менять роли', 1, 2, 0, 0],
+    ['Назначать C-Level', 1, 0, 0, 0],
+    ['Настройки, копия данных и сброс', 1, 0, 0, 0]
   ];
   var RUBRICS = ['Музыка', 'Мода', 'Кино', 'Технологии', 'Арт', 'Город', 'Изнутри', 'Наш радар', 'Фотография', 'Секс и наука', 'Культура', 'На репите', 'Видео'];
   var FORMATS = ['Текст', 'Интервью', 'Репортаж', 'Видео', 'Фото', 'Подборка'];
-  var VIEWS = [['home', 'Обзор'], ['board', 'Доска'], ['calendar', 'Календарь'], ['items', 'Материалы'], ['team', 'Команда'], ['inbox', 'Заявки'], ['plan', 'Как запустить']];
+  var VIEWS = [['home', 'Обзор'], ['board', 'Доска'], ['calendar', 'Календарь'], ['items', 'Материалы'], ['inbox', 'Заявки'], ['stats', 'Аналитика'], ['shop', 'Шоп'], ['money', 'Финансы'], ['team', 'Команда'], ['settings', 'Настройки'], ['plan', 'Как запустить']];
+  var NEED = { inbox: 'editor', stats: 'chief', shop: 'chief', money: 'chief', settings: 'owner' };
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -324,6 +325,8 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   if (!tab || typeof tab.id !== 'string') tab = { id: uid(), color: PALETTE[Math.floor(Math.random() * PALETTE.length)] };
   TABF.forEach(function (k) { if (k in tab) state[k] = tab[k]; });
   state.editing = tab.editing || null;
+  if (!RANK[state.viewAs]) state.viewAs = 'reporter';
+  state.team.forEach(function (m) { if (!RANK[m.role]) m.role = 'reporter'; });
   function save() {
     TABF.forEach(function (k) { tab[k] = state[k]; });
     try { sessionStorage.setItem(TABKEY, JSON.stringify(tab)); } catch (e) {}
@@ -336,6 +339,8 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   var mname = function (id) { var m = member(id); return m ? m.name : '—'; };
   var stageIx = function (id) { return STAGES.map(function (s) { return s.id; }).indexOf(id); };
   var isMine = function (c) { return c.author === state.me; };
+  var allowed = function (v) { return !NEED[v] || atLeast(NEED[v]); };
+  var clevels = function () { return state.team.filter(function (m) { return m.role === 'chief'; }).length; };
   function canEdit(c) { return atLeast('editor') || isMine(c); }
   function canMove(c, to) { if (atLeast('editor')) return true; return isMine(c) && stageIx(to) <= 2 && stageIx(c.stage) <= 2; }
 
@@ -358,13 +363,13 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
 
   function renderNav() {
     var counts = { board: state.cards.filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length };
-    nav.innerHTML = VIEWS.filter(function (v) { return v[0] !== 'inbox' || atLeast('editor'); }).map(function (v) {
+    nav.innerHTML = VIEWS.filter(function (v) { return allowed(v[0]); }).map(function (v) {
       return '<button type="button" data-go="' + v[0] + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '>' + v[1] + (counts[v[0]] ? '<i>' + counts[v[0]] + '</i>' : '') + '</button>';
     }).join('');
   }
   var sel = document.getElementById('viewas');
   sel.innerHTML = ROLES.map(function (r) { return '<option value="' + r.id + '">' + r.name + '</option>'; }).join('');
-  sel.addEventListener('change', function () { state.viewAs = sel.value; if (state.view === 'inbox' && !atLeast('editor')) state.view = 'home'; save(); render(); sendHere(); });
+  sel.addEventListener('change', function () { state.viewAs = sel.value; if (!allowed(state.view)) state.view = 'home'; save(); render(); sendHere(); });
 
   function cardHtml(c) {
     var late = c.deadline && c.deadline < TODAY && c.stage !== 'published';
@@ -439,14 +444,14 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
           + '</td><td>' + (m.status === 'active' ? '<span class="tag g">активен</span>' : '<span class="tag p">приглашение</span>') + '</td><td>' + (locked ? '' : '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
       }).join('');
       var head = '<tr><th>Что можно</th>' + ROLES.map(function (r) { return '<th>' + r.name + '</th>'; }).join('') + '</tr>';
-      var perm = PERMS.map(function (p) { return '<tr><td>' + p[0] + '</td>' + p.slice(1).map(function (v) { return '<td>' + (v === 1 ? '<span class="yes">да</span>' : v === 2 ? '<span class="part">кроме владельца и главреда</span>' : '<span class="no">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('');
+      var perm = PERMS.map(function (p) { return '<tr><td>' + p[0] + '</td>' + p.slice(1).map(function (v) { return '<td>' + (v === 1 ? '<span class="yes">да</span>' : v === 2 ? '<span class="part">только редакторов и журналистов</span>' : '<span class="no">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('');
       return (manage ? '<div class="panel" style="margin-top:0"><h2>Пригласить по почте</h2><form class="invite" id="invite"><div><label for="in">Имя</label><input id="in" name="name" type="text" required autocomplete="off"></div><div><label for="ie">Почта</label><input id="ie" name="email" type="email" required autocomplete="off" placeholder="name@example.com"></div><div><label for="ir">Роль</label><select id="ir" name="role">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (r.id === 'reporter' ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select></div><button class="btn" type="submit">Пригласить</button></form>'
         + (lastInvite ? '<div class="mail"><b>Так будет выглядеть письмо (в прототипе оно не отправлено):</b>\n\nКому: ' + esc(lastInvite.email) + '\nТема: Приглашение в редакцию AUF MEDIA\n\n' + esc(lastInvite.name) + ', привет!\n\nТебя приглашают в редакцию AUF MEDIA с ролью «' + esc(lastInvite.role) + '».\nНажми на кнопку, придумай пароль — и ты внутри.\n\n[ Войти в редакцию ]\n\nСсылка действует 24 часа.</div>' : '')
         + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">Приглашать людей и менять роли могут владелец и главный редактор.</p></div>')
         + '<div class="panel"><h2>Команда</h2><div class="tw"><table><thead><tr><th>Имя</th><th>Почта</th><th>Роль</th><th>Статус</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
-        + '<div class="panel"><h2>Роли</h2><ul class="list">' + ROLES.map(function (r) { return '<li><b>' + r.name + '</b><span style="flex:1 1 60%;color:var(--mute)">' + r.about + '</span></li>'; }).join('') + '</ul></div>'
+        + '<div class="panel"><h2>Уровни</h2><p class="note" style="margin:0 0 6px">C-Level занято: ' + clevels() + ' из ' + CLEVEL_MAX + '.</p><ul class="list">' + ROLES.map(function (r) { return '<li><b>' + r.name + '</b><span style="flex:1 1 60%;color:var(--mute)">' + r.about + '</span></li>'; }).join('') + '</ul></div>'
         + '<div class="panel"><h2>Кто что может</h2><div class="tw"><table class="perm"><thead>' + head + '</thead><tbody>' + perm + '</tbody></table></div></div>'
-        + (role() === 'owner' ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу.</p></div>' : '');
+        + '';
     },
     inbox: function () {
       var showSubs = atLeast('chief');
@@ -456,6 +461,14 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
       else body = state.subs.length ? '<div class="tw"><table><thead><tr><th>Канал</th><th>Контакт</th><th>Дата</th></tr></thead><tbody>' + state.subs.map(function (a) { return '<tr><td>' + esc(a.channel) + '</td><td>' + esc(a.contact) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Подписчиков пока нет. Они появятся здесь, когда форма «Узнай о запуске первым» будет подключена к базе.</p>';
       return '<div class="tabs" role="tablist"><button type="button" role="tab" data-tab="apps" aria-selected="' + (inboxTab === 'apps') + '">Заявки авторов · ' + state.apps.length + '</button>' + (showSubs ? '<button type="button" role="tab" data-tab="subs" aria-selected="' + (inboxTab === 'subs') + '">Подписчики на запуск · ' + state.subs.length + '</button>' : '') + '</div><div class="panel" style="margin-top:0">' + body + '</div>'
         + '<p class="note">Из заявки автора одним нажатием можно будет сделать приглашение в команду — это появится вместе с настоящей базой.</p>';
+    },
+    stats: function () { return '<div class="panel plan" style="margin-top:0"><h2>Аналитика</h2><p>Здесь будут посещаемость сайта, самые читаемые материалы, источники переходов и рост подписчиков.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Выбрать сервис статистики для сайта и поставить его счётчик.</li><li>Дать админке доступ к этим данным.</li><li>Подключить формы со страницы «Скоро», чтобы считать подписчиков.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
+    shop: function () { return '<div class="panel plan" style="margin-top:0"><h2>Шоп</h2><p>Здесь будут товары, заказы, остатки и выручка магазина.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Решить, что продаём и через какой сервис принимаем оплату.</li><li>Подключить этот сервис к админке.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
+    money: function () { return '<div class="panel plan" style="margin-top:0"><h2>Финансы</h2><p>Здесь будут доходы и расходы, гонорары авторам и то, что уже выплачено.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Общая база (Supabase), чтобы записи видели все C-Level.</li><li>Решить, какие статьи доходов и расходов вести и в какой валюте.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
+    settings: function () {
+      return '<div class="panel" style="margin-top:0"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». C-Level назначает только MAIN.</p></div>'
+        + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
+        + '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>';
     },
     plan: function () {
       return '<div class="panel plan" style="margin-top:0">'
@@ -477,11 +490,11 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     document.getElementById('app').hidden = !!ec; edEl.hidden = !ec;
     if (ec) return openEditor(ec);
     sel.value = state.viewAs;
-    if (!RENDER[state.view]) state.view = 'home';
+    if (!RENDER[state.view] || !allowed(state.view)) state.view = 'home';
     renderNav();
     title.textContent = VIEWS.filter(function (v) { return v[0] === state.view; })[0][1];
     var focus = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.f : null;
-    view.innerHTML = RENDER[state.view]();
+    view.innerHTML = RENDER[state.view](); applyTheme();
     if (focus) { var el = view.querySelector('[data-f="' + focus + '"]'); if (el) { el.focus(); if (el.setSelectionRange && el.type === 'search') el.setSelectionRange(el.value.length, el.value.length); } }
   }
 
@@ -543,7 +556,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   document.addEventListener('input', function (event) { var f = event.target.dataset && event.target.dataset.f; if (f) { filters[f] = event.target.value; render(); } });
   document.addEventListener('change', function (event) {
     var id = event.target.dataset && event.target.dataset.role;
-    if (id) { var m = member(id); if (m) { m.role = event.target.value; save(); render(); toast('Роль изменена'); } }
+    if (id) { var m = member(id); if (m) { if (event.target.value === 'chief' && m.role !== 'chief' && clevels() >= CLEVEL_MAX) { render(); return toast('C-Level уже ' + CLEVEL_MAX + ' из ' + CLEVEL_MAX + '. Сначала освободите место'); } m.role = event.target.value; save(); render(); toast('Уровень изменён'); } }
   });
   document.addEventListener('submit', function (event) {
     if (event.target.id !== 'invite') return;
@@ -551,6 +564,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     var f = event.target, email = f.email.value.trim().toLowerCase(), name = f.name.value.trim();
     if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { toast('Проверьте имя и адрес почты'); return; }
     if (state.team.some(function (m) { return m.email === email; })) { toast('Этот адрес уже в команде'); return; }
+    if (f.role.value === 'chief' && clevels() >= CLEVEL_MAX) { toast('C-Level уже ' + CLEVEL_MAX + ' из ' + CLEVEL_MAX + '. Сначала освободите место'); return; }
     state.team.push({ id: uid(), name: name, email: email, role: f.role.value, status: 'invited' });
     lastInvite = { name: name, email: email, role: ROLES.filter(function (r) { return r.id === f.role.value; })[0].name };
     save(); render(); toast('Добавлено в команду. Письмо в прототипе не отправляется');
