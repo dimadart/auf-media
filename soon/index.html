@@ -7,7 +7,8 @@
 <meta name="theme-color" content="#000000">
 <title>AUF MEDIA — скоро открытие</title>
 <meta name="description" content="Скоро открытие. Культурный журнал о людях, явлениях и событиях в США.">
-<link rel="preload" as="image" href="../assets/soon/kiosk.webp" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/soon/bg.webp" media="(min-width: 861px)" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/soon/bg-1280.webp" media="(max-width: 860px)" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="../assets/editorial/fonts/unbounded-cyrillic.woff2" crossorigin>
 <style>
 @font-face { font-family: Unbounded; font-style: normal; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
@@ -113,6 +114,33 @@ dialog .note[data-state=ok] { color: #000; }
   h1 { font-size: 15vw; }
   h1 span:nth-child(2) { margin-left: .25em; font-size: .5em; }
 }
+
+/* v2: the illustration is the backdrop, black half on the left carries the text */
+body::before { opacity: .3; }
+.bg { position: fixed; z-index: 0; top: 0; bottom: 0; left: 30vw; width: max(100vw, 177.78svh); margin: 0; }
+.bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left center; }
+.bg::after { content: ''; position: absolute; inset: 0 auto 0 -1px; width: 22%; background: linear-gradient(90deg, #000 0, rgb(0 0 0 / .0) 100%); }
+.brand { justify-content: flex-start; padding: 22px 0 0 clamp(20px, 5vw, 72px); }
+main { width: 100%; margin: 0; padding: 18px 0 30px clamp(20px, 5vw, 72px); grid-template-columns: minmax(0, 40vw) 1fr; align-items: center; }
+h1 { font-size: clamp(44px, 7.6vw, 118px); }
+h1 span:nth-child(2) { font-size: .46em; margin-left: .5em; }
+.lede { max-width: 26em; }
+.art { position: static; width: auto; justify-self: stretch; align-self: stretch; }
+.tap { right: 6vw; top: 16%; }
+.foot { padding-right: 24px; }
+@media (max-width: 860px) {
+  .bg { position: relative; left: 0; top: auto; bottom: auto; order: 5; width: 100%; height: 56vw; min-height: 210px; }
+  .bg img { object-position: 30% center; }
+  .bg::after { inset: -1px 0 auto 0; width: 100%; height: 34%; background: linear-gradient(180deg, #000 0, rgb(0 0 0 / 0) 100%); }
+  .brand { padding: 16px 20px 0; }
+  main { grid-template-columns: 1fr; padding: 22px 20px 26px; flex: none; }
+  h1 { font-size: 16.5vw; margin: 16px 0 0 4px; }
+  .authors { width: auto; }
+  h1 span:nth-child(2) { font-size: .42em; margin-left: .25em; }
+  .art { display: none; }
+  .foot { order: 6; position: relative; margin-top: -58px; padding-bottom: 18px; justify-content: flex-end; }
+  .ribbon { order: 7; }
+}
 @media (prefers-reduced-motion: reduce) {
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
 }
@@ -122,10 +150,11 @@ dialog .note[data-state=ok] { color: #000; }
 <p class="tagline">Культурный журнал о людях, явлениях и событиях в США</p>
 <div class="brand"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span>AUF MEDIA</span></div>
 
+<picture class="bg" aria-hidden="true"><source media="(max-width: 860px)" srcset="../assets/soon/bg-1280.webp"><img src="../assets/soon/bg.webp" width="2048" height="1152" alt=""></picture>
 <main>
   <div class="copy">
     <h1><span>Скоро</span><span>открываемся</span></h1>
-    <p class="lede">Киоск уже завезли, ставни поднимаем. <b>AUF MEDIA</b> — новый культурный журнал о людях, явлениях и событиях в&nbsp;США. Оставь телефон&nbsp;— позовём первым, когда откроемся.</p>
+    <p class="lede"><b>AUF MEDIA</b> — новый культурный журнал о&nbsp;людях, явлениях и&nbsp;событиях в&nbsp;США. Оставь телефон&nbsp;— позовём первым, когда откроемся.</p>
     <form id="call" novalidate data-endpoint="">
       <label for="phone">Твой телефон</label>
       <div class="row">
@@ -135,13 +164,7 @@ dialog .note[data-state=ok] { color: #000; }
       <p class="note" id="note" role="status">Одно сообщение в&nbsp;день открытия. Без спама.</p>
     </form>
   </div>
-  <div class="art">
-    <div class="art-in">
-      <img src="../assets/soon/kiosk.webp" width="900" height="900" alt="Киоск с прессой с наполовину поднятыми ставнями; голубь, крыса и кот ждут открытия в очереди">
-      <span class="sign" aria-hidden="true">AUF MEDIA</span>
-    </div>
-    <span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span>
-  </div>
+  <div class="art"><span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span></div>
 </main>
 
 <div class="foot"><button type="button" class="authors" id="authors-open">Для авторов →</button></div>
@@ -276,8 +299,9 @@ dialog .note[data-state=ok] { color: #000; }
     NAMES.forEach(function (n) { new Image().src = BASE + n + '.webp'; });
     setTimeout(function () {
       if (parts.length) return;
-      var box = document.querySelector('.art').getBoundingClientRect();
-      if (box.bottom > 0 && box.top < innerHeight) spread(box.left + box.width * .45, box.top + box.height * .5, 6);
+      var box = document.querySelector('.bg').getBoundingClientRect();
+      var y = Math.max(box.top, 0) + (Math.min(box.bottom, innerHeight) - Math.max(box.top, 0)) * .5;
+      if (box.bottom > 80 && box.top < innerHeight - 80) spread(innerWidth < 861 ? innerWidth * .5 : innerWidth * .68, y, 6);
     }, 900);
   });
 
