@@ -374,7 +374,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   function canMove(c, to) { if (atLeast('editor')) return true; return isMine(c) && stageIx(to) <= 2 && stageIx(c.stage) <= 2; }
 
   var view = document.getElementById('view'), title = document.getElementById('title'), nav = document.getElementById('nav'), dlg = document.getElementById('dlg'), dlgbody = document.getElementById('dlgbody');
-  var filters = { q: '', rubric: '', stage: '', author: '', mine: false, tkind: '', twho: '', pq: '', pcat: '' }, inboxTab = 'apps', lastInvite = null;
+  var filters = { q: '', rubric: '', stage: '', author: '', mine: false, tkind: '', twho: '', pq: '', pcat: '', pchk: '' }, inboxTab = 'apps', lastInvite = null;
 
   function toast(text) {
     var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = text;
@@ -559,13 +559,13 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     var p = state.person && personById(state.person);
     if (!p) {
       var q = (filters.pq || '').trim().toLowerCase();
-      var list = state.contacts.filter(function (c) { return (!q || (c.name + ' ' + c.who + ' ' + c.city + ' ' + c.notes).toLowerCase().indexOf(q) > -1) && (!filters.pcat || c.cat === filters.pcat); })
+      var list = state.contacts.filter(function (c) { return (!q || (c.name + ' ' + (c.en || '') + ' ' + c.who + ' ' + c.city + ' ' + c.notes).toLowerCase().indexOf(q) > -1) && (!filters.pcat || c.cat === filters.pcat) && (!filters.pchk || (filters.pchk === 'ok') === !c.check); })
         .sort(function (a, b) { return a.name.localeCompare(b.name, 'ru'); });
-      return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
+      return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><select data-f="pchk" aria-label="Проверка">' + selOpts([{ id: 'ok', name: 'Без пометок' }, { id: 'todo', name: 'Нужно проверить' }], filters.pchk, 'Все записи') + '</select><button type="button" class="btn ghost" data-importpeople>Загрузить список</button><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
         + (list.length ? '<div class="people">' + list.map(function (c) {
           return '<button type="button" class="pcard" data-person="' + c.id + '"><span class="ph"><span class="ava">' + esc(initials(c.name)) + '</span><strong>' + esc(c.name) + '</strong></span>'
             + (c.who ? '<span class="w">' + esc(c.who) + '</span>' : '') + '<span class="tags">' + (c.cat ? '<span class="tag y">' + esc(c.cat) + '</span>' : '') + (c.city ? '<span class="tag">' + esc(c.city) + '</span>' : '')
-            + c.accs.map(function (a) { return '<span class="tag o">' + esc(a.net) + '</span>'; }).join('') + '</span></button>';
+            + c.accs.map(function (a) { return '<span class="tag o">' + esc(a.net) + '</span>'; }).join('') + (c.check ? '<span class="tag p">проверить</span>' : '') + '</span></button>';
         }).join('') + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">' + (state.contacts.length ? 'Никого не нашлось. Измените поиск или категорию.' : 'Контактов пока нет. Добавьте первого человека: имя, категорию и его аккаунты.') + '</p></div>')
         + '<p class="note">Всего: ' + list.length + ' из ' + state.contacts.length + '. Список видят только MAIN и C-Level. Пока он хранится в этом браузере.</p>';
     }
@@ -573,16 +573,45 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     var accs = p.accs.map(function (a) { var u = accUrl(a.net, a.val); return '<li><b>' + esc(a.net) + '</b><span>' + (u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(a.val) + '</a>' : esc(a.val)) + '</span></li>'; }).join('');
     var reach = (p.email ? '<li><b>Почта</b><span><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></span></li>' : '') + (p.phone ? '<li><b>Телефон</b><span>' + esc(p.phone) + '</span></li>' : '');
     return '<p style="margin:0 0 14px"><button type="button" class="btn ghost" data-peopleback>← Все контакты</button></p>'
-      + '<div class="panel phead" style="margin-top:0"><span class="ava big">' + esc(initials(p.name)) + '</span><div class="pi"><h2>' + esc(p.name) + '</h2>' + (p.who ? '<p>' + esc(p.who) + '</p>' : '')
+      + '<div class="panel phead" style="margin-top:0"><span class="ava big">' + esc(initials(p.name)) + '</span><div class="pi"><h2>' + esc(p.name) + '</h2>' + (p.en ? '<p style="color:var(--mute);margin-top:4px">' + esc(p.en) + '</p>' : '') + (p.who ? '<p>' + esc(p.who) + '</p>' : '')
       + '<p class="tags">' + (p.cat ? '<span class="tag y">' + esc(p.cat) + '</span>' : '') + (p.city ? '<span class="tag">' + esc(p.city) + '</span>' : '') + '<span class="tag p">' + esc(p.status || PSTAT[0]) + '</span></p></div>'
       + '<span class="pact"><button type="button" class="btn" data-editperson="' + p.id + '">Изменить</button></span></div>'
+      + (p.check ? '<div class="panel"><h2>Нужно проверить</h2><p class="pre">' + esc(p.check) + '</p><p style="margin:12px 0 0"><button type="button" class="btn ghost" data-checked="' + p.id + '">Проверено, снять пометку</button></p></div>' : '')
       + '<div class="panel"><h2>Соцсети и аккаунты</h2>' + (accs ? '<ul class="list">' + accs + '</ul>' : '<p class="empty">Аккаунты не добавлены.</p>') + '</div>'
       + '<div class="panel"><h2>Как связаться</h2>' + (reach ? '<ul class="list">' + reach + '</ul>' : '<p class="empty">Почта и телефон не указаны.</p>') + '</div>'
       + '<div class="panel"><h2>Заметки</h2>' + (p.notes ? '<p class="pre">' + esc(p.notes) + '</p>' : '<p class="empty">Заметок нет.</p>') + '</div>'
+      + (p.sources && p.sources.length ? '<div class="panel"><h2>Источники</h2><ul class="list">' + p.sources.map(function (u) { return '<li><span><a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + '</a></span></li>'; }).join('') + '</ul></div>' : '')
       + '<div class="panel"><h2>Задачи по этому человеку</h2>' + (tasks.length ? '<ul class="list">' + tasks.map(function (t) { return '<li><a href="#" data-task="' + t.id + '">' + esc(t.title) + '</a><span><span class="tag">' + TSTAGES.filter(function (s) { return s[0] === t.stage; })[0][1] + '</span>' + (t.due ? ' срок ' + human(t.due) : '') + '</span></li>'; }).join('') + '</ul>' : '<p class="empty">Задач нет.</p>')
       + '<p style="margin:12px 0 0"><button type="button" class="btn ghost" data-newtask="' + p.id + '">+ Задача: написать или встретиться</button></p></div>'
       + '<p class="note">Анкету добавил(а) ' + esc(mname(p.by)) + (p.added ? ', ' + human(p.added) : '') + '.</p>';
   };
+
+  // Import a prepared list: only known fields are taken, links must be http(s), people already in the list are skipped.
+  function importPeople() {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = '.json,application/json';
+    inp.onchange = function () {
+      var f = inp.files[0]; if (!f) return;
+      var r = new FileReader();
+      r.onload = function () {
+        var arr; try { arr = JSON.parse(r.result); } catch (e) { return toast('Файл не читается: это не JSON'); }
+        if (!Array.isArray(arr)) return toast('В файле нет списка контактов');
+        var str = function (v, n) { return typeof v === 'string' ? v.trim().slice(0, n) : ''; }, have = {}, added = 0, skipped = 0;
+        state.contacts.forEach(function (c) { have[c.name.toLowerCase()] = 1; });
+        arr.forEach(function (x) {
+          var name = x && str(x.name, 120); if (!name) return;
+          if (have[name.toLowerCase()]) { skipped++; return; }
+          have[name.toLowerCase()] = 1; added++;
+          state.contacts.push({ id: uid(), name: name, en: str(x.name_en, 120), cat: str(x.cat, 40), who: str(x.who, 300), city: str(x.city, 80), status: PSTAT[0], email: '', phone: '', notes: '', by: state.me, added: TODAY, check: str(x.check, 600),
+            accs: (Array.isArray(x.accs) ? x.accs : []).filter(function (a) { return a && NETS.indexOf(a.net) > -1 && typeof a.val === 'string' && okUrl(a.val.trim()); }).slice(0, 12).map(function (a) { return { net: a.net, val: a.val.trim().slice(0, 300) }; }),
+            sources: (Array.isArray(x.sources) ? x.sources : []).filter(function (u) { return typeof u === 'string' && okUrl(u.trim()); }).slice(0, 6).map(function (u) { return u.trim().slice(0, 400); }) });
+        });
+        var ok = save(); render();
+        toast(!ok ? 'Не сохранено: в браузере кончилось место' : 'Добавлено: ' + added + (skipped ? ', уже были в списке: ' + skipped : ''));
+      };
+      r.readAsText(f);
+    };
+    inp.click();
+  }
 
   function openTask(id, preset) {
     if (!allowed('tasks')) return;
@@ -707,7 +736,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   }
 
   document.addEventListener('click', function (event) {
-    var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
+    var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-importpeople],[data-checked],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
     if (!t) return;
     if ('themeToggle' in t.dataset) { var light = document.documentElement.dataset.theme !== 'light'; if (light) document.documentElement.dataset.theme = 'light'; else delete document.documentElement.dataset.theme; try { localStorage.setItem('auf-admin-theme', light ? 'light' : 'dark'); } catch (e) {} return applyTheme(); }
     if (t.dataset.go) return go(t.dataset.go);
@@ -716,6 +745,8 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     if (t.dataset.person) { state.person = t.dataset.person; save(); render(); return scrollTo(0, 0); }
     if ('newperson' in t.dataset) return openPerson(null);
     if (t.dataset.editperson) return openPerson(t.dataset.editperson);
+    if ('importpeople' in t.dataset) return allowed('people') && importPeople();
+    if (t.dataset.checked) { var pc = personById(t.dataset.checked); if (pc) { pc.check = ''; save(); render(); toast('Пометка снята'); } return; }
     if ('peopleback' in t.dataset) { state.person = null; save(); return render(); }
     if (t.dataset.card) { event.preventDefault(); return openCard(t.dataset.card); }
     if ('new' in t.dataset) return openCard(null);
