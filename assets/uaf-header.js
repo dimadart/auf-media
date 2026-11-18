@@ -70,6 +70,7 @@
     const items = sources.map(card => ({
       slot: card.dataset.editorialSlot,
       title: readable(card.querySelector('.srhe5_0, ._1TiTf_0, .Wpu2b_0, ._2bLkN_0, .yg2f0_0')),
+      titleHtml: card.querySelector('.srhe5_0, ._1TiTf_0, .Wpu2b_0, ._2bLkN_0, .yg2f0_0').textContent.trim(),
       video: card.dataset.video || '',
       duration: card.dataset.duration || '',
       category: card.querySelector('._2b0aj_0')?.textContent.trim() || '',
@@ -99,7 +100,21 @@
       image.draggable = false;
       image.loading = 'lazy';
       image.decoding = 'async';
-      link.append(image);
+      // social-style thumbnail: brand chip and reel mark on top, rubric and headline pasted over the picture
+      const top = document.createElement('span');
+      top.className = 'uaf-reel-top';
+      top.setAttribute('aria-hidden', 'true');
+      top.innerHTML = '<b>AUF</b><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></svg>';
+      const text = document.createElement('span');
+      text.className = 'uaf-reel-text';
+      text.setAttribute('aria-hidden', 'true');
+      const rubric = document.createElement('em');
+      rubric.textContent = [item.category, item.duration].filter(Boolean).join(' · ');
+      const headline = document.createElement('strong');
+      headline.textContent = item.titleHtml;
+      text.append(rubric, headline);
+      link.dataset.palette = String(items.indexOf(item) % 3);
+      link.append(image, top, text);
       link.addEventListener('click', event => {
         if (suppress) { event.preventDefault(); suppress = false; return; }
         if (index !== current) { event.preventDefault(); go(index - current); }
@@ -112,7 +127,7 @@
       button.type = 'button';
       button.className = 'uaf-reels-arrow';
       button.setAttribute('aria-label', label);
-      button.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${path}"/></svg>`;
+      button.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="square" stroke-linejoin="miter" aria-hidden="true"><path d="${path}"/></svg>`;
       button.addEventListener('click', () => go(step));
       return button;
     };
@@ -127,9 +142,7 @@
     const bar = document.createElement('div');
     bar.className = 'uaf-reels-bar';
     bar.append(arrow('Предыдущее видео', 'M19 12H5M11 6l-6 6 6 6', -1), caption, arrow('Следующее видео', 'M5 12h14M13 6l6 6-6 6', 1));
-    const watch = document.createElement('a');
-    watch.className = 'uaf-reels-watch';
-    root.append(deck, bar, watch);
+    root.append(deck, bar);
     section.querySelector('._16nbd_0').before(root);
     section.classList.add('uaf-has-reels');
     let current = 0;
@@ -167,10 +180,8 @@
       current = wrap(Math.round(target));
       const item = deckItems[current];
       const place = items.indexOf(item) + 1;
-      counter.textContent = [item.category, `${place} / ${items.length}`, item.duration].filter(Boolean).join(' · ');
+      counter.textContent = `${place} / ${items.length}`;
       title.textContent = item.title;
-      watch.href = item.video || item.href;
-      watch.textContent = item.video ? 'Смотреть' : 'Читать';
       cards.forEach((card, index) => {
         const active = index === current;
         card.tabIndex = active ? 0 : -1;
