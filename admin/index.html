@@ -154,6 +154,11 @@ label.chk { display: flex; align-items: center; gap: 8px; margin: 0; font: inher
 label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 .coladd { display: flex; gap: 8px; margin-top: 14px; } .coladd .btn { flex: none; }
 .phrow { display: flex; align-items: center; gap: 14px; }
+.notes { list-style: none; margin: 16px 0 0; padding: 0; }
+.notes li { padding: 12px 0; border-top: 1px solid var(--line); }
+.notes .nh { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 6px; font-size: 13px; }
+.notes .nh span:not(.tag) { color: var(--mute); }
+.notes .nh .tagadd { margin-left: auto; }
 .tagadd { padding: 1px 6px 2px; border: 1px dashed var(--ghost); background: none; color: var(--mute); font-size: 12px; line-height: 1.2; cursor: pointer; }
 .tagadd:hover, .tagadd:focus-visible { color: var(--text); border-color: var(--text); outline: 0; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
@@ -378,7 +383,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   if (!Array.isArray(state.tasks)) state.tasks = [];
   if (!Array.isArray(state.contacts)) state.contacts = [];
   if (!Array.isArray(state.pcols)) state.pcols = [];
-  function fixTags() { state.contacts.forEach(function (p) { if (!Array.isArray(p.tags)) p.tags = p.check ? ['Не проверен'] : []; }); }
+  function fixTags() { state.contacts.forEach(function (p) { if (!Array.isArray(p.tags)) p.tags = p.check ? ['Не проверен'] : []; if (!Array.isArray(p.log)) { p.log = p.notes ? [{ id: uid(), by: p.by, at: Date.parse(p.added) || Date.now(), text: p.notes }] : []; p.notes = ''; } }); }
   fixTags();
   function save() {
     TABF.forEach(function (k) { tab[k] = state[k]; });
@@ -583,7 +588,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     var p = state.person && personById(state.person);
     if (!p) {
       var q = (filters.pq || '').trim().toLowerCase();
-      var list = state.contacts.filter(function (c) { return (!q || (c.name + ' ' + (c.en || '') + ' ' + c.who + ' ' + c.city + ' ' + c.notes).toLowerCase().indexOf(q) > -1) && (!filters.pcat || c.cat === filters.pcat) && (!filters.pchk || c.tags.indexOf(filters.pchk) > -1); })
+      var list = state.contacts.filter(function (c) { return (!q || (c.name + ' ' + (c.en || '') + ' ' + c.who + ' ' + c.city + ' ' + c.log.map(function (n) { return n.text; }).join(' ')).toLowerCase().indexOf(q) > -1) && (!filters.pcat || c.cat === filters.pcat) && (!filters.pchk || c.tags.indexOf(filters.pchk) > -1); })
         .sort(psortFn());
       return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><select data-f="pchk" aria-label="Тег">' + selOpts(allTags(), filters.pchk, 'Все теги') + '</select><button type="button" class="btn ghost" data-pcolsbtn>Колонки</button><button type="button" class="btn ghost" data-importpeople>Загрузить список</button><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
         + (list.length ? peopleTable(list) : '<div class="panel" style="margin-top:0"><p class="empty">' + (state.contacts.length ? 'Никого не нашлось. Измените поиск или категорию.' : 'Контактов пока нет. Добавьте первого человека: имя, категорию и его аккаунты.') + '</p></div>')
@@ -600,7 +605,8 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       + '<div class="panel"><h2>Соцсети и аккаунты</h2>' + (accs ? '<ul class="list">' + accs + '</ul>' : '<p class="empty">Аккаунты не добавлены.</p>') + '</div>'
       + '<div class="panel"><h2>Как связаться</h2>' + (reach ? '<ul class="list">' + reach + '</ul>' : '<p class="empty">Почта и телефон не указаны.</p>') + '</div>'
       + (state.pcols.length ? '<div class="panel"><h2>Дополнительно</h2><ul class="list">' + state.pcols.map(function (c) { return '<li><b>' + esc(c.name) + '</b><span>' + (esc(p.x && p.x[c.id] || '') || '—') + '</span></li>'; }).join('') + '</ul></div>' : '')
-      + '<div class="panel"><h2>Заметки</h2>' + (p.notes ? '<p class="pre">' + esc(p.notes) + '</p>' : '<p class="empty">Заметок нет.</p>') + '</div>'
+      + '<div class="panel"><h2>Заметки</h2><form id="noteform" data-pid="' + p.id + '"><textarea name="text" rows="3" maxlength="2000" placeholder="Что узнали, о чём договорились, идея для материала" aria-label="Новая заметка"></textarea><p style="margin:8px 0 0"><button type="submit" class="btn">Добавить заметку</button></p></form>'
+      + (p.log.length ? '<ul class="notes">' + p.log.slice().sort(function (a, b) { return b.at - a.at; }).map(function (n) { var d = new Date(n.at); return '<li><p class="nh"><b>' + esc(mname(n.by)) + '</b>' + (n.by === state.me ? ' <span class="tag o">это вы</span>' : '') + '<span>' + human(iso(d)) + ', ' + ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) + '</span>' + (n.by === state.me || role() === 'owner' ? '<button type="button" class="tagadd" data-notedel="' + p.id + ':' + n.id + '" aria-label="Удалить заметку" title="Удалить заметку">×</button>' : '') + '</p><p class="pre">' + esc(n.text) + '</p></li>'; }).join('') + '</ul>' : '<p class="empty">Заметок пока нет.</p>') + '</div>'
       + (p.sources && p.sources.length ? '<div class="panel"><h2>Источники</h2><ul class="list">' + p.sources.map(function (u) { return '<li><span><a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + '</a></span></li>'; }).join('') + '</ul></div>' : '')
       + '<div class="panel"><h2>Задачи по этому человеку</h2>' + (tasks.length ? '<ul class="list">' + tasks.map(function (t) { return '<li><a href="#" data-task="' + t.id + '">' + esc(t.title) + '</a><span><span class="tag">' + TSTAGES.filter(function (s) { return s[0] === t.stage; })[0][1] + '</span>' + (t.due ? ' срок ' + human(t.due) : '') + '</span></li>'; }).join('') + '</ul>' : '<p class="empty">Задач нет.</p>')
       + '<p style="margin:12px 0 0"><button type="button" class="btn ghost" data-newtask="' + p.id + '">+ Задача: написать или встретиться</button></p></div>'
@@ -622,7 +628,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
           var name = x && str(x.name, 120); if (!name) return;
           if (have[name.toLowerCase()]) { skipped++; return; }
           have[name.toLowerCase()] = 1; added++;
-          state.contacts.push({ id: uid(), name: name, en: str(x.name_en, 120), cat: str(x.cat, 40), who: str(x.who, 300), city: str(x.city, 80), status: PSTAT[0], email: '', phone: '', notes: '', by: state.me, added: TODAY, check: str(x.check, 600), tags: str(x.check, 600) ? ['Не проверен'] : [],
+          state.contacts.push({ id: uid(), name: name, en: str(x.name_en, 120), cat: str(x.cat, 40), who: str(x.who, 300), city: str(x.city, 80), status: PSTAT[0], email: '', phone: '', notes: '', by: state.me, added: TODAY, check: str(x.check, 600), log: [], tags: str(x.check, 600) ? ['Не проверен'] : [],
             accs: (Array.isArray(x.accs) ? x.accs : []).filter(function (a) { return a && NETS.indexOf(a.net) > -1 && typeof a.val === 'string' && okUrl(a.val.trim()); }).slice(0, 12).map(function (a) { return { net: a.net, val: a.val.trim().slice(0, 300) }; }),
             sources: (Array.isArray(x.sources) ? x.sources : []).filter(function (u) { return typeof u === 'string' && okUrl(u.trim()); }).slice(0, 6).map(function (u) { return u.trim().slice(0, 400); }) });
         });
@@ -782,7 +788,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 
   function openPerson(id) {
     if (!allowed('people')) return;
-    var isNew = !id, p = isNew ? { id: uid(), name: '', cat: '', who: '', city: '', status: PSTAT[0], accs: [], tags: [], email: '', phone: '', notes: '', by: state.me, added: TODAY } : personById(id);
+    var isNew = !id, p = isNew ? { id: uid(), name: '', cat: '', who: '', city: '', status: PSTAT[0], accs: [], tags: [], log: [], email: '', phone: '', notes: '', by: state.me, added: TODAY } : personById(id);
     if (!p) return;
     var row = function (a) { return '<div class="acc"><select aria-label="Соцсеть">' + selOpts(NETS, a.net) + '</select><input type="text" aria-label="Ссылка или ник" placeholder="ссылка или @ник" autocomplete="off" value="' + esc(a.val) + '"><button type="button" class="tgl" data-accdel aria-label="Убрать аккаунт">×</button></div>'; };
     dlgbody.innerHTML = '<h2>' + (isNew ? 'Новый контакт' : 'Анкета') + '</h2><form id="personform"><div class="grid2">'
@@ -796,7 +802,6 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       + '<div><label for="pp">Телефон</label><input id="pp" name="phone" type="text" autocomplete="off" value="' + esc(p.phone) + '"></div>'
       + '<div class="full"><label for="ps">Статус</label><select id="ps" name="status">' + selOpts(PSTAT, p.status || PSTAT[0]) + '</select></div>'
       + state.pcols.map(function (c) { return '<div><label for="px' + c.id + '">' + esc(c.name) + '</label><input id="px' + c.id + '" type="text" data-xf="' + c.id + '" autocomplete="off" value="' + esc(p.x && p.x[c.id] || '') + '"></div>'; }).join('')
-      + '<div class="full"><label for="pt">Заметки: откуда знаем, о чём говорили, идеи</label><textarea id="pt" name="notes" rows="4">' + esc(p.notes) + '</textarea></div></div>'
       + '<div class="actions"><span>' + (isNew ? '' : '<button type="button" class="btn danger" id="persondel">Удалить</button>') + '</span><span><button type="button" class="btn ghost" id="personclose">Отмена</button> <button type="submit" class="btn">Сохранить</button></span></div></form>';
     dlg.showModal();
     var form = document.getElementById('personform'), box = document.getElementById('paccs');
@@ -818,7 +823,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       var name = form.name.value.trim(); if (!name) { form.name.focus(); return; }
       if (!isNew) { var live = personById(p.id); if (!live) { dlg.close(); return render(); } p = live; }
       p.name = name; p.who = form.who.value.trim(); p.cat = form.cat.value.trim().slice(0, 40); p.city = form.city.value.trim(); p.status = form.status.value;
-      p.email = form.email.value.trim(); p.phone = form.phone.value.trim(); p.notes = form.notes.value.trim();
+      p.email = form.email.value.trim(); p.phone = form.phone.value.trim();
       p.photo = photo; p.x = {}; [].forEach.call(form.querySelectorAll('[data-xf]'), function (i) { var val = i.value.trim().slice(0, 200); if (val) p.x[i.dataset.xf] = val; });
       p.accs = [].map.call(box.querySelectorAll('.acc'), function (r) { return { net: r.querySelector('select').value, val: r.querySelector('input').value.trim().slice(0, 300) }; }).filter(function (a) { return a.val; });
       if (isNew) state.contacts.push(p);
@@ -880,7 +885,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   }
 
   document.addEventListener('click', function (event) {
-    var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-importpeople],[data-psort],[data-pcolsbtn],[data-ptags],[data-checked],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
+    var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-importpeople],[data-psort],[data-pcolsbtn],[data-ptags],[data-notedel],[data-checked],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
     if (!t) return;
     if ('themeToggle' in t.dataset) { var light = document.documentElement.dataset.theme !== 'light'; if (light) document.documentElement.dataset.theme = 'light'; else delete document.documentElement.dataset.theme; try { localStorage.setItem('auf-admin-theme', light ? 'light' : 'dark'); } catch (e) {} return applyTheme(); }
     if (t.dataset.go) return go(t.dataset.go);
@@ -889,6 +894,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (t.dataset.psort) { var pv = pview(); if ((pv.sort || 'name') === t.dataset.psort) pv.dir = -(pv.dir || 1); else { pv.sort = t.dataset.psort; pv.dir = 1; } save(); return render(); }
     if ('pcolsbtn' in t.dataset) return openCols();
     if (t.dataset.ptags) return openTags(t.dataset.ptags);
+    if (t.dataset.notedel) { var nd = t.dataset.notedel.split(':'), ndp = personById(nd[0]); if (ndp && confirm('Удалить заметку? Отменить нельзя.')) { ndp.log = ndp.log.filter(function (n) { return n.id !== nd[1]; }); save(); render(); toast('Заметка удалена'); } return; }
     if (t.dataset.person && event.target.closest('input')) return;
     if (t.dataset.person) { state.person = t.dataset.person; save(); render(); return scrollTo(0, 0); }
     if ('newperson' in t.dataset) return openPerson(null);
@@ -917,6 +923,13 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (id) { var m = member(id); if (m) { if (event.target.value === 'chief' && m.role !== 'chief' && clevels() >= CLEVEL_MAX) { render(); return toast('C-Level уже ' + CLEVEL_MAX + ' из ' + CLEVEL_MAX + '. Сначала освободите место'); } m.role = event.target.value; save(); render(); toast('Уровень изменён'); } }
   });
   document.addEventListener('submit', function (event) {
+    if (event.target.id === 'noteform') {
+      event.preventDefault();
+      var np = personById(event.target.dataset.pid), nt = event.target.text.value.trim().slice(0, 2000);
+      if (!np || !nt) return event.target.text.focus();
+      np.log.push({ id: uid(), by: state.me, at: Date.now(), text: nt });
+      var nok = save(); render(); return toast(nok ? 'Заметка добавлена' : 'Не сохранено: в браузере кончилось место');
+    }
     if (event.target.id !== 'invite') return;
     event.preventDefault();
     var f = event.target, email = f.email.value.trim().toLowerCase(), name = f.name.value.trim();
