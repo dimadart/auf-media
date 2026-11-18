@@ -348,3 +348,11 @@ img.uaf-fade.is-loaded { filter: none; }
 @media (prefers-reduced-motion: reduce) { .uaf-ph:has(img.uaf-fade:not(.is-loaded))::after { animation: none; } img.uaf-fade { filter: none; } }
 .uaf-hero-copy h1._1rogb_0 { white-space: pre-line; line-height: .92; }
 @media (max-width: 600px) { .uaf-tagline { padding-inline: 8px; white-space: nowrap; font-size: min(11px, 2.45vw); letter-spacing: .05em; } }
+/* slogan on one line; the first headline must show at least two lines on the opening screen */
+.uaf-hero-copy h1._1rogb_0 { white-space: nowrap; line-height: 1; }
+.uaf-masthead { height: calc(72px + 44svh); }
+@media (max-width: 600px) {
+  .uaf-hero-copy h1._1rogb_0 { font-size: min(9.4vw, 58px); }
+  .uaf-masthead { height: calc(72px + 37svh); }
+  .uaf-hero-copy { padding-top: 36px; padding-bottom: 20px; }
+}
