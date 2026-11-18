@@ -333,3 +333,8 @@ img.uaf-fade.is-loaded { opacity: 1; }
 .TlAHE_0 > .uaf-rise:nth-child(3) { transition-delay: 220ms; }
 ._2BZW3_0 { background-color: #06101f; }
 @media (prefers-reduced-motion: reduce) { .uaf-rise { transform: none; transition: opacity 300ms ease-out; } img.uaf-fade { transition: none; } }
+/* lead stories: the rubric sits on a tilted yellow plate */
+body:has(#uaf-header) section._164-5_0 .T8Oks_0 { margin-bottom: 14px; }
+body:has(#uaf-header) section._164-5_0[data-editorial-slot] ._2b0aj_0 { display: inline-block; padding: 6px 12px 5px; background: #fdfd38; color: #0b0b0b; font: 700 11px/1.2 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; transform: rotate(-2deg); }
+body:has(#uaf-header) section._164-5_0:nth-of-type(even)[data-editorial-slot] ._2b0aj_0 { transform: rotate(1.5deg); }
+body:has(#uaf-header) section.uaf-lead { margin-bottom: 52px; }
