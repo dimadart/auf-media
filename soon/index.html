@@ -215,6 +215,17 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 .done-title span { display: block; width: fit-content; padding: .12em .26em .16em; background: var(--yellow); color: #000; transform: rotate(-2deg); animation: stamp .35s cubic-bezier(.2, .9, .3, 1.3); }
 .done-text { max-width: 24em; margin: 22px 0 0; font: 400 clamp(16px, 1.4vw, 21px)/1.45 Arial, sans-serif; color: #fff; }
 @keyframes stamp { from { opacity: 0; transform: rotate(-9deg) scale(1.5); } }
+/* v11: mission line, framed form */
+.more { max-width: 34em; margin: 14px 0 0; font: 400 clamp(14px, 1.05vw, 16px)/1.5 Arial, sans-serif; color: #c9d2d2; }
+form#call { max-width: 520px !important; padding: 24px; border: 1px solid rgb(255 255 255 / .55); background: rgb(3 10 12 / .72); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.ways legend { margin-bottom: 16px; font-size: clamp(18px, 1.7vw, 24px); font-weight: 800; letter-spacing: .02em; line-height: 1.15; }
+.ways span { border-width: 1px; border-color: rgb(255 255 255 / .6); background: transparent; }
+.ways input:checked + span { background: #fff; border-color: #fff; color: #000; }
+form#call .note { margin-bottom: 0; }
+form#call button { box-shadow: 4px 4px 0 #000; }
+#contact:focus-visible { box-shadow: none; }
+@media (min-width: 861px) { .brand { padding-top: clamp(40px, 8svh, 96px); } form#call { margin-top: clamp(16px, 2.8svh, 30px); } }
+@media (max-width: 460px) { form#call { padding: 20px; } }
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
@@ -243,9 +254,10 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
   <div class="copy">
     <h1><span>Скоро</span><span>открываемся</span></h1>
     <p class="lede">Независимый журнал из&nbsp;Нью-Йорка о&nbsp;людях, культуре и&nbsp;времени, в&nbsp;котором мы&nbsp;живём.</p>
+    <p class="more">Мы&nbsp;рассказываем о&nbsp;тех, кто создаёт культуру сегодня: о&nbsp;музыке, кино, моде, искусстве и&nbsp;жизни больших городов. В&nbsp;мире, где всё больше разногласий, мы&nbsp;ищем&nbsp;то, что нас объединяет.</p>
     <form id="call" novalidate data-endpoint="">
       <fieldset class="ways">
-        <legend>Узнать о запуске</legend>
+        <legend>Узнай о&nbsp;запуске первым</legend>
         <label><input type="radio" name="way" value="email" checked><span>Почта</span></label>
         <label><input type="radio" name="way" value="telegram"><span>Telegram</span></label>
         <label><input type="radio" name="way" value="sms"><span>SMS</span></label>
