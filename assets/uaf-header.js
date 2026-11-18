@@ -306,6 +306,37 @@
       }
     };
   })();
+  const more = document.querySelector('.uaf-more');
+  if (more) {
+    const label = more.querySelector('._11eZp_0');
+    const pieces = ['01', '02', '03'].map(name => new URL(`editorial/stickers/${name}.webp`, document.querySelector('#uaf-header-style').href).href);
+    const colours = ['#fdfd38', '#ff3d8b', '#0c24fb', '#fff'];
+    let hunger = 3;
+    more.addEventListener('click', () => {
+      hunger = hunger >= 15 ? 3 : hunger + 3;
+      label.textContent = `I need m${'o'.repeat(hunger)}re content`;
+      if (reducedMotion.matches) return;
+      more.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-1.2deg) scale(1.02)' }, { transform: 'rotate(1deg)' }, { transform: 'rotate(0)' }], { duration: 380, easing: 'ease-out' });
+      const box = more.getBoundingClientRect();
+      for (let index = 0; index < 14; index++) {
+        const piece = document.createElement(index % 3 === 0 ? 'img' : 'i');
+        piece.className = 'uaf-more-piece';
+        piece.setAttribute('aria-hidden', 'true');
+        if (piece.tagName === 'IMG') { piece.src = pieces[index % pieces.length]; piece.alt = ''; } else piece.style.background = colours[index % colours.length];
+        piece.style.left = `${box.left + box.width * (.15 + Math.random() * .7)}px`;
+        piece.style.top = `${box.top + box.height / 2}px`;
+        document.body.append(piece);
+        const x = (Math.random() - .5) * 420;
+        const y = -(140 + Math.random() * 260);
+        const spin = (Math.random() - .5) * 720;
+        piece.animate([
+          { transform: 'translate(-50%, -50%) scale(.4) rotate(0deg)', opacity: 1 },
+          { transform: `translate(calc(-50% + ${x * .7}px), calc(-50% + ${y}px)) scale(1) rotate(${spin * .6}deg)`, opacity: 1, offset: .45 },
+          { transform: `translate(calc(-50% + ${x}px), calc(-50% + ${y + 520}px)) scale(.9) rotate(${spin}deg)`, opacity: 0 }
+        ], { duration: 1100 + Math.random() * 500, easing: 'cubic-bezier(.2, .7, .4, 1)' }).onfinish = () => piece.remove();
+      }
+    });
+  }
   const subscribe = document.querySelector('.uaf-subscribe');
   if (subscribe) {
     const email = subscribe.querySelector('input');

@@ -315,3 +315,10 @@ body:has(#uaf-header) .Nl1Bp_0 { text-wrap: pretty; }
 .uaf-reels { padding-bottom: 56px; }
 @media (max-width: 600px) { .uaf-reels-bar { margin-top: -44px; } .uaf-reels-arrow { width: 54px; height: 54px; } .uaf-reels { padding-bottom: 44px; } }
 @media (prefers-reduced-motion: reduce) { .uaf-reels-arrow { transition: none; } }
+/* "more" is a button for now: it answers with an animation until there are further stories to load */
+body:has(#uaf-header) button.uaf-more { display: block; width: 100%; margin: 30px 0 0; padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: pointer; }
+body:has(#uaf-header) button.uaf-more ._1vMlS_0 { height: auto; min-height: 64px; }
+body:has(#uaf-header) button.uaf-more ._11eZp_0 { display: block; padding: 20px 16px; font-size: 15px; letter-spacing: .1em; text-transform: uppercase; text-align: center; overflow-wrap: anywhere; }
+body:has(#uaf-header) button.uaf-more:focus-visible ._1vMlS_0 { outline: 3px solid #fdfd38; outline-offset: 6px; }
+.uaf-more-piece { position: fixed; z-index: 9000; width: 18px; height: 18px; pointer-events: none; }
+img.uaf-more-piece { width: 64px; height: 64px; object-fit: contain; }
