@@ -322,3 +322,14 @@ body:has(#uaf-header) button.uaf-more ._11eZp_0 { display: block; padding: 20px 
 body:has(#uaf-header) button.uaf-more:focus-visible ._1vMlS_0 { outline: 3px solid #fdfd38; outline-offset: 6px; }
 .uaf-more-piece { position: fixed; z-index: 9000; width: 18px; height: 18px; pointer-events: none; }
 img.uaf-more-piece { width: 64px; height: 64px; object-fit: contain; }
+/* lazy pictures and scroll-in */
+body:has(#uaf-header) section[data-editorial-slot] ._3gxOF_0 { background-color: #141414; }
+body:has(#uaf-header) section._164-5_0 ._3gxOF_0 { background-color: transparent; }
+img.uaf-fade { opacity: 0; transition: opacity 500ms ease-out, transform 400ms cubic-bezier(.2, .7, .2, 1); }
+img.uaf-fade.is-loaded { opacity: 1; }
+.uaf-rise { opacity: 0; transform: translateY(36px); transition: opacity 600ms ease-out, transform 760ms cubic-bezier(.2, .8, .2, 1); }
+.uaf-rise.is-in { opacity: 1; transform: none; }
+.TlAHE_0 > .uaf-rise:nth-child(2) { transition-delay: 110ms; }
+.TlAHE_0 > .uaf-rise:nth-child(3) { transition-delay: 220ms; }
+._2BZW3_0 { background-color: #06101f; }
+@media (prefers-reduced-motion: reduce) { .uaf-rise { transform: none; transition: opacity 300ms ease-out; } img.uaf-fade { transition: none; } }

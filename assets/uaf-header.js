@@ -2,6 +2,66 @@
   const header = document.querySelector('#uaf-header');
   const readable = node => node.textContent.trim().replace(/\u00a0/g, ' ').replace(/\u2011/g, '-');
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  // opening sequence: logo screen while the hero animation downloads, then slogan, then lead stories
+  (() => {
+    const root = document.documentElement;
+    const loader = document.querySelector('#uaf-loader');
+    if (!loader || !root.classList.contains('uaf-booting')) return;
+    const started = performance.now();
+    const picture = new Image();
+    let shown = false;
+    const open = () => {
+      if (shown) return;
+      shown = true;
+      const wait = Math.max(0, 1200 - (performance.now() - started));
+      setTimeout(() => {
+        root.classList.add('uaf-ready');
+        setTimeout(() => root.classList.add('uaf-stage-slogan'), 500);
+        setTimeout(() => root.classList.add('uaf-stage-stories'), 950);
+        setTimeout(() => { root.classList.remove('uaf-booting', 'uaf-stage-slogan', 'uaf-stage-stories'); loader.remove(); }, 2600);
+      }, wait);
+    };
+    picture.addEventListener('load', open);
+    picture.addEventListener('error', open);
+    picture.src = loader.dataset.hero;
+    if (picture.complete) open();
+    setTimeout(open, 4500);  // slow connection: do not hold the page hostage
+  })();
+  // pictures fade in once they arrive; sections rise into place as they are scrolled to
+  (() => {
+    document.querySelectorAll('.uaf-content-body section[data-editorial-slot]:not(.RdSK9_0):not(._30I-X_0) img').forEach(image => {
+      const done = () => image.classList.add('is-loaded');
+      image.classList.add('uaf-fade');
+      if (image.complete && image.naturalWidth) done(); else { image.addEventListener('load', done, { once: true }); image.addEventListener('error', done, { once: true }); }
+    });
+    const lazyBackgrounds = [...document.querySelectorAll('[data-lazy-background]')];
+    const rising = [...document.querySelectorAll('.uaf-content-body > ._3gVfa_0 > ._3Vxe0_0, .uaf-content-body > ._3gVfa_0 > .uaf-section-label, .uaf-content-body ._-2ywZ_0, .uaf-content-body section[data-editorial-slot]:not(.RdSK9_0):not(._30I-X_0), .uaf-more, .EPDO7_0, .uaf-footer')];
+    if (!('IntersectionObserver' in window)) { lazyBackgrounds.forEach(node => { node.style.backgroundImage = `url("${node.dataset.lazyBackground}")`; }); return; }
+    const backgrounds = new IntersectionObserver(entries => entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+      entry.target.style.backgroundImage = `url("${entry.target.dataset.lazyBackground}")`;
+      backgrounds.unobserve(entry.target);
+    }), { rootMargin: '600px 0px' });
+    lazyBackgrounds.forEach(node => backgrounds.observe(node));
+    // anything at or above the lower edge of the screen is shown, so fast scrolling or a jump never leaves a block hidden
+    let waiting = rising;
+    let queued = false;
+    const check = () => {
+      queued = false;
+      const edge = window.innerHeight * .94;
+      waiting = waiting.filter(node => {
+        if (node.getBoundingClientRect().top > edge) return true;
+        node.classList.add('is-in');
+        return false;
+      });
+      if (!waiting.length) { window.removeEventListener('scroll', schedule); window.removeEventListener('resize', schedule); }
+    };
+    const schedule = () => { if (!queued) { queued = true; requestAnimationFrame(check); } };
+    rising.forEach(node => node.classList.add('uaf-rise'));
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule);
+    check();
+  })();
   let framePending = false;
   const updateHeader = () => {
     header.classList.toggle('is-compact', window.scrollY > 24);
