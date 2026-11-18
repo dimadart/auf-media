@@ -13,19 +13,19 @@
     const open = () => {
       if (shown) return;
       shown = true;
-      const wait = Math.max(0, 1200 - (performance.now() - started));
+      // the logo stays just long enough to register, then the page opens the moment the picture is ready
+      const wait = Math.max(0, 600 - (performance.now() - started));
       setTimeout(() => {
         root.classList.add('uaf-ready');
-        setTimeout(() => root.classList.add('uaf-stage-slogan'), 500);
-        setTimeout(() => root.classList.add('uaf-stage-stories'), 950);
-        setTimeout(() => { root.classList.remove('uaf-booting', 'uaf-stage-slogan', 'uaf-stage-stories'); loader.remove(); }, 2600);
+        setTimeout(() => root.classList.add('uaf-stage-slogan', 'uaf-stage-stories'), 300);
+        setTimeout(() => { root.classList.remove('uaf-booting', 'uaf-stage-slogan', 'uaf-stage-stories'); loader.remove(); }, 1600);
       }, wait);
     };
     picture.addEventListener('load', open);
     picture.addEventListener('error', open);
-    picture.src = loader.dataset.hero;
+    picture.src = window.matchMedia('(max-width: 700px)').matches ? loader.dataset.heroTall : loader.dataset.hero;
     if (picture.complete) open();
-    setTimeout(open, 4500);  // slow connection: do not hold the page hostage
+    setTimeout(open, 3500);  // slow connection: do not hold the page hostage
   })();
   // pictures fade in once they arrive; sections rise into place as they are scrolled to
   (() => {
