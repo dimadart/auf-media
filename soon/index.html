@@ -318,6 +318,8 @@ br.wide { display: none; }
 .terms legend { padding: 0; margin-bottom: 9px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
 .terms label { display: flex !important; align-items: center; gap: 11px; min-height: 40px; margin: 0 !important; font: 400 15px/1.3 Arial, sans-serif !important; letter-spacing: 0 !important; text-transform: none !important; cursor: pointer; }
 .terms input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: #fdfd38; cursor: pointer; }
+.terms label { align-items: flex-start !important; padding: 8px 0; }
+.terms small { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.35; color: #9aa6a6; }
 .terms .hint { margin: 4px 0 0; font: 400 12px/1.4 Arial, sans-serif; color: #9aa6a6; }
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
@@ -392,7 +394,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
       <fieldset class="terms">
         <legend>На каких условиях готов работать</legend>
         <label><input type="checkbox" name="terms" value="paid"><span>За гонорар</span></label>
-        <label><input type="checkbox" name="terms" value="volunteer"><span>Для души и&nbsp;культуры, без оплаты</span></label>
+        <label><input type="checkbox" name="terms" value="volunteer"><span>Для души и&nbsp;культуры<small>Без гонорара: за&nbsp;проходки в&nbsp;классные места, мерч и&nbsp;классный нетворкинг</small></span></label>
         <p class="hint">Можно отметить оба варианта.</p>
       </fieldset>
       <button type="submit">Отправить заявку</button>
