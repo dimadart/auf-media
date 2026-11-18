@@ -290,6 +290,13 @@ br.wide { display: none; }
   br.wide { display: inline; }
 }
 @media (max-width: 860px) { .lede { font-size: 21px !important; line-height: 1.12 !important; } }
+/* v16: phone order — logo, animation, then text and buttons */
+@media (max-width: 860px) {
+  .brand { position: relative; z-index: 2; order: -1; }
+  .bg { order: 0 !important; margin-top: -18vw !important; }
+  main { order: 1; padding: 22px 20px 44px !important; }
+  .bg::after { height: 12%; }
+}
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
