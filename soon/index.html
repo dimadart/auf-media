@@ -201,6 +201,9 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 .brand img { width: clamp(70px, 6.4vw, 104px); }
 @media (min-width: 861px) { .brand { padding-top: clamp(48px, 11svh, 120px); } main { padding-top: clamp(16px, 3svh, 34px); } .lede { font-size: clamp(17px, 1.5vw, 23px); line-height: 1.4; max-width: 24em; color: #fff; } form#call { margin-top: clamp(18px, 3.4svh, 36px); } }
 @media (max-width: 860px) { .brand { padding-top: 36px; } }
+dialog p.txt + p.txt { margin-top: 12px; }
+dialog .deco { left: auto !important; right: -30px; bottom: -34px !important; transform: rotate(8deg) scaleX(-1); }
+dialog h2 span:nth-child(1) { font-size: 1em; }
 @media (prefers-reduced-motion: reduce) {
   body::before { animation: none !important; }
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
@@ -233,14 +236,17 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 <dialog id="authors" aria-labelledby="authors-title">
   <div class="sheet">
     <p class="eyebrow">Для авторов</p>
-    <h2 id="authors-title"><span>Тебе есть чем поделиться?</span><span>Хочешь написать репортаж?</span></h2>
-    <p class="txt">Репортаж с&nbsp;улицы, колонка, история про своих или место, о&nbsp;котором знают только местные. Расскажи в&nbsp;двух словах, о&nbsp;чём хочешь написать, и&nbsp;оставь контакт&nbsp;— мы&nbsp;ответим.</p>
+    <h2 id="authors-title"><span>Давайте знакомиться</span></h2>
+    <p class="txt">AUF открыт для новых авторов, журналистов, фотографов и&nbsp;людей, которым есть что рассказать.</p>
+    <p class="txt">Напиши немного о&nbsp;себе, своих интересах и&nbsp;опыте. Если у&nbsp;тебя уже есть идея для материала&nbsp;— поделись ею. Мы&nbsp;будем рады познакомиться и&nbsp;обсудить возможное сотрудничество.</p>
     <form id="pitch" novalidate data-endpoint="">
       <label for="pitch-contact">Как с тобой связаться</label>
-      <input id="pitch-contact" name="contact" type="text" autocomplete="off" placeholder="Telegram, телефон или почта" required>
-      <label for="pitch-idea">О чём хочешь написать</label>
-      <textarea id="pitch-idea" name="idea" rows="3" placeholder="Тема, город, почему это важно" required></textarea>
-      <button type="submit">Отправить идею</button>
+      <input id="pitch-contact" name="contact" type="text" autocomplete="off" placeholder="Email, Telegram или телефон" required>
+      <label for="pitch-idea">Расскажи о себе</label>
+      <textarea id="pitch-idea" name="idea" rows="4" placeholder="Кто ты, чем занимаешься, о чём тебе интересно писать. Можешь оставить ссылку на свои работы." required></textarea>
+      <label for="pitch-city">Из какого города</label>
+      <input id="pitch-city" name="city" type="text" autocomplete="address-level2" required>
+      <button type="submit">Отправить заявку</button>
       <p class="note" id="pitch-note" role="status"></p>
     </form>
   </div>
@@ -408,11 +414,13 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
     event.preventDefault();
     var contact = pitch.contact.value.trim(), idea = pitch.idea.value.trim();
     if (contact.length < 3) { tell('Оставь контакт, иначе мы не сможем ответить.', 'error'); pitch.contact.focus(); return; }
-    if (idea.length < 10) { tell('Напиши хотя бы пару слов о теме.', 'error'); pitch.idea.focus(); return; }
+    if (idea.length < 10) { tell('Напиши хотя бы пару слов о себе.', 'error'); pitch.idea.focus(); return; }
+    var city = pitch.city.value.trim();
+    if (city.length < 2) { tell('Укажи, из какого ты города.', 'error'); pitch.city.focus(); return; }
     var endpoint = pitch.dataset.endpoint;
-    if (!endpoint) { tell('Приём заявок пока не подключён — идея никуда не отправлена.', 'error'); return; }
+    if (!endpoint) { tell('Приём заявок пока не подключён — заявка никуда не отправлена.', 'error'); return; }
     pitchButton.disabled = true; tell('Отправляем…');
-    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ contact: contact, idea: idea, source: 'auf-soon-authors' }) })
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ contact: contact, about: idea, city: city, source: 'auf-soon-authors' }) })
       .then(function (response) { if (!response.ok) throw new Error(response.status); tell('Получили. Ответим по этому контакту.', 'ok'); pitch.reset(); })
       .catch(function () { tell('Не получилось отправить. Попробуй ещё раз чуть позже.', 'error'); })
       .then(function () { pitchButton.disabled = false; });
