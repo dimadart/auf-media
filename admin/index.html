@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#0b0b0b">
+<title>AUF MEDIA — редакция</title>
+<style>
+@font-face { font-family: Unbounded; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: Unbounded; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+2000-206F, U+2191, U+2193; }
+:root { --bg: #0b0b0b; --panel: #151515; --line: #2c2c2c; --text: #f2f0ec; --mute: #9b9792; --yellow: #fdfd38; --pink: #ff3d8b; --blue: #4d63ff; --green: #5ed29a; color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 Arial, Helvetica, sans-serif; -webkit-font-smoothing: antialiased; }
+button, input, select, textarea { font: inherit; color: inherit; }
+h1, h2, h3, .u { font-family: Unbounded, 'Arial Black', Arial, sans-serif; text-transform: uppercase; letter-spacing: .03em; margin: 0; }
+h1 { font-size: 20px; font-weight: 800; }
+h2 { font-size: 13px; font-weight: 800; }
+h3 { font-size: 11px; font-weight: 700; color: var(--mute); }
+a { color: var(--yellow); }
+.app { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 100vh; }
+aside { position: sticky; top: 0; height: 100vh; padding: 20px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; background: #000; }
+.logo { display: flex; align-items: center; gap: 10px; margin: 0 6px 18px; font-size: 13px; font-weight: 800; }
+.logo img { width: 34px; height: auto; }
+nav { display: flex; flex-direction: column; gap: 2px; }
+nav button { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 12px; border: 0; background: none; text-align: left; font: 700 11px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); cursor: pointer; }
+nav button:hover { color: var(--text); }
+nav button[aria-current=page] { background: var(--yellow); color: #000; }
+nav button i { font-style: normal; font-size: 10px; opacity: .8; }
+aside .foot { margin-top: auto; font-size: 12px; color: var(--mute); padding: 0 6px; }
+main { min-width: 0; padding: 0 26px 60px; }
+.proto { margin: 0 -26px; padding: 8px 26px; background: var(--pink); color: #fff; font-size: 12.5px; font-weight: 700; }
+.top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 20px 0 18px; }
+.as { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--mute); }
+select, input[type=text], input[type=email], input[type=date], input[type=search], textarea { width: 100%; padding: 9px 10px; border: 1px solid #444; border-radius: 0; background: #000; color: var(--text); outline: 0; }
+select:focus-visible, input:focus-visible, textarea:focus-visible { border-color: var(--yellow); }
+.as select { width: auto; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 2px solid #000; background: var(--yellow); color: #000; font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0 var(--pink); white-space: nowrap; }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pink); }
+.btn.ghost { background: none; color: var(--text); border-color: #555; box-shadow: none; }
+.btn.danger { background: none; color: #ff7aa9; border-color: #6b2a44; box-shadow: none; }
+.btn[disabled] { opacity: .4; cursor: not-allowed; }
+.btn:focus-visible, nav button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.cards3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 12px; }
+.stat { padding: 16px; background: var(--panel); border: 1px solid var(--line); }
+.stat b { display: block; font: 800 28px/1 Unbounded, Arial, sans-serif; margin-bottom: 8px; }
+.stat span { font-size: 12px; color: var(--mute); }
+.panel { margin-top: 18px; padding: 18px; background: var(--panel); border: 1px solid var(--line); }
+.panel > h2 { margin-bottom: 12px; }
+.list { list-style: none; margin: 0; padding: 0; }
+.list li { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; padding: 10px 0; border-top: 1px solid var(--line); }
+.list li:first-child { border-top: 0; }
+.empty { padding: 26px 0; color: var(--mute); text-align: center; }
+.tag { display: inline-block; padding: 3px 7px 4px; font: 700 9.5px/1 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; background: #2a2a2a; color: var(--text); white-space: nowrap; }
+.tag.y { background: var(--yellow); color: #000; } .tag.p { background: var(--pink); color: #fff; } .tag.b { background: var(--blue); color: #fff; } .tag.g { background: var(--green); color: #000; } .tag.o { background: none; border: 1px solid #666; color: var(--mute); }
+/* board */
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 10px; align-items: start; }
+.col { background: var(--panel); border: 1px solid var(--line); min-height: 220px; }
+.col header { display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; border-bottom: 1px solid var(--line); }
+.col header b { font: 800 10.5px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; }
+.col header i { font-style: normal; font-size: 12px; color: var(--mute); }
+.col .drop { display: flex; flex-direction: column; gap: 8px; padding: 10px; min-height: 160px; }
+.col.over { outline: 2px dashed var(--yellow); outline-offset: -4px; }
+.card { padding: 11px 11px 10px; background: #000; border: 1px solid #333; border-left: 4px solid var(--yellow); cursor: pointer; text-align: left; width: 100%; }
+.card[draggable=true] { cursor: grab; }
+.card.mine { border-left-color: var(--pink); }
+.card strong { display: block; font-size: 14px; line-height: 1.25; margin-bottom: 8px; }
+.card .meta { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; font-size: 11.5px; color: var(--mute); }
+.card .late { color: #ff7aa9; font-weight: 700; }
+.bar { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 14px; }
+.bar > * { flex: 0 1 190px; }
+.bar .grow { flex: 1 1 220px; }
+.bar .btn { flex: none; }
+/* calendar */
+.cal-head { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.cal-head h2 { min-width: 190px; font-size: 15px; }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); border-left: 1px solid var(--line); border-top: 1px solid var(--line); }
+.cal .dow { padding: 7px 8px; font: 700 10px/1 Unbounded, Arial, sans-serif; color: var(--mute); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.day { min-height: 104px; padding: 6px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
+.day.out { background: #0e0e0e; color: #555; }
+.day.today .n { background: var(--yellow); color: #000; }
+.day .n { align-self: flex-start; padding: 1px 6px; font-size: 12px; font-weight: 700; }
+.chip { display: block; width: 100%; padding: 4px 6px; border: 0; background: var(--yellow); color: #000; font-size: 11.5px; line-height: 1.2; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.chip.dl { background: none; border: 1px dashed #777; color: var(--text); }
+.chip.pub { background: var(--green); }
+.legend { display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-size: 12px; color: var(--mute); }
+/* table */
+.tw { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+th { text-align: left; padding: 9px 10px; font: 700 9.5px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); border-bottom: 1px solid var(--line); white-space: nowrap; }
+td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr.click { cursor: pointer; } tr.click:hover td { background: #1c1c1c; }
+td .tag { margin: 1px 0; }
+.perm td, .perm th { text-align: center; } .perm td:first-child, .perm th:first-child { text-align: left; }
+.yes { color: var(--green); font-weight: 700; } .no { color: #555; } .part { color: var(--yellow); font-size: 12px; }
+.invite { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; }
+label { display: block; font: 700 9.5px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); margin-bottom: 6px; }
+.mail { margin-top: 14px; padding: 14px; border: 1px dashed #555; font-size: 13.5px; white-space: pre-wrap; background: #000; }
+.tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+.tabs button { padding: 8px 12px; border: 1px solid #555; background: none; font: 700 10.5px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; }
+.tabs button[aria-selected=true] { background: #fff; color: #000; border-color: #fff; }
+.plan h2 { margin: 22px 0 8px; } .plan h2:first-child { margin-top: 0; } .plan p, .plan li { max-width: 72ch; } .plan ol, .plan ul { padding-left: 20px; margin: 6px 0; } .plan li { margin: 5px 0; }
+dialog { width: min(620px, calc(100vw - 24px)); max-height: calc(100svh - 24px); padding: 0; border: 1px solid #666; background: #101010; color: var(--text); box-shadow: 8px 8px 0 var(--yellow); }
+dialog::backdrop { background: rgb(0 0 0 / .75); }
+.dlg { padding: 22px; overflow-y: auto; max-height: calc(100svh - 26px); }
+.dlg h2 { font-size: 15px; margin-bottom: 16px; }
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid2 .full { grid-column: 1 / -1; }
+.dlg .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; margin-top: 18px; }
+.note { font-size: 12.5px; color: var(--mute); margin-top: 10px; }
+.toast { position: fixed; z-index: 20; left: 50%; bottom: 22px; transform: translateX(-50%); padding: 11px 16px; background: #fff; color: #000; font-weight: 700; font-size: 13.5px; box-shadow: 4px 4px 0 var(--pink); max-width: calc(100vw - 24px); }
+@media (max-width: 860px) {
+  .app { grid-template-columns: 1fr; }
+  aside { position: static; height: auto; flex-direction: row; align-items: center; gap: 10px; padding: 10px 12px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
+  .logo { margin: 0; } .logo span { display: none; }
+  nav { flex-direction: row; } nav button { padding: 9px 10px; white-space: nowrap; gap: 6px; }
+  aside .foot { display: none; }
+  main { padding: 0 14px 50px; } .proto { margin: 0 -14px; padding: 8px 14px; }
+  .invite, .grid2 { grid-template-columns: 1fr; }
+  .day { min-height: 70px; padding: 3px; } .chip { font-size: 10px; padding: 3px; } .cal .dow { padding: 6px 3px; font-size: 8.5px; }
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <aside>
+    <div class="logo"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span class="u">Редакция</span></div>
+    <nav id="nav" aria-label="Разделы"></nav>
+    <p class="foot">AUF MEDIA · прототип админки</p>
+  </aside>
+  <main>
+    <p class="proto">Прототип: всё, что вы меняете, хранится только в этом браузере. Входа по паролю нет, письма-приглашения не отправляются.</p>
+    <div class="top">
+      <h1 id="title"></h1>
+      <div class="as"><span>Смотреть как:</span><select id="viewas" aria-label="Смотреть как роль"></select></div>
+    </div>
+    <div id="view"></div>
+  </main>
+</div>
+<dialog id="dlg"><div class="dlg" id="dlgbody"></div></dialog>
+
+<script>
+(function () {
+  'use strict';
+  var SEED = [{"title": "Будущее американской музыки не обязано петь по-английски", "category": "МУЗЫКА", "video": false}, {"title": "Секс, контент, аренда: внутри OnlyFans-дома в LA", "category": "ИЗНУТРИ", "video": false}, {"title": "Если создать можно всё, что вообще стоит создавать?", "category": "ТЕХНОЛОГИИ", "video": false}, {"title": "Хороший вкус немного надоел", "category": "МОДА", "video": false}, {"title": "Твой следующий любимый режиссёр пока снимает друзей", "category": "КИНО", "video": false}, {"title": "Искусство, которое не помещается в Instagram", "category": "АРТ", "video": false}, {"title": "Кто делает ночь: люди по другую сторону танцпола", "category": "ГОРОД", "video": false}, {"title": "Ты любишь кино или мерч A24?", "category": "КИНО", "video": false}, {"title": "Днём — доставка. Ночью — новый звук LA", "category": "МУЗЫКА", "video": false}, {"title": "Запомните лица. Имена ещё успеете", "category": "НАШ РАДАР", "video": false}, {"title": "Одеться так, чтобы мама спросила: «Ты в этом пойдёшь?»", "category": "МОДА", "video": false}, {"title": "Америка между двумя сменами", "category": "ФОТОГРАФИЯ", "video": false}, {"title": "Красиво делать я умею. Теперь хочется сказать что-то", "category": "АРТ", "video": false}, {"title": "Оргазм был. Хороший ли это был секс?", "category": "СЕКС И НАУКА", "video": false}, {"title": "До открытия дверей: как собирают независимую вечеринку", "category": "ОДИН ВЕЧЕР · NYC", "video": false}, {"title": "Первый фильм. Последние деньги. Снимаем", "category": "В ПРОЦЕССЕ · LA", "video": false}, {"title": "Майами глазами художника: мастерская, любимая забегаловка, океан", "category": "СВОИ МЕСТА · MIAMI", "video": false}, {"title": "Маленькая сцена. Огромное эго. Отличная музыка", "category": "МУЗЫКА", "video": false}, {"title": "Квартира маленькая. Культурная жизнь — большая", "category": "КУЛЬТУРА", "video": false}, {"title": "Эту куртку до меня носил кто-то интересный", "category": "МОДА", "video": false}, {"title": "Собрать инструмент, которого ещё не существует", "category": "ТЕХНОЛОГИИ", "video": false}, {"title": "Книжный, в котором хочется остаться после закрытия", "category": "ГОРОД", "video": false}, {"title": "Красиво, странно, ничего не понятно. Мне понравилось", "category": "КИНО", "video": false}, {"title": "Передай AUX: что слушают люди с интересным вкусом", "category": "НА РЕПИТЕ", "video": false}];
+  var KEY = 'auf-admin-v1';
+  var STAGES = [
+    { id: 'idea', name: 'Идея', hint: 'Питч: о чём и почему сейчас' },
+    { id: 'work', name: 'В работе', hint: 'Автор пишет или снимает' },
+    { id: 'review', name: 'На редактуре', hint: 'Редактор правит текст' },
+    { id: 'check', name: 'Фактчек', hint: 'Проверка фактов, имён, ссылок' },
+    { id: 'ready', name: 'Готово к выпуску', hint: 'Назначена дата публикации' },
+    { id: 'published', name: 'Опубликовано', hint: 'Вышло на сайте' }
+  ];
+  var ROLES = [
+    { id: 'owner', name: 'Владелец', about: 'Всё, включая команду, роли и настройки. Один человек, удалить нельзя.' },
+    { id: 'chief', name: 'Главный редактор', about: 'Ведёт редакцию: приглашает людей, двигает и публикует любые материалы, видит заявки.' },
+    { id: 'editor', name: 'Редактор', about: 'Правит и двигает любые материалы, ставит даты, выпускает. Команду не меняет.' },
+    { id: 'reporter', name: 'Журналист', about: 'Создаёт свои материалы и ведёт их до редактуры. Чужие видит, но не меняет.' },
+    { id: 'contributor', name: 'Автор', about: 'Внештатный автор: предлагает идеи и работает только над своими материалами.' }
+  ];
+  var RANK = { owner: 5, chief: 4, editor: 3, reporter: 2, contributor: 1 };
+  var PERMS = [
+    ['Видеть доску и календарь', 1, 1, 1, 1, 1],
+    ['Предлагать идеи', 1, 1, 1, 1, 1],
+    ['Править свои материалы', 1, 1, 1, 1, 1],
+    ['Править чужие материалы', 1, 1, 1, 0, 0],
+    ['Отправлять свой материал на редактуру', 1, 1, 1, 1, 1],
+    ['Двигать дальше: фактчек, готово, публикация', 1, 1, 1, 0, 0],
+    ['Удалять материалы', 1, 1, 0, 0, 0],
+    ['Видеть заявки авторов', 1, 1, 1, 0, 0],
+    ['Видеть подписчиков на запуск', 1, 1, 0, 0, 0],
+    ['Приглашать людей и менять роли', 1, 2, 0, 0, 0],
+    ['Экспорт данных и сброс', 1, 0, 0, 0, 0]
+  ];
+  var RUBRICS = ['Музыка', 'Мода', 'Кино', 'Технологии', 'Арт', 'Город', 'Изнутри', 'Наш радар', 'Фотография', 'Секс и наука', 'Культура', 'На репите', 'Видео'];
+  var FORMATS = ['Текст', 'Интервью', 'Репортаж', 'Видео', 'Фото', 'Подборка'];
+  var VIEWS = [['home', 'Обзор'], ['board', 'Доска'], ['calendar', 'Календарь'], ['items', 'Материалы'], ['team', 'Команда'], ['inbox', 'Заявки'], ['plan', 'Как запустить']];
+
+  function uid() { return Math.random().toString(36).slice(2, 10); }
+  function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function iso(d) { return d.getFullYear() + '-' + ('0' + (d.getMonth() + 1)).slice(-2) + '-' + ('0' + d.getDate()).slice(-2); }
+  function human(s) { if (!s) return ''; var p = s.split('-'); return +p[2] + ' ' + ['янв', 'фев', 'мар', 'апр', 'мая', 'июн', 'июл', 'авг', 'сен', 'окт', 'ноя', 'дек'][+p[1] - 1]; }
+  var TODAY = iso(new Date());
+
+  function fresh() {
+    var me = uid();
+    return {
+      v: 1, me: me, viewAs: 'owner', view: 'home', month: TODAY.slice(0, 7),
+      team: [{ id: me, name: 'Dima Dart', email: '', role: 'owner', status: 'active' }],
+      cards: SEED.map(function (m) { return { id: uid(), title: m.title, rubric: m.category, stage: 'published', author: me, editor: '', deadline: '', publish: '', format: m.video ? 'Видео' : 'Текст', notes: 'Демо-черновик, уже на сайте.', demo: true }; }),
+      subs: [], apps: []
+    };
+  }
+  var state;
+  try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  if (!state || state.v !== 1) state = fresh();
+  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} }
+
+  var role = function () { return state.viewAs; };
+  var atLeast = function (r) { return RANK[role()] >= RANK[r]; };
+  var member = function (id) { return state.team.filter(function (m) { return m.id === id; })[0]; };
+  var mname = function (id) { var m = member(id); return m ? m.name : '—'; };
+  var stageIx = function (id) { return STAGES.map(function (s) { return s.id; }).indexOf(id); };
+  var isMine = function (c) { return c.author === state.me; };
+  function canEdit(c) { return atLeast('editor') || isMine(c); }
+  function canMove(c, to) { if (atLeast('editor')) return true; return isMine(c) && stageIx(to) <= 2 && stageIx(c.stage) <= 2; }
+
+  var view = document.getElementById('view'), title = document.getElementById('title'), nav = document.getElementById('nav'), dlg = document.getElementById('dlg'), dlgbody = document.getElementById('dlgbody');
+  var filters = { q: '', rubric: '', stage: '', author: '', mine: false }, inboxTab = 'apps', lastInvite = null;
+
+  function toast(text) {
+    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = text;
+    document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600);
+  }
+  function go(v) { state.view = v; save(); render(); scrollTo(0, 0); }
+
+  function renderNav() {
+    var counts = { board: state.cards.filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length };
+    nav.innerHTML = VIEWS.filter(function (v) { return v[0] !== 'inbox' || atLeast('editor'); }).map(function (v) {
+      return '<button type="button" data-go="' + v[0] + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '>' + v[1] + (counts[v[0]] ? '<i>' + counts[v[0]] + '</i>' : '') + '</button>';
+    }).join('');
+  }
+  var sel = document.getElementById('viewas');
+  sel.innerHTML = ROLES.map(function (r) { return '<option value="' + r.id + '">' + r.name + '</option>'; }).join('');
+  sel.addEventListener('change', function () { state.viewAs = sel.value; if (state.view === 'inbox' && !atLeast('editor')) state.view = 'home'; save(); render(); });
+
+  function cardHtml(c) {
+    var late = c.deadline && c.deadline < TODAY && c.stage !== 'published';
+    return '<button type="button" class="card' + (isMine(c) ? ' mine' : '') + '" data-card="' + c.id + '"' + (canMove(c, c.stage) ? ' draggable="true"' : '') + '><strong>' + esc(c.title) + '</strong><span class="meta">'
+      + (c.rubric ? '<span class="tag">' + esc(c.rubric) + '</span>' : '') + '<span>' + esc(mname(c.author)) + '</span>'
+      + (c.deadline ? '<span class="' + (late ? 'late' : '') + '">дедлайн ' + human(c.deadline) + '</span>' : '')
+      + (c.publish ? '<span>выход ' + human(c.publish) + '</span>' : '') + (c.demo ? '<span class="tag o">демо</span>' : '') + '</span></button>';
+  }
+  function filtered() {
+    var q = filters.q.trim().toLowerCase();
+    return state.cards.filter(function (c) {
+      return (!q || c.title.toLowerCase().indexOf(q) > -1) && (!filters.rubric || c.rubric === filters.rubric) && (!filters.stage || c.stage === filters.stage) && (!filters.author || c.author === filters.author) && (!filters.mine || isMine(c));
+    });
+  }
+  function filterBar(withStage) {
+    var rubrics = RUBRICS.concat(state.cards.map(function (c) { return c.rubric; })).filter(function (r, i, a) { return r && a.indexOf(r) === i; });
+    return '<div class="bar"><input class="grow" type="search" data-f="q" placeholder="Поиск по заголовку" value="' + esc(filters.q) + '" aria-label="Поиск">'
+      + '<select data-f="rubric" aria-label="Рубрика"><option value="">Все рубрики</option>' + rubrics.map(function (r) { return '<option' + (filters.rubric === r ? ' selected' : '') + '>' + esc(r) + '</option>'; }).join('') + '</select>'
+      + (withStage ? '<select data-f="stage" aria-label="Этап"><option value="">Все этапы</option>' + STAGES.map(function (s) { return '<option value="' + s.id + '"' + (filters.stage === s.id ? ' selected' : '') + '>' + s.name + '</option>'; }).join('') + '</select>' : '')
+      + '<select data-f="author" aria-label="Автор"><option value="">Все авторы</option>' + state.team.map(function (m) { return '<option value="' + m.id + '"' + (filters.author === m.id ? ' selected' : '') + '>' + esc(m.name) + '</option>'; }).join('') + '</select>'
+      + '<button type="button" class="btn" data-new>+ Материал</button></div>';
+  }
+
+  var RENDER = {
+    home: function () {
+      var open = state.cards.filter(function (c) { return c.stage !== 'published'; });
+      var late = open.filter(function (c) { return c.deadline && c.deadline < TODAY; });
+      var week = iso(new Date(Date.now() + 7 * 864e5));
+      var soon = state.cards.filter(function (c) { return c.publish && c.publish >= TODAY && c.publish <= week; }).sort(function (a, b) { return a.publish < b.publish ? -1 : 1; });
+      var mine = open.filter(isMine);
+      var li = function (c) { return '<li><a href="#" data-card="' + c.id + '">' + esc(c.title) + '</a><span><span class="tag">' + STAGES[stageIx(c.stage)].name + '</span> ' + (c.publish ? 'выход ' + human(c.publish) : c.deadline ? 'дедлайн ' + human(c.deadline) : '') + '</span></li>'; };
+      return '<div class="cards3"><div class="stat"><b>' + open.length + '</b><span>материалов в работе</span></div><div class="stat"><b>' + late.length + '</b><span>просрочено по дедлайну</span></div><div class="stat"><b>' + soon.length + '</b><span>выходит в ближайшие 7 дней</span></div><div class="stat"><b>' + state.cards.filter(function (c) { return c.stage === 'published'; }).length + '</b><span>опубликовано</span></div></div>'
+        + '<div class="panel"><h2>Мои материалы</h2>' + (mine.length ? '<ul class="list">' + mine.map(li).join('') + '</ul>' : '<p class="empty">У вас нет материалов в работе. Начните с идеи на доске.</p>') + '</div>'
+        + '<div class="panel"><h2>Выходит на этой неделе</h2>' + (soon.length ? '<ul class="list">' + soon.map(li).join('') + '</ul>' : '<p class="empty">На ближайшие 7 дней дат публикации нет.</p>') + '</div>'
+        + (late.length ? '<div class="panel"><h2>Просрочено</h2><ul class="list">' + late.map(li).join('') + '</ul></div>' : '')
+        + '<div class="panel"><button type="button" class="btn" data-new>+ Новый материал</button> <button type="button" class="btn ghost" data-go="board">Открыть доску</button></div>';
+    },
+    board: function () {
+      var cards = filtered();
+      return filterBar(false) + '<div class="board">' + STAGES.map(function (s) {
+        var list = cards.filter(function (c) { return c.stage === s.id; });
+        return '<section class="col" data-stage="' + s.id + '"><header><b title="' + esc(s.hint) + '">' + s.name + '</b><i>' + list.length + '</i></header><div class="drop">' + list.map(cardHtml).join('') + '</div></section>';
+      }).join('') + '</div><p class="note">Перетаскивайте карточки между колонками. На телефоне откройте карточку и смените этап в ней. Розовая полоса слева — ваши материалы.</p>';
+    },
+    calendar: function () {
+      var y = +state.month.slice(0, 4), m = +state.month.slice(5) - 1, first = new Date(y, m, 1), start = new Date(y, m, 1 - ((first.getDay() + 6) % 7));
+      var names = ['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+      var cells = '';
+      for (var i = 0; i < 42; i++) {
+        var d = new Date(start.getFullYear(), start.getMonth(), start.getDate() + i), key = iso(d);
+        if (i >= 35 && d.getMonth() !== m) break;
+        var chips = state.cards.filter(function (c) { return c.publish === key; }).map(function (c) { return '<button type="button" class="chip' + (c.stage === 'published' ? ' pub' : '') + '" data-card="' + c.id + '" title="' + esc(c.title) + '">' + esc(c.title) + '</button>'; }).join('')
+          + state.cards.filter(function (c) { return c.deadline === key && c.stage !== 'published'; }).map(function (c) { return '<button type="button" class="chip dl" data-card="' + c.id + '" title="Дедлайн: ' + esc(c.title) + '">' + esc(c.title) + '</button>'; }).join('');
+        cells += '<div class="day' + (d.getMonth() !== m ? ' out' : '') + (key === TODAY ? ' today' : '') + '" data-day="' + key + '"><span class="n">' + d.getDate() + '</span>' + chips + '</div>';
+      }
+      return '<div class="cal-head"><button type="button" class="btn ghost" data-month="-1" aria-label="Предыдущий месяц">←</button><h2>' + names[m] + ' ' + y + '</h2><button type="button" class="btn ghost" data-month="1" aria-label="Следующий месяц">→</button><button type="button" class="btn ghost" data-month="0">Сегодня</button></div>'
+        + '<div class="cal">' + ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map(function (d) { return '<div class="dow">' + d + '</div>'; }).join('') + cells + '</div>'
+        + '<div class="legend"><span><span class="tag y">жёлтый</span> запланирован выход</span><span><span class="tag g">зелёный</span> опубликовано</span><span><span class="tag o">пунктир</span> дедлайн автора</span><span>Клик по пустому дню — новый материал на эту дату.</span></div>';
+    },
+    items: function () {
+      var cards = filtered();
+      return filterBar(true) + '<div class="panel" style="margin-top:0"><div class="tw"><table><thead><tr><th>Заголовок</th><th>Рубрика</th><th>Этап</th><th>Автор</th><th>Редактор</th><th>Дедлайн</th><th>Выход</th></tr></thead><tbody>'
+        + (cards.length ? cards.map(function (c) { return '<tr class="click" data-card="' + c.id + '"><td>' + esc(c.title) + (c.demo ? ' <span class="tag o">демо</span>' : '') + '</td><td>' + esc(c.rubric) + '</td><td><span class="tag">' + STAGES[stageIx(c.stage)].name + '</span></td><td>' + esc(mname(c.author)) + '</td><td>' + esc(c.editor ? mname(c.editor) : '—') + '</td><td>' + (human(c.deadline) || '—') + '</td><td>' + (human(c.publish) || '—') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="empty">Ничего не найдено. Измените фильтры.</td></tr>')
+        + '</tbody></table></div></div><p class="note">Всего: ' + cards.length + ' из ' + state.cards.length + '</p>';
+    },
+    team: function () {
+      var manage = atLeast('chief');
+      var rows = state.team.map(function (m) {
+        var locked = m.role === 'owner' || !manage || (role() === 'chief' && RANK[m.role] >= RANK.chief && m.id !== state.me);
+        return '<tr><td><b>' + esc(m.name) + '</b>' + (m.id === state.me ? ' <span class="tag o">это вы</span>' : '') + '</td><td>' + esc(m.email || '—') + '</td><td>'
+          + (locked ? esc(ROLES.filter(function (r) { return r.id === m.role; })[0].name) : '<select data-role="' + m.id + '" aria-label="Роль">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (m.role === r.id ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select>')
+          + '</td><td>' + (m.status === 'active' ? '<span class="tag g">активен</span>' : '<span class="tag p">приглашение</span>') + '</td><td>' + (locked ? '' : '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
+      }).join('');
+      var head = '<tr><th>Что можно</th>' + ROLES.map(function (r) { return '<th>' + r.name + '</th>'; }).join('') + '</tr>';
+      var perm = PERMS.map(function (p) { return '<tr><td>' + p[0] + '</td>' + p.slice(1).map(function (v) { return '<td>' + (v === 1 ? '<span class="yes">да</span>' : v === 2 ? '<span class="part">кроме владельца и главреда</span>' : '<span class="no">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('');
+      return (manage ? '<div class="panel" style="margin-top:0"><h2>Пригласить по почте</h2><form class="invite" id="invite"><div><label for="in">Имя</label><input id="in" name="name" type="text" required autocomplete="off"></div><div><label for="ie">Почта</label><input id="ie" name="email" type="email" required autocomplete="off" placeholder="name@example.com"></div><div><label for="ir">Роль</label><select id="ir" name="role">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (r.id === 'reporter' ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select></div><button class="btn" type="submit">Пригласить</button></form>'
+        + (lastInvite ? '<div class="mail"><b>Так будет выглядеть письмо (в прототипе оно не отправлено):</b>\n\nКому: ' + esc(lastInvite.email) + '\nТема: Приглашение в редакцию AUF MEDIA\n\n' + esc(lastInvite.name) + ', привет!\n\nТебя приглашают в редакцию AUF MEDIA с ролью «' + esc(lastInvite.role) + '».\nНажми на кнопку, придумай пароль — и ты внутри.\n\n[ Войти в редакцию ]\n\nСсылка действует 24 часа.</div>' : '')
+        + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">Приглашать людей и менять роли могут владелец и главный редактор.</p></div>')
+        + '<div class="panel"><h2>Команда</h2><div class="tw"><table><thead><tr><th>Имя</th><th>Почта</th><th>Роль</th><th>Статус</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
+        + '<div class="panel"><h2>Роли</h2><ul class="list">' + ROLES.map(function (r) { return '<li><b>' + r.name + '</b><span style="flex:1 1 60%;color:var(--mute)">' + r.about + '</span></li>'; }).join('') + '</ul></div>'
+        + '<div class="panel"><h2>Кто что может</h2><div class="tw"><table class="perm"><thead>' + head + '</thead><tbody>' + perm + '</tbody></table></div></div>'
+        + (role() === 'owner' ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу.</p></div>' : '');
+    },
+    inbox: function () {
+      var showSubs = atLeast('chief');
+      if (inboxTab === 'subs' && !showSubs) inboxTab = 'apps';
+      var body;
+      if (inboxTab === 'apps') body = state.apps.length ? '<div class="tw"><table><thead><tr><th>Контакт</th><th>О себе</th><th>Город</th><th>Условия</th><th>Дата</th></tr></thead><tbody>' + state.apps.map(function (a) { return '<tr><td>' + esc(a.contact) + '</td><td>' + esc(a.about) + '</td><td>' + esc(a.city) + '</td><td>' + esc(a.terms) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Заявок пока нет. Они появятся здесь, когда форма «Стать автором» на странице «Скоро» будет подключена к базе.</p>';
+      else body = state.subs.length ? '<div class="tw"><table><thead><tr><th>Канал</th><th>Контакт</th><th>Дата</th></tr></thead><tbody>' + state.subs.map(function (a) { return '<tr><td>' + esc(a.channel) + '</td><td>' + esc(a.contact) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Подписчиков пока нет. Они появятся здесь, когда форма «Узнай о запуске первым» будет подключена к базе.</p>';
+      return '<div class="tabs" role="tablist"><button type="button" role="tab" data-tab="apps" aria-selected="' + (inboxTab === 'apps') + '">Заявки авторов · ' + state.apps.length + '</button>' + (showSubs ? '<button type="button" role="tab" data-tab="subs" aria-selected="' + (inboxTab === 'subs') + '">Подписчики на запуск · ' + state.subs.length + '</button>' : '') + '</div><div class="panel" style="margin-top:0">' + body + '</div>'
+        + '<p class="note">Из заявки автора одним нажатием можно будет сделать приглашение в команду — это появится вместе с настоящей базой.</p>';
+    },
+    plan: function () {
+      return '<div class="panel plan" style="margin-top:0">'
+        + '<h2>Что это сейчас</h2><p>Кликабельный прототип. Доска, календарь, материалы, команда и роли работают, но данные живут только в вашем браузере: другой человек откроет эту же страницу и увидит пустую копию. Настоящего входа и писем нет.</p>'
+        + '<h2>Что нужно, чтобы заработало для команды</h2><ol><li><b>База и вход — Supabase.</b> Бесплатный проект: таблицы для материалов, команды и заявок, вход по почте и встроенные приглашения по ссылке. Права по ролям задаются в самой базе, а не в браузере, поэтому журналист физически не сможет удалить чужой материал.</li><li><b>Почта для приглашений.</b> Встроенная почта Supabase рассчитана на тесты — по документации это 2 письма в час. Для редакции нужен почтовый сервис (например, Resend или Brevo) и свой домен, с которого уходят письма.</li><li><b>Формы на «Скоро».</b> «Узнай о запуске первым» и «Стать автором» начинают писать в ту же базу и появляются в разделе «Заявки».</li></ol>'
+        + '<h2>Что нужно от вас — около 10 минут</h2><ol><li>Зарегистрироваться на supabase.com и создать проект.</li><li>Прислать адрес проекта и два ключа из его настроек.</li><li>Сказать, с какого домена слать письма (или купить домен для журнала).</li></ol>'
+        + '<h2>Что будет после подключения</h2><ul><li>Вход по почте и паролю, приглашение письмом из раздела «Команда».</li><li>Общая доска: изменения видят все сразу.</li><li>Роли из таблицы «Кто что может» начинают действовать по-настоящему.</li><li>Заявки с сайта падают в «Заявки».</li></ul>'
+        + '<h2>Чего здесь нет намеренно</h2><p>Редактора статей и публикации на сайт. Сейчас сайт собирается скриптами и выкладывается вручную. Писать тексты прямо в админке и публиковать их кнопкой — отдельный этап после того, как заработает редакция.</p>'
+        + '</div>';
+    }
+  };
+
+  function render() {
+    sel.value = state.viewAs;
+    if (!RENDER[state.view]) state.view = 'home';
+    renderNav();
+    title.textContent = VIEWS.filter(function (v) { return v[0] === state.view; })[0][1];
+    var focus = document.activeElement && document.activeElement.dataset ? document.activeElement.dataset.f : null;
+    view.innerHTML = RENDER[state.view]();
+    if (focus) { var el = view.querySelector('[data-f="' + focus + '"]'); if (el) { el.focus(); if (el.setSelectionRange && el.type === 'search') el.setSelectionRange(el.value.length, el.value.length); } }
+  }
+
+  function openCard(id, preset) {
+    var isNew = !id, c = isNew ? Object.assign({ id: uid(), title: '', rubric: '', stage: 'idea', author: state.me, editor: '', deadline: '', publish: '', format: 'Текст', notes: '' }, preset || {}) : state.cards.filter(function (x) { return x.id === id; })[0];
+    if (!c) return;
+    var edit = isNew || canEdit(c), dis = edit ? '' : ' disabled', full = atLeast('editor');
+    var opt = function (list, val, blank) { return (blank ? '<option value="">' + blank + '</option>' : '') + list.map(function (o) { var v = o.id || o, n = o.name || o; return '<option value="' + esc(v) + '"' + (val === v ? ' selected' : '') + '>' + esc(n) + '</option>'; }).join(''); };
+    var stages = STAGES.filter(function (s) { return s.id === c.stage || isNew && s.id === 'idea' || canMove(c, s.id); });
+    dlgbody.innerHTML = '<h2>' + (isNew ? 'Новый материал' : edit ? 'Материал' : 'Материал (только просмотр)') + '</h2><form id="cardform"><div class="grid2">'
+      + '<div class="full"><label for="ct">Заголовок или рабочее название</label><input id="ct" name="title" type="text" required value="' + esc(c.title) + '"' + dis + '></div>'
+      + '<div><label for="cr">Рубрика</label><select id="cr" name="rubric"' + dis + '>' + opt(RUBRICS.concat(c.rubric && RUBRICS.indexOf(c.rubric) < 0 ? [c.rubric] : []), c.rubric, 'Без рубрики') + '</select></div>'
+      + '<div><label for="cf">Формат</label><select id="cf" name="format"' + dis + '>' + opt(FORMATS, c.format) + '</select></div>'
+      + '<div><label for="cs">Этап</label><select id="cs" name="stage"' + dis + '>' + opt(stages, c.stage) + '</select></div>'
+      + '<div><label for="ca">Автор</label><select id="ca" name="author"' + (full ? '' : ' disabled') + '>' + opt(state.team, c.author) + '</select></div>'
+      + '<div><label for="ce">Редактор</label><select id="ce" name="editor"' + (full ? '' : ' disabled') + '>' + opt(state.team.filter(function (m) { return RANK[m.role] >= RANK.editor; }), c.editor, 'Не назначен') + '</select></div>'
+      + '<div><label for="cd">Дедлайн автора</label><input id="cd" name="deadline" type="date" value="' + esc(c.deadline) + '"' + dis + '></div>'
+      + '<div><label for="cp">Дата выхода</label><input id="cp" name="publish" type="date" value="' + esc(c.publish) + '"' + (full ? '' : ' disabled') + '></div>'
+      + '<div class="full"><label for="cn">Заметки: о чём, герои, ссылки</label><textarea id="cn" name="notes" rows="4"' + dis + '>' + esc(c.notes) + '</textarea></div></div>'
+      + (edit ? '' : '<p class="note">В этой роли чужие материалы можно только смотреть.</p>') + (edit && !full ? '<p class="note">Автора, редактора и дату выхода назначает редактор.</p>' : '')
+      + '<div class="actions"><span>' + (!isNew && atLeast('chief') ? '<button type="button" class="btn danger" id="carddel">Удалить</button>' : '') + '</span><span><button type="button" class="btn ghost" id="cardclose">' + (edit ? 'Отмена' : 'Закрыть') + '</button> ' + (edit ? '<button type="submit" class="btn">Сохранить</button>' : '') + '</span></div></form>';
+    dlg.showModal();
+    var form = document.getElementById('cardform');
+    document.getElementById('cardclose').onclick = function () { dlg.close(); };
+    var del = document.getElementById('carddel');
+    if (del) del.onclick = function () { if (confirm('Удалить материал «' + c.title + '»? Отменить нельзя.')) { state.cards = state.cards.filter(function (x) { return x.id !== c.id; }); save(); dlg.close(); render(); toast('Материал удалён'); } };
+    form.onsubmit = function (event) {
+      event.preventDefault(); if (!edit) return;
+      var t = form.title.value.trim(); if (!t) { form.title.focus(); return; }
+      c.title = t; c.rubric = form.rubric.value; c.format = form.format.value; c.stage = form.stage.value; c.deadline = form.deadline.value; c.notes = form.notes.value.trim();
+      if (full) { c.author = form.author.value; c.editor = form.editor.value; c.publish = form.publish.value; }
+      if (isNew) state.cards.unshift(c);
+      save(); dlg.close(); render(); toast(isNew ? 'Материал добавлен' : 'Сохранено');
+    };
+  }
+
+  document.addEventListener('click', function (event) {
+    var t = event.target.closest('[data-go],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset]');
+    if (!t) return;
+    if (t.dataset.go) return go(t.dataset.go);
+    if (t.dataset.card) { event.preventDefault(); return openCard(t.dataset.card); }
+    if ('new' in t.dataset) return openCard(null);
+    if (t.dataset.month !== undefined) {
+      if (t.dataset.month === '0') state.month = TODAY.slice(0, 7);
+      else { var d = new Date(+state.month.slice(0, 4), +state.month.slice(5) - 1 + +t.dataset.month, 1); state.month = iso(d).slice(0, 7); }
+      save(); return render();
+    }
+    if (t.dataset.day) return openCard(null, atLeast('editor') ? { publish: t.dataset.day, stage: 'idea' } : { deadline: t.dataset.day });
+    if (t.dataset.kick) { var m = member(t.dataset.kick); if (m && confirm('Убрать ' + m.name + ' из команды?')) { state.team = state.team.filter(function (x) { return x.id !== m.id; }); save(); render(); toast('Убрали из команды'); } return; }
+    if (t.dataset.tab) { inboxTab = t.dataset.tab; return render(); }
+    if ('export' in t.dataset) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })); a.download = 'auf-admin-' + TODAY + '.json'; a.click(); return; }
+    if ('reset' in t.dataset) { if (confirm('Сбросить прототип к начальному состоянию? Все ваши изменения в этом браузере пропадут.')) { state = fresh(); lastInvite = null; save(); render(); toast('Прототип сброшен'); } }
+  });
+  document.addEventListener('input', function (event) { var f = event.target.dataset && event.target.dataset.f; if (f) { filters[f] = event.target.value; render(); } });
+  document.addEventListener('change', function (event) {
+    var id = event.target.dataset && event.target.dataset.role;
+    if (id) { var m = member(id); if (m) { m.role = event.target.value; save(); render(); toast('Роль изменена'); } }
+  });
+  document.addEventListener('submit', function (event) {
+    if (event.target.id !== 'invite') return;
+    event.preventDefault();
+    var f = event.target, email = f.email.value.trim().toLowerCase(), name = f.name.value.trim();
+    if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { toast('Проверьте имя и адрес почты'); return; }
+    if (state.team.some(function (m) { return m.email === email; })) { toast('Этот адрес уже в команде'); return; }
+    state.team.push({ id: uid(), name: name, email: email, role: f.role.value, status: 'invited' });
+    lastInvite = { name: name, email: email, role: ROLES.filter(function (r) { return r.id === f.role.value; })[0].name };
+    save(); render(); toast('Добавлено в команду. Письмо в прототипе не отправляется');
+  });
+  // drag and drop between columns
+  var dragging = null;
+  document.addEventListener('dragstart', function (event) { var c = event.target.closest && event.target.closest('.card'); if (c) { dragging = c.dataset.card; event.dataTransfer.effectAllowed = 'move'; event.dataTransfer.setData('text/plain', dragging); } });
+  document.addEventListener('dragover', function (event) { var col = event.target.closest && event.target.closest('.col'); if (col && dragging) { event.preventDefault(); col.classList.add('over'); } });
+  document.addEventListener('dragleave', function (event) { var col = event.target.closest && event.target.closest('.col'); if (col && !col.contains(event.relatedTarget)) col.classList.remove('over'); });
+  document.addEventListener('drop', function (event) {
+    var col = event.target.closest && event.target.closest('.col'); if (!col || !dragging) return;
+    event.preventDefault();
+    var c = state.cards.filter(function (x) { return x.id === dragging; })[0], to = col.dataset.stage; dragging = null;
+    if (!c || c.stage === to) return render();
+    if (!canMove(c, to)) { render(); return toast('В этой роли сюда двигать нельзя: дальше «На редактуре» материал ведёт редактор'); }
+    c.stage = to; if (to === 'published' && !c.publish) c.publish = TODAY;
+    save(); render(); toast('Перенесено: ' + STAGES[stageIx(to)].name);
+  });
+  document.addEventListener('dragend', function () { dragging = null; });
+  dlg.addEventListener('click', function (event) { if (event.target === dlg) dlg.close(); });
+  render();
+})();
+</script>
+</body>
+</html>
