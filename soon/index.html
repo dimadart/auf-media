@@ -289,7 +289,7 @@ h1 { font-size: clamp(40px, 6.4vw, 104px); }
     var small = innerWidth < 600;
     for (var i = 0; i < amount; i++) {
       if (parts.length >= MAX) { var old = parts.shift(); old.el.remove(); }
-      var size = (small ? 50 : 62) + Math.random() * (small ? 34 : 50);
+      var size = (small ? 25 : 31) + Math.random() * (small ? 17 : 25);
       var angle = -Math.PI / 2 + (Math.random() - .5) * Math.PI * 1.5;
       var speed = (small ? 380 : 480) + Math.random() * 520;
       var el = new Image();
