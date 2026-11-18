@@ -196,6 +196,18 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 /* v6: no tagline strip, no ribbon */
 .tagline { display: none !important; }
 @media (min-width: 861px) { .foot { bottom: 22px; } .brand { padding-top: 26px; } }
+/* v9: launch notice with a channel switch */
+.ways { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; padding: 0; border: 0; }
+.ways legend { float: left; width: 100%; margin: 0 0 10px; padding: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.ways label { display: block; margin: 0; cursor: pointer; }
+.ways input { position: absolute; opacity: 0; pointer-events: none; }
+.ways span { display: block; padding: 8px 12px 9px; border: 2px solid #fff; color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: rgb(0 0 0 / .45); }
+.ways input:checked + span { background: var(--pink); border-color: var(--pink); }
+.ways input:focus-visible + span { outline: 3px solid var(--yellow); outline-offset: 2px; }
+#contact { flex: 1; min-width: 0; height: 48px; padding: 0 16px; border: 2px solid #fff; border-radius: 0; background: rgb(0 0 0 / .55); color: #fff; font: 700 17px/1 Arial, sans-serif; outline: 0; }
+#contact::placeholder { color: #8b8b8b; font-weight: 400; }
+#contact:focus-visible { border-color: var(--yellow); box-shadow: 4px 4px 0 var(--pink); }
+@media (max-width: 460px) { #contact { flex: none; height: 54px; } }
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
@@ -224,12 +236,17 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     <h1><span>Скоро</span><span>открываемся</span></h1>
     <p class="lede">Независимый журнал из&nbsp;Нью-Йорка о&nbsp;людях, культуре и&nbsp;времени, в&nbsp;котором мы&nbsp;живём.</p>
     <form id="call" novalidate data-endpoint="">
-      <label for="phone">Твой телефон</label>
+      <fieldset class="ways">
+        <legend>Узнать о запуске</legend>
+        <label><input type="radio" name="way" value="email" checked><span>Почта</span></label>
+        <label><input type="radio" name="way" value="telegram"><span>Telegram</span></label>
+        <label><input type="radio" name="way" value="sms"><span>SMS</span></label>
+      </fieldset>
       <div class="row">
-        <input id="phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" placeholder="+1 (917) 000-00-00" required aria-describedby="note">
+        <input id="contact" name="contact" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" aria-label="Почта" required aria-describedby="note">
         <button type="submit">Позовите меня</button>
       </div>
-      <p class="note" id="note" role="status">Одно сообщение в&nbsp;день открытия. Без спама.</p>
+      <p class="note" id="note" role="status">Одно сообщение в&nbsp;день запуска. Без спама.</p>
     </form>
   </div>
   <div class="art"><span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span></div>
@@ -385,22 +402,45 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     loop.onload = function () { img.src = loop.src; };
     loop.src = img.dataset.loop;
   })();
-  // phone form
-  var form = document.getElementById('call'), input = form.phone, note = document.getElementById('note'), button = form.querySelector('button');
+  // launch notice form: e-mail by default, Telegram or SMS on request
+  var form = document.getElementById('call'), input = form.contact, note = document.getElementById('note'), button = form.querySelector('button');
+  var HINT = 'Одно сообщение в день запуска. Без спама.';
+  var WAYS = {
+    email: { type: 'email', mode: 'email', auto: 'email', hint: 'you@example.com', label: 'Почта' },
+    telegram: { type: 'text', mode: 'text', auto: 'off', hint: '@username', label: 'Telegram' },
+    sms: { type: 'tel', mode: 'tel', auto: 'tel', hint: '+1 (917) 000-00-00', label: 'Номер телефона' }
+  };
   function say(text, state) { note.textContent = text; if (state) note.dataset.state = state; else delete note.dataset.state; }
-  input.addEventListener('input', function () { if (note.dataset.state === 'error') say('Одно сообщение в день открытия. Без спама.'); });
+  function way() { return form.way.value || 'email'; }
+  function applyWay() {
+    var w = WAYS[way()];
+    input.type = w.type; input.inputMode = w.mode; input.autocomplete = w.auto; input.placeholder = w.hint; input.setAttribute('aria-label', w.label);
+    input.value = ''; say(HINT);
+  }
+  Array.prototype.forEach.call(form.way, function (radio) { radio.addEventListener('change', function () { applyWay(); input.focus(); }); });
+  input.addEventListener('input', function () { if (note.dataset.state === 'error') say(HINT); });
   form.addEventListener('submit', function (event) {
     event.preventDefault();
-    var digits = input.value.replace(/\D/g, '');
-    if (digits.length < 10 || digits.length > 15) { say('Проверь номер: нужен код страны и не меньше 10 цифр.', 'error'); input.focus(); return; }
+    var kind = way(), value = input.value.trim();
+    if (kind === 'email') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) { say('Проверь адрес почты.', 'error'); input.focus(); return; }
+    } else if (kind === 'telegram') {
+      value = value.replace(/^(https?:\/\/)?t\.me\//i, '').replace(/^@/, '');
+      if (!/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(value)) { say('Проверь ник в Telegram: латиница, цифры и подчёркивание, от 5 символов.', 'error'); input.focus(); return; }
+      value = '@' + value;
+    } else {
+      var digits = value.replace(/\D/g, '');
+      if (digits.length < 10 || digits.length > 15) { say('Проверь номер: нужен код страны и не меньше 10 цифр.', 'error'); input.focus(); return; }
+      value = '+' + digits;
+    }
     var endpoint = form.dataset.endpoint;
-    if (!endpoint) { say('Запись пока не подключена — номер никуда не отправлен.', 'error'); return; }
+    if (!endpoint) { say('Запись пока не подключена — контакт никуда не отправлен.', 'error'); return; }
     button.disabled = true; say('Записываем…');
-    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ phone: '+' + digits, source: 'auf-soon' }) })
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ channel: kind, contact: value, source: 'auf-soon' }) })
       .then(function (response) {
         if (!response.ok) throw new Error(response.status);
-        say('Записали. Увидимся на открытии.', 'ok');
-        form.reset();
+        say('Записали. Напишем в день запуска.', 'ok');
+        input.value = '';
         var box = button.getBoundingClientRect();
         spread(box.left + box.width / 2, box.top, 12);
       })
