@@ -136,6 +136,25 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
 .tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; }
 .ava { flex: none; display: grid; place-items: center; width: 40px; height: 40px; background: var(--yellow); color: #000; font: 800 13px/1 Unbounded, Arial, sans-serif; }
 .ava.big { width: 72px; height: 72px; font-size: 22px; }
+img.ava { object-fit: cover; background: var(--chip); }
+.ptable { margin-top: 0; padding: 0; }
+.ptable td { vertical-align: middle; }
+.ptable td.pa { width: 56px; padding-right: 2px; }
+.ptable td.pn b { display: block; white-space: nowrap; }
+.ptable td.pn small { display: block; color: var(--mute); font-size: 12px; white-space: nowrap; }
+.ptable td.w { min-width: 280px; max-width: 420px; color: var(--mute); font-size: 13px; }
+.ptable td.nw { white-space: nowrap; }
+.ptable .tags { flex-wrap: nowrap; }
+.sort { padding: 0; border: 0; background: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+.sort:hover, th[aria-sort] .sort { color: var(--text); }
+.sort:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
+input.cellin { min-width: 140px; padding: 6px 8px; border-color: transparent; background: none; }
+input.cellin:hover, input.cellin:focus { border-color: var(--fline); background: var(--field); }
+label.chk { display: flex; align-items: center; gap: 8px; margin: 0; font: inherit; letter-spacing: 0; text-transform: none; color: var(--text); cursor: pointer; }
+label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
+.coladd { display: flex; gap: 8px; margin-top: 14px; } .coladd .btn { flex: none; }
+.phrow { display: flex; align-items: center; gap: 14px; }
+.vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .phead { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
 .phead .pi { flex: 1 1 240px; min-width: 0; }
 .phead h2 { font-size: 20px; overflow-wrap: anywhere; }
@@ -340,7 +359,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
       v: 1, me: me, viewAs: 'owner', view: 'home', month: TODAY.slice(0, 7),
       team: [{ id: me, name: 'Dima Dart', email: '', role: 'owner', status: 'active' }],
       cards: SEED.map(function (m) { return { id: uid(), title: m.title, rubric: m.category, stage: 'published', author: me, editor: '', deadline: '', publish: '', format: m.video ? 'Видео' : 'Текст', notes: 'Демо-черновик, уже на сайте.', demo: true }; }),
-      subs: [], apps: [], tasks: [], contacts: []
+      subs: [], apps: [], tasks: [], contacts: [], pcols: []
     };
   }
   var state;
@@ -356,6 +375,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   state.team.forEach(function (m) { if (!RANK[m.role]) m.role = 'reporter'; });
   if (!Array.isArray(state.tasks)) state.tasks = [];
   if (!Array.isArray(state.contacts)) state.contacts = [];
+  if (!Array.isArray(state.pcols)) state.pcols = [];
   function save() {
     TABF.forEach(function (k) { tab[k] = state[k]; });
     try { sessionStorage.setItem(TABKEY, JSON.stringify(tab)); } catch (e) {}
@@ -560,25 +580,22 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     if (!p) {
       var q = (filters.pq || '').trim().toLowerCase();
       var list = state.contacts.filter(function (c) { return (!q || (c.name + ' ' + (c.en || '') + ' ' + c.who + ' ' + c.city + ' ' + c.notes).toLowerCase().indexOf(q) > -1) && (!filters.pcat || c.cat === filters.pcat) && (!filters.pchk || (filters.pchk === 'ok') === !c.check); })
-        .sort(function (a, b) { return a.name.localeCompare(b.name, 'ru'); });
-      return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><select data-f="pchk" aria-label="Проверка">' + selOpts([{ id: 'ok', name: 'Без пометок' }, { id: 'todo', name: 'Нужно проверить' }], filters.pchk, 'Все записи') + '</select><button type="button" class="btn ghost" data-importpeople>Загрузить список</button><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
-        + (list.length ? '<div class="people">' + list.map(function (c) {
-          return '<button type="button" class="pcard" data-person="' + c.id + '"><span class="ph"><span class="ava">' + esc(initials(c.name)) + '</span><strong>' + esc(c.name) + '</strong></span>'
-            + (c.who ? '<span class="w">' + esc(c.who) + '</span>' : '') + '<span class="tags">' + (c.cat ? '<span class="tag y">' + esc(c.cat) + '</span>' : '') + (c.city ? '<span class="tag">' + esc(c.city) + '</span>' : '')
-            + c.accs.map(function (a) { return '<span class="tag o">' + esc(a.net) + '</span>'; }).join('') + (c.check ? '<span class="tag p">проверить</span>' : '') + '</span></button>';
-        }).join('') + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">' + (state.contacts.length ? 'Никого не нашлось. Измените поиск или категорию.' : 'Контактов пока нет. Добавьте первого человека: имя, категорию и его аккаунты.') + '</p></div>')
+        .sort(psortFn());
+      return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><select data-f="pchk" aria-label="Проверка">' + selOpts([{ id: 'ok', name: 'Без пометок' }, { id: 'todo', name: 'Нужно проверить' }], filters.pchk, 'Все записи') + '</select><button type="button" class="btn ghost" data-pcolsbtn>Колонки</button><button type="button" class="btn ghost" data-importpeople>Загрузить список</button><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
+        + (list.length ? peopleTable(list) : '<div class="panel" style="margin-top:0"><p class="empty">' + (state.contacts.length ? 'Никого не нашлось. Измените поиск или категорию.' : 'Контактов пока нет. Добавьте первого человека: имя, категорию и его аккаунты.') + '</p></div>')
         + '<p class="note">Всего: ' + list.length + ' из ' + state.contacts.length + '. Список видят только MAIN и C-Level. Пока он хранится в этом браузере.</p>';
     }
     var tasks = state.tasks.filter(function (t) { return t.contact === p.id; });
     var accs = p.accs.map(function (a) { var u = accUrl(a.net, a.val); return '<li><b>' + esc(a.net) + '</b><span>' + (u ? '<a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(a.val) + '</a>' : esc(a.val)) + '</span></li>'; }).join('');
     var reach = (p.email ? '<li><b>Почта</b><span><a href="mailto:' + esc(p.email) + '">' + esc(p.email) + '</a></span></li>' : '') + (p.phone ? '<li><b>Телефон</b><span>' + esc(p.phone) + '</span></li>' : '');
     return '<p style="margin:0 0 14px"><button type="button" class="btn ghost" data-peopleback>← Все контакты</button></p>'
-      + '<div class="panel phead" style="margin-top:0"><span class="ava big">' + esc(initials(p.name)) + '</span><div class="pi"><h2>' + esc(p.name) + '</h2>' + (p.en ? '<p style="color:var(--mute);margin-top:4px">' + esc(p.en) + '</p>' : '') + (p.who ? '<p>' + esc(p.who) + '</p>' : '')
+      + '<div class="panel phead" style="margin-top:0">' + avaHtml(p, true) + '<div class="pi"><h2>' + esc(p.name) + '</h2>' + (p.en ? '<p style="color:var(--mute);margin-top:4px">' + esc(p.en) + '</p>' : '') + (p.who ? '<p>' + esc(p.who) + '</p>' : '')
       + '<p class="tags">' + (p.cat ? '<span class="tag y">' + esc(p.cat) + '</span>' : '') + (p.city ? '<span class="tag">' + esc(p.city) + '</span>' : '') + '<span class="tag p">' + esc(p.status || PSTAT[0]) + '</span></p></div>'
       + '<span class="pact"><button type="button" class="btn" data-editperson="' + p.id + '">Изменить</button></span></div>'
       + (p.check ? '<div class="panel"><h2>Нужно проверить</h2><p class="pre">' + esc(p.check) + '</p><p style="margin:12px 0 0"><button type="button" class="btn ghost" data-checked="' + p.id + '">Проверено, снять пометку</button></p></div>' : '')
       + '<div class="panel"><h2>Соцсети и аккаунты</h2>' + (accs ? '<ul class="list">' + accs + '</ul>' : '<p class="empty">Аккаунты не добавлены.</p>') + '</div>'
       + '<div class="panel"><h2>Как связаться</h2>' + (reach ? '<ul class="list">' + reach + '</ul>' : '<p class="empty">Почта и телефон не указаны.</p>') + '</div>'
+      + (state.pcols.length ? '<div class="panel"><h2>Дополнительно</h2><ul class="list">' + state.pcols.map(function (c) { return '<li><b>' + esc(c.name) + '</b><span>' + (esc(p.x && p.x[c.id] || '') || '—') + '</span></li>'; }).join('') + '</ul></div>' : '')
       + '<div class="panel"><h2>Заметки</h2>' + (p.notes ? '<p class="pre">' + esc(p.notes) + '</p>' : '<p class="empty">Заметок нет.</p>') + '</div>'
       + (p.sources && p.sources.length ? '<div class="panel"><h2>Источники</h2><ul class="list">' + p.sources.map(function (u) { return '<li><span><a href="' + esc(u) + '" target="_blank" rel="noopener noreferrer">' + esc(u) + '</a></span></li>'; }).join('') + '</ul></div>' : '')
       + '<div class="panel"><h2>Задачи по этому человеку</h2>' + (tasks.length ? '<ul class="list">' + tasks.map(function (t) { return '<li><a href="#" data-task="' + t.id + '">' + esc(t.title) + '</a><span><span class="tag">' + TSTAGES.filter(function (s) { return s[0] === t.stage; })[0][1] + '</span>' + (t.due ? ' срок ' + human(t.due) : '') + '</span></li>'; }).join('') + '</ul>' : '<p class="empty">Задач нет.</p>')
@@ -609,6 +626,95 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
         toast(!ok ? 'Не сохранено: в браузере кончилось место' : 'Добавлено: ' + added + (skipped ? ', уже были в списке: ' + skipped : ''));
       };
       r.readAsText(f);
+    };
+    inp.click();
+  }
+
+  // ---------- contacts as a table: photo, sorting, optional and custom columns ----------
+  var PCOLS = [['cat', 'Категория'], ['who', 'Кто это'], ['city', 'Город'], ['status', 'Статус'], ['accs', 'Аккаунты'], ['email', 'Почта'], ['phone', 'Телефон'], ['check', 'Проверка'], ['added', 'Добавлен']];
+  function pview() { if (!state.pview || !Array.isArray(state.pview.hide)) state.pview = { hide: ['email', 'phone', 'added'], sort: 'name', dir: 1 }; return state.pview; }
+  function pcolAll() { return PCOLS.concat(state.pcols.map(function (c) { return ['x:' + c.id, c.name]; })); }
+  function pval(p, k) {
+    if (k.slice(0, 2) === 'x:') return (p.x && p.x[k.slice(2)]) || '';
+    if (k === 'accs') return p.accs.map(function (a) { return a.net; }).join(' ');
+    if (k === 'status') return p.status || PSTAT[0];
+    return p[k] || '';
+  }
+  function psortFn() {
+    var v = pview(), k = v.sort || 'name', d = v.dir || 1;
+    return function (a, b) {
+      var x = pval(a, k), y = pval(b, k), r;
+      if (!x !== !y) return x ? -1 : 1;
+      r = k === 'status' ? PSTAT.indexOf(x) - PSTAT.indexOf(y) : String(x).localeCompare(String(y), 'ru');
+      return r * d || a.name.localeCompare(b.name, 'ru');
+    };
+  }
+  function avaHtml(p, big) {
+    return p.photo && okUrl(p.photo, true) ? '<img class="ava' + (big ? ' big' : '') + '" src="' + esc(p.photo) + '" alt="">' : '<span class="ava' + (big ? ' big' : '') + '">' + esc(initials(p.name)) + '</span>';
+  }
+  function peopleTable(list) {
+    var v = pview(), cols = pcolAll().filter(function (c) { return v.hide.indexOf(c[0]) < 0; });
+    var th = function (c) { var on = (v.sort || 'name') === c[0]; return '<th' + (on ? ' aria-sort="' + (v.dir > 0 ? 'ascending' : 'descending') + '"' : '') + '><button type="button" class="sort" data-psort="' + esc(c[0]) + '">' + esc(c[1]) + (on ? (v.dir > 0 ? ' ↑' : ' ↓') : '') + '</button></th>'; };
+    var cell = function (p, k) {
+      if (k.slice(0, 2) === 'x:') return '<td><input type="text" class="cellin" data-px="' + p.id + ':' + esc(k.slice(2)) + '" value="' + esc(pval(p, k)) + '" aria-label="' + esc(p.name) + '" autocomplete="off"></td>';
+      if (k === 'cat') return '<td>' + (p.cat ? '<span class="tag y">' + esc(p.cat) + '</span>' : '') + '</td>';
+      if (k === 'who') return '<td class="w">' + esc(p.who) + '</td>';
+      if (k === 'status') return '<td><span class="tag">' + esc(p.status || PSTAT[0]) + '</span></td>';
+      if (k === 'accs') return '<td><span class="tags">' + p.accs.map(function (a) { return '<span class="tag o">' + esc(a.net) + '</span>'; }).join('') + '</span></td>';
+      if (k === 'check') return '<td>' + (p.check ? '<span class="tag p" title="' + esc(p.check) + '">проверить</span>' : '') + '</td>';
+      if (k === 'added') return '<td class="nw">' + human(p.added) + '</td>';
+      return '<td class="nw">' + esc(p[k] || '') + '</td>';
+    };
+    return '<div class="panel ptable"><div class="tw"><table><thead><tr><th><span class="vh">Фото</span></th>' + th(['name', 'Имя']) + cols.map(th).join('') + '</tr></thead><tbody>'
+      + list.map(function (p) { return '<tr class="click" data-person="' + p.id + '"><td class="pa">' + avaHtml(p) + '</td><td class="pn"><b>' + esc(p.name) + '</b>' + (p.en ? '<small>' + esc(p.en) + '</small>' : '') + '</td>' + cols.map(function (c) { return cell(p, c[0]); }).join('') + '</tr>'; }).join('')
+      + '</tbody></table></div></div>';
+  }
+  function openCols() {
+    var v = pview();
+    dlgbody.innerHTML = '<h2>Колонки таблицы</h2><div id="colbox"></div><div class="actions"><span></span><button type="button" class="btn" id="colclose">Готово</button></div>';
+    var box = document.getElementById('colbox');
+    var draw = function () {
+      box.innerHTML = '<ul class="list">' + pcolAll().map(function (c) {
+        var own = c[0].slice(0, 2) === 'x:';
+        return '<li><label class="chk"><input type="checkbox" data-col="' + esc(c[0]) + '"' + (v.hide.indexOf(c[0]) < 0 ? ' checked' : '') + '> ' + esc(c[1]) + (own ? ' <span class="tag o">своя</span>' : '') + '</label>' + (own ? '<button type="button" class="tgl" data-coldel="' + esc(c[0].slice(2)) + '">Удалить</button>' : '') + '</li>';
+      }).join('') + '</ul><form id="colform" class="coladd"><input type="text" id="colname" maxlength="30" placeholder="Название новой колонки" aria-label="Название новой колонки" autocomplete="off"><button type="submit" class="btn ghost">+ Добавить</button></form><p class="note">Фото и имя показываются всегда. В свои колонки можно писать прямо в таблице.</p>';
+    };
+    draw(); dlg.showModal();
+    document.getElementById('colclose').onclick = function () { dlg.close(); };
+    box.onchange = function (event) {
+      var k = event.target.dataset.col; if (!k) return;
+      v.hide = v.hide.filter(function (x) { return x !== k; }); if (!event.target.checked) v.hide.push(k);
+      save(); render();
+    };
+    box.onclick = function (event) {
+      var b = event.target.closest('[data-coldel]'); if (!b) return;
+      var c = state.pcols.filter(function (x) { return x.id === b.dataset.coldel; })[0];
+      if (!c || !confirm('Удалить колонку «' + c.name + '» вместе со всем, что в неё вписано?')) return;
+      state.pcols = state.pcols.filter(function (x) { return x !== c; });
+      state.contacts.forEach(function (p) { if (p.x) delete p.x[c.id]; });
+      if (v.sort === 'x:' + c.id) { v.sort = 'name'; v.dir = 1; }
+      save(); render(); draw();
+    };
+    box.onsubmit = function (event) {
+      event.preventDefault();
+      var n = document.getElementById('colname').value.trim().slice(0, 30); if (!n) return;
+      if (pcolAll().concat([['name', 'Имя']]).some(function (c) { return c[1].toLowerCase() === n.toLowerCase(); })) return toast('Колонка с таким названием уже есть');
+      state.pcols.push({ id: uid(), name: n }); save(); render(); draw(); document.getElementById('colname').focus();
+    };
+  }
+  // Square crop to 240 px: small enough to keep a couple of hundred photos in the browser.
+  function pickPhoto(done) {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'image/*';
+    inp.onchange = function () {
+      var f = inp.files[0]; if (!f) return;
+      var img = new Image(), url = URL.createObjectURL(f);
+      img.onload = function () {
+        var s = Math.min(img.naturalWidth, img.naturalHeight), c = document.createElement('canvas'); c.width = c.height = 240;
+        c.getContext('2d').drawImage(img, (img.naturalWidth - s) / 2, (img.naturalHeight - s) / 2, s, s, 0, 0, 240, 240);
+        URL.revokeObjectURL(url); done(c.toDataURL('image/jpeg', 0.82));
+      };
+      img.onerror = function () { URL.revokeObjectURL(url); toast('Этот файл не открывается как картинка'); };
+      img.src = url;
     };
     inp.click();
   }
@@ -648,6 +754,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     if (!p) return;
     var row = function (a) { return '<div class="acc"><select aria-label="Соцсеть">' + selOpts(NETS, a.net) + '</select><input type="text" aria-label="Ссылка или ник" placeholder="ссылка или @ник" autocomplete="off" value="' + esc(a.val) + '"><button type="button" class="tgl" data-accdel aria-label="Убрать аккаунт">×</button></div>'; };
     dlgbody.innerHTML = '<h2>' + (isNew ? 'Новый контакт' : 'Анкета') + '</h2><form id="personform"><div class="grid2">'
+      + '<div class="full phrow"><span id="pphoto">' + avaHtml(p, true) + '</span><span><button type="button" class="tgl" id="photopick">Выбрать фото</button> <button type="button" class="tgl" id="photodel">Убрать</button></span></div>'
       + '<div class="full"><label for="pn">Имя или название</label><input id="pn" name="name" type="text" required autocomplete="off" value="' + esc(p.name) + '"></div>'
       + '<div class="full"><label for="pw">Кто это и чем интересен</label><input id="pw" name="who" type="text" autocomplete="off" value="' + esc(p.who) + '"></div>'
       + '<div><label for="pc">Категория</label><input id="pc" name="cat" type="text" list="pcatlist" autocomplete="off" placeholder="выберите или впишите свою" value="' + esc(p.cat) + '"><datalist id="pcatlist">' + pcats().map(function (c) { return '<option value="' + esc(c) + '">'; }).join('') + '</datalist></div>'
@@ -656,11 +763,15 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
       + '<div><label for="pe">Почта</label><input id="pe" name="email" type="email" autocomplete="off" value="' + esc(p.email) + '"></div>'
       + '<div><label for="pp">Телефон</label><input id="pp" name="phone" type="text" autocomplete="off" value="' + esc(p.phone) + '"></div>'
       + '<div class="full"><label for="ps">Статус</label><select id="ps" name="status">' + selOpts(PSTAT, p.status || PSTAT[0]) + '</select></div>'
+      + state.pcols.map(function (c) { return '<div><label for="px' + c.id + '">' + esc(c.name) + '</label><input id="px' + c.id + '" type="text" data-xf="' + c.id + '" autocomplete="off" value="' + esc(p.x && p.x[c.id] || '') + '"></div>'; }).join('')
       + '<div class="full"><label for="pt">Заметки: откуда знаем, о чём говорили, идеи</label><textarea id="pt" name="notes" rows="4">' + esc(p.notes) + '</textarea></div></div>'
       + '<div class="actions"><span>' + (isNew ? '' : '<button type="button" class="btn danger" id="persondel">Удалить</button>') + '</span><span><button type="button" class="btn ghost" id="personclose">Отмена</button> <button type="submit" class="btn">Сохранить</button></span></div></form>';
     dlg.showModal();
     var form = document.getElementById('personform'), box = document.getElementById('paccs');
     document.getElementById('personclose').onclick = function () { dlg.close(); };
+    var photo = p.photo || '', showPhoto = function () { document.getElementById('pphoto').innerHTML = avaHtml({ name: form.name.value, photo: photo }, true); };
+    document.getElementById('photopick').onclick = function () { pickPhoto(function (d) { photo = d; showPhoto(); }); };
+    document.getElementById('photodel').onclick = function () { photo = ''; showPhoto(); };
     document.getElementById('accadd').onclick = function () { box.insertAdjacentHTML('beforeend', row({ net: NETS[0], val: '' })); box.lastChild.querySelector('input').focus(); };
     box.onclick = function (event) { var b = event.target.closest('[data-accdel]'); if (b) b.parentNode.remove(); };
     var del = document.getElementById('persondel');
@@ -676,10 +787,11 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
       if (!isNew) { var live = personById(p.id); if (!live) { dlg.close(); return render(); } p = live; }
       p.name = name; p.who = form.who.value.trim(); p.cat = form.cat.value.trim().slice(0, 40); p.city = form.city.value.trim(); p.status = form.status.value;
       p.email = form.email.value.trim(); p.phone = form.phone.value.trim(); p.notes = form.notes.value.trim();
+      p.photo = photo; p.x = {}; [].forEach.call(form.querySelectorAll('[data-xf]'), function (i) { var val = i.value.trim().slice(0, 200); if (val) p.x[i.dataset.xf] = val; });
       p.accs = [].map.call(box.querySelectorAll('.acc'), function (r) { return { net: r.querySelector('select').value, val: r.querySelector('input').value.trim().slice(0, 300) }; }).filter(function (a) { return a.val; });
       if (isNew) state.contacts.push(p);
       state.person = p.id; state.view = 'people';
-      save(); dlg.close(); render(); toast(isNew ? 'Контакт добавлен' : 'Сохранено');
+      var ok = save(); dlg.close(); render(); toast(!ok ? 'Не сохранено: в браузере кончилось место' : isNew ? 'Контакт добавлен' : 'Сохранено');
     };
   }
 
@@ -736,12 +848,15 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   }
 
   document.addEventListener('click', function (event) {
-    var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-importpeople],[data-checked],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
+    var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-importpeople],[data-psort],[data-pcolsbtn],[data-checked],[data-card],[data-new],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
     if (!t) return;
     if ('themeToggle' in t.dataset) { var light = document.documentElement.dataset.theme !== 'light'; if (light) document.documentElement.dataset.theme = 'light'; else delete document.documentElement.dataset.theme; try { localStorage.setItem('auf-admin-theme', light ? 'light' : 'dark'); } catch (e) {} return applyTheme(); }
     if (t.dataset.go) return go(t.dataset.go);
     if (t.dataset.task) { event.preventDefault(); return openTask(t.dataset.task); }
     if ('newtask' in t.dataset) return openTask(null, t.dataset.newtask ? { contact: t.dataset.newtask, kind: 'Написать' } : null);
+    if (t.dataset.psort) { var pv = pview(); if ((pv.sort || 'name') === t.dataset.psort) pv.dir = -(pv.dir || 1); else { pv.sort = t.dataset.psort; pv.dir = 1; } save(); return render(); }
+    if ('pcolsbtn' in t.dataset) return openCols();
+    if (t.dataset.person && event.target.closest('input')) return;
     if (t.dataset.person) { state.person = t.dataset.person; save(); render(); return scrollTo(0, 0); }
     if ('newperson' in t.dataset) return openPerson(null);
     if (t.dataset.editperson) return openPerson(t.dataset.editperson);
@@ -763,6 +878,8 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   });
   document.addEventListener('input', function (event) { var f = event.target.dataset && event.target.dataset.f; if (f) { filters[f] = event.target.value; render(); } });
   document.addEventListener('change', function (event) {
+    var px = event.target.dataset && event.target.dataset.px;
+    if (px) { var pp = personById(px.split(':')[0]); if (pp) { pp.x = pp.x || {}; var pvv = event.target.value.trim().slice(0, 200); if (pvv) pp.x[px.split(':')[1]] = pvv; else delete pp.x[px.split(':')[1]]; save(); } return; }
     var id = event.target.dataset && event.target.dataset.role;
     if (id) { var m = member(id); if (m) { if (event.target.value === 'chief' && m.role !== 'chief' && clevels() >= CLEVEL_MAX) { render(); return toast('C-Level уже ' + CLEVEL_MAX + ' из ' + CLEVEL_MAX + '. Сначала освободите место'); } m.role = event.target.value; save(); render(); toast('Уровень изменён'); } }
   });
@@ -1214,7 +1331,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     if (e.key !== KEY || !e.newValue) return;
     var s; try { s = JSON.parse(e.newValue); } catch (x) { return; }
     if (!s || s.v !== 1 || !Array.isArray(s.cards) || !Array.isArray(s.team)) return;
-    state.team = s.team; state.cards = s.cards; state.subs = s.subs || []; state.apps = s.apps || []; state.tasks = s.tasks || []; state.contacts = s.contacts || []; state.me = s.me;
+    state.team = s.team; state.cards = s.cards; state.subs = s.subs || []; state.apps = s.apps || []; state.tasks = s.tasks || []; state.contacts = s.contacts || []; state.pcols = s.pcols || []; state.pview = s.pview; state.me = s.me;
     if (edCard) {
       var live = cardById(edCard.id);
       if (!live) { edCard = null; edLoaded = null; state.editing = null; if (dlg.open) dlg.close(); save(); return render(); }
