@@ -306,6 +306,19 @@ br.wide { display: none; }
   .bg::after { height: 22%; background: linear-gradient(180deg, rgb(9 28 34 / .85) 0, rgb(9 28 34 / 0) 100%); }
   main { padding-top: 20px !important; }
 }
+/* v18: dark authors popup with a terms choice */
+#authors.dark h2 span:nth-child(1) { background: var(--yellow); color: #000; }
+#authors.dark p.txt { color: #dfe6e6; }
+#authors.dark input[type=text], #authors.dark textarea { background: rgb(0 0 0 / .5); color: #fff; border: 1px solid rgb(255 255 255 / .6); }
+#authors.dark input[type=text]::placeholder, #authors.dark textarea::placeholder { color: #8b9696; }
+#authors.dark input[type=text]:focus-visible, #authors.dark textarea:focus-visible { border-color: var(--yellow); box-shadow: none; }
+#authors.dark form button { background: var(--yellow); color: #000; border-color: #000; box-shadow: 4px 4px 0 #000; }
+#authors.dark .note[data-state=error] { color: #ff7aa9; font-weight: 400; }
+.terms { margin: 16px 0 0; padding: 0; border: 0; }
+.terms legend { padding: 0; margin-bottom: 9px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.terms label { display: flex !important; align-items: center; gap: 11px; min-height: 40px; margin: 0 !important; font: 400 15px/1.3 Arial, sans-serif !important; letter-spacing: 0 !important; text-transform: none !important; cursor: pointer; }
+.terms input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: #fdfd38; cursor: pointer; }
+.terms .hint { margin: 4px 0 0; font: 400 12px/1.4 Arial, sans-serif; color: #9aa6a6; }
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
@@ -364,7 +377,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
   <button type="button" class="x" aria-label="Закрыть">×</button>
 </dialog>
 
-<dialog id="authors" aria-labelledby="authors-title">
+<dialog id="authors" class="dark" aria-labelledby="authors-title">
   <div class="sheet">
     <p class="eyebrow">Стать автором</p>
     <h2 id="authors-title"><span>Давайте знакомиться</span></h2>
@@ -376,6 +389,12 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
       <textarea id="pitch-idea" name="idea" rows="4" placeholder="Кто ты, чем занимаешься, о чём тебе интересно писать. Можешь оставить ссылку на свои работы." required></textarea>
       <label for="pitch-city">Из какого города</label>
       <input id="pitch-city" name="city" type="text" autocomplete="address-level2" required>
+      <fieldset class="terms">
+        <legend>На каких условиях готов работать</legend>
+        <label><input type="checkbox" name="terms" value="paid"><span>За гонорар</span></label>
+        <label><input type="checkbox" name="terms" value="volunteer"><span>Для души и&nbsp;культуры, без оплаты</span></label>
+        <p class="hint">Можно отметить оба варианта.</p>
+      </fieldset>
       <button type="submit">Отправить заявку</button>
       <p class="note" id="pitch-note" role="status"></p>
     </form>
@@ -579,10 +598,12 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     if (idea.length < 10) { tell('Напиши хотя бы пару слов о себе.', 'error'); pitch.idea.focus(); return; }
     var city = pitch.city.value.trim();
     if (city.length < 2) { tell('Укажи, из какого ты города.', 'error'); pitch.city.focus(); return; }
+    var terms = Array.prototype.filter.call(pitch.terms, function (box) { return box.checked; }).map(function (box) { return box.value; });
+    if (!terms.length) { tell('Отметь, на каких условиях готов работать.', 'error'); pitch.terms[0].focus(); return; }
     var endpoint = pitch.dataset.endpoint;
     if (!endpoint) { tell('Приём заявок пока не подключён — заявка никуда не отправлена.', 'error'); return; }
     pitchButton.disabled = true; tell('Отправляем…');
-    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ contact: contact, about: idea, city: city, source: 'auf-soon-authors' }) })
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ contact: contact, about: idea, city: city, terms: terms, source: 'auf-soon-authors' }) })
       .then(function (response) { if (!response.ok) throw new Error(response.status); tell('Получили. Ответим по этому контакту.', 'ok'); pitch.reset(); })
       .catch(function () { tell('Не получилось отправить. Попробуй ещё раз чуть позже.', 'error'); })
       .then(function () { pitchButton.disabled = false; });
