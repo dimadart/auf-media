@@ -6,7 +6,7 @@
 <meta name="robots" content="noindex,follow">
 <meta name="theme-color" content="#000000">
 <title>AUF MEDIA — скоро открытие</title>
-<meta name="description" content="Скоро открытие. Культурный журнал о людях, явлениях и событиях в США.">
+<meta name="description" content="Независимый журнал из Нью-Йорка о людях, культуре и времени, в котором мы живём.">
 <link rel="preload" as="image" href="../assets/soon/room-still.webp" media="(min-width: 861px)" fetchpriority="high">
 <link rel="preload" as="image" href="../assets/soon/room-m.webp" media="(max-width: 860px)" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="../assets/editorial/fonts/unbounded-cyrillic.woff2" crossorigin>
@@ -196,6 +196,11 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 /* v6: no tagline strip, no ribbon */
 .tagline, .ribbon { display: none !important; }
 @media (min-width: 861px) { .foot { bottom: 22px; } .brand { padding-top: 26px; } }
+/* v7: bigger brand, lower */
+.brand { gap: 18px; font-size: clamp(24px, 2.6vw, 40px); letter-spacing: .1em; }
+.brand img { width: clamp(70px, 6.4vw, 104px); }
+@media (min-width: 861px) { .brand { padding-top: clamp(48px, 11svh, 120px); } main { padding-top: clamp(16px, 3svh, 34px); } .lede { font-size: clamp(17px, 1.5vw, 23px); line-height: 1.4; max-width: 24em; color: #fff; } form#call { margin-top: clamp(18px, 3.4svh, 36px); } }
+@media (max-width: 860px) { .brand { padding-top: 36px; } }
 @media (prefers-reduced-motion: reduce) {
   body::before { animation: none !important; }
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
@@ -210,7 +215,7 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 <main>
   <div class="copy">
     <h1><span>Скоро</span><span>открываемся</span></h1>
-    <p class="lede"><b>AUF MEDIA</b> — новый культурный журнал о&nbsp;людях, явлениях и&nbsp;событиях в&nbsp;США. Оставь телефон&nbsp;— позовём первым, когда откроемся.</p>
+    <p class="lede">Независимый журнал из&nbsp;Нью-Йорка о&nbsp;людях, культуре и&nbsp;времени, в&nbsp;котором мы&nbsp;живём.</p>
     <form id="call" novalidate data-endpoint="">
       <label for="phone">Твой телефон</label>
       <div class="row">
