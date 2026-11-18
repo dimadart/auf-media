@@ -397,6 +397,32 @@
       }
     });
   }
+  const swap = document.querySelector('.uaf-swap');
+  if (swap) {
+    const words = swap.dataset.words.split('|');
+    let index = 0;
+    let timer = 0;
+    let onScreen = true;
+    const next = () => {
+      const leaving = swap.firstElementChild;
+      index = (index + 1) % words.length;
+      const entering = document.createElement('span');
+      entering.textContent = words[index];
+      swap.append(entering);
+      leaving.animate([{ transform: 'translateY(0) rotate(0)', opacity: 1 }, { transform: 'translateY(-70%) rotate(-4deg)', opacity: 0 }], { duration: 260, easing: 'ease-in', fill: 'forwards' }).onfinish = () => leaving.remove();
+      entering.animate([{ transform: 'translateY(80%) rotate(5deg)', opacity: 0 }, { transform: 'translateY(0) rotate(0)', opacity: 1 }], { duration: 380, delay: 120, easing: 'cubic-bezier(.2, 1.4, .4, 1)', fill: 'backwards' });
+      schedule();
+    };
+    const schedule = () => {
+      clearTimeout(timer);
+      if (reducedMotion.matches || document.hidden || !onScreen) return;
+      timer = setTimeout(next, index === 0 ? 2800 : 1700);  // AUF stays longer than the rest
+    };
+    new IntersectionObserver(entries => { onScreen = entries[0].isIntersecting; schedule(); }).observe(swap);
+    document.addEventListener('visibilitychange', schedule);
+    reducedMotion.addEventListener('change', schedule);
+    setTimeout(schedule, 1500);
+  }
   const subscribe = document.querySelector('.uaf-subscribe');
   if (subscribe) {
     const email = subscribe.querySelector('input');
