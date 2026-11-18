@@ -188,6 +188,11 @@ h1 { font-size: clamp(40px, 6.4vw, 104px); }
   .found { bottom: 58px; }
 }
 @keyframes grain { 0% { background-position: 0 0; } 25% { background-position: -137px 61px; } 50% { background-position: 83px -149px; } 75% { background-position: -59px -97px; } }
+/* v5: no big headline, no sticker counter */
+h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.found { display: none !important; }
+.lede { margin-top: 0 !important; }
+@media (min-width: 861px) { main { padding-top: clamp(18px, 4svh, 44px); } .lede { font-size: clamp(16px, 1.35vw, 20px); } }
 @media (prefers-reduced-motion: reduce) {
   body::before { animation: none !important; }
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
