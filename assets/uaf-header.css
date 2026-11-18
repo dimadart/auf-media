@@ -275,3 +275,11 @@ body:has(#uaf-header) .Nl1Bp_0 { text-wrap: pretty; }
   body:has(#uaf-header) ._13p41_0, body:has(#uaf-header) ._1s2Fq_0 { animation: none !important; }
   body:has(#uaf-header) a._3S0Ql_0 img, body:has(#uaf-header) section._164-5_0 ._2-mlf_0, .uaf-subscribe button { transition: none; }
 }
+/* phones: the lead stories keep their sticker, centred between the rubric and the headline */
+@media (max-width: 600px) {
+  body:has(#uaf-header) section._164-5_0 ._1lFOR_0 { display: flex; flex-direction: column-reverse; align-items: center; gap: 6px; }
+  body:has(#uaf-header) section._164-5_0 ._2JcRy_0 { display: block !important; position: relative; inset: auto; right: auto; width: 84px !important; height: 84px !important; margin: 4px 0 0; transform: rotate(8deg); pointer-events: none; }
+  body:has(#uaf-header) section.uaf-also ._2JcRy_0 { width: 68px !important; height: 68px !important; }
+  body:has(#uaf-header) section._164-5_0:nth-of-type(even) ._2JcRy_0 { transform: rotate(-8deg); }
+  body:has(#uaf-header) section._164-5_0 ._2JcRy_0 img { width: 100%; height: 100%; object-fit: contain; }
+}
