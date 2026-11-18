@@ -1,0 +1,76 @@
+/* Author page in the homepage's zine language: black paper, pasted plates, headline strips on pictures. */
+* { box-sizing: border-box; }
+html { background: #000; color-scheme: dark; -webkit-font-smoothing: antialiased; scroll-behavior: smooth; }
+body.au { --yellow: #fdfd38; --pink: #ff3d8b; --blue: #0c24fb; margin: 0; background: #000; color: #fff; font-family: Arial, sans-serif; }
+.au a { color: inherit; }
+.au :focus-visible { outline: 3px solid var(--yellow); outline-offset: 3px; }
+.au-skip { position: absolute; left: -9999px; }
+.au-skip:focus { left: 12px; top: 12px; z-index: 30; padding: 10px 14px; background: #fff; color: #000; }
+.au-bar { position: sticky; top: 0; z-index: 20; height: 72px; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; padding: 0 24px; background: #000; border-bottom: 1px solid #303030; }
+.au-bar img { display: block; width: 54px; height: 46px; object-fit: contain; }
+.au-bar b { font: 700 27px/1 Arial, sans-serif; letter-spacing: -.045em; word-spacing: .18em; text-decoration: none; }
+.au-bar a { text-decoration: none; }
+.au-bar a:last-child { justify-self: end; padding: 12px 0; font: 700 12px/1 Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; }
+.au-bar a:last-child:hover { color: var(--yellow); }
+.au-hero { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: clamp(28px, 5vw, 80px); align-items: center; width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: clamp(40px, 7vw, 96px) 0 clamp(48px, 7vw, 96px); }
+.au-photo { position: relative; aspect-ratio: 4 / 5; background: var(--yellow); transform: rotate(-2.5deg); box-shadow: 14px 14px 0 var(--pink); }
+.au-photo img { display: block; width: 100%; height: 100%; object-fit: cover; filter: grayscale(1) contrast(1.25); mix-blend-mode: multiply; }
+.au-photo.is-empty { display: flex; align-items: center; justify-content: center; background: #111; }
+.au-photo.is-empty img { width: 58%; height: auto; filter: none; mix-blend-mode: normal; }
+.au-photo::before, .au-photo::after { content: ''; position: absolute; z-index: 2; width: 34%; height: 30px; background: rgb(255 255 255 / .82); }
+.au-photo::before { left: -9%; top: 5%; transform: rotate(-38deg); }
+.au-photo::after { right: -9%; bottom: 6%; transform: rotate(-38deg); }
+.au-tag { display: inline-block; margin: 0 0 18px; padding: 7px 12px 6px; background: var(--blue); color: #fff; font: 700 12px/1.2 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; transform: rotate(-2deg); }
+.au-name { margin: 0; color: var(--yellow); font-size: clamp(56px, 10.5vw, 148px); font-weight: 800; line-height: .86; letter-spacing: -.045em; text-transform: uppercase; }
+.au-name span { display: block; }
+.au-name span + span { margin-left: .5em; }
+.au-role { display: inline; padding: .14em .5em .1em; background: #fff; color: var(--blue); font-size: clamp(17px, 1.9vw, 25px); font-weight: 700; line-height: 1.6; text-transform: uppercase; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.au-role-row { margin: 30px 0 0; }
+.au-bio { max-width: 520px; margin: 22px 0 0; color: #e4e4e4; font-size: 18px; line-height: 1.5; }
+.au-social { display: flex; flex-wrap: wrap; gap: 18px; margin: 30px 0 0; padding: 0; list-style: none; }
+.au-social a { display: flex; align-items: center; justify-content: center; width: 58px; height: 58px; border: 3px solid #0b0b0b; background: var(--yellow); color: #0b0b0b; box-shadow: 5px 5px 0 var(--pink); transform: rotate(-4deg); transition: transform 140ms ease-out, box-shadow 140ms ease-out, background-color 140ms ease-out; }
+.au-social li:nth-child(even) a { background: var(--pink); box-shadow: 5px 5px 0 var(--yellow); transform: rotate(3deg); }
+.au-social a:hover { background: #fff; transform: rotate(0) translate(-2px, -2px); box-shadow: 7px 7px 0 var(--blue); }
+.au-social svg { width: 28px; height: 28px; }
+.au-jump { display: inline-block; margin-top: 34px; font: 700 13px/1 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; text-underline-offset: 6px; }
+.au-jump:hover { color: var(--yellow); }
+.au-list { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding-bottom: 80px; scroll-margin-top: 90px; }
+.au-list-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 28px; }
+.au-list-head h2 { margin: 0; color: var(--yellow); font-size: clamp(44px, 8vw, 100px); font-weight: 800; line-height: .9; letter-spacing: -.03em; text-transform: uppercase; }
+.au-list-head span { padding: 7px 10px 6px; background: #fff; color: #0b0b0b; font: 700 12px/1.2 Arial, sans-serif; letter-spacing: .1em; text-transform: uppercase; transform: rotate(2deg); white-space: nowrap; }
+.au-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; }
+.au-card { --strip: #fff; --strip-ink: var(--blue); --tag: var(--blue); --tag-ink: #fff; position: relative; display: block; aspect-ratio: 4 / 5; overflow: hidden; background: #141414 center / cover no-repeat; text-decoration: none; }
+.au-card[data-palette="1"] { --strip: var(--yellow); --strip-ink: #0b0b0b; --tag: var(--pink); --tag-ink: #0b0b0b; }
+.au-card[data-palette="2"] { --strip: var(--pink); --strip-ink: #0b0b0b; --tag: var(--yellow); --tag-ink: #0b0b0b; }
+.au-card[data-palette="3"] { --strip: var(--blue); --strip-ink: var(--yellow); --tag: #fff; --tag-ink: var(--blue); }
+.au-card:nth-child(7n + 1) { grid-column: span 2; aspect-ratio: auto; min-height: 100%; }
+.au-card img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: transform 400ms cubic-bezier(.2, .7, .2, 1); }
+.au-card:hover img { transform: scale(1.04); }
+.au-card em { position: absolute; left: 0; top: 16px; z-index: 1; padding: 7px 12px 6px 14px; background: var(--tag); color: var(--tag-ink); font: 700 11px/1.2 Arial, sans-serif; letter-spacing: .08em; text-transform: uppercase; transform: rotate(-2deg); transform-origin: left center; }
+.au-card h3 { position: absolute; left: 0; right: 56px; bottom: 16px; z-index: 1; margin: 0; font-size: clamp(16px, 1.55vw, 22px); line-height: 1.5; text-transform: uppercase; letter-spacing: -.01em; }
+.au-card:nth-child(7n + 1) h3 { right: 30%; font-size: clamp(19px, 2.05vw, 30px); }
+.au-card h3 span { padding: .12em .4em .1em .5em; background: var(--strip); color: var(--strip-ink); -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.au-card i { position: absolute; right: 0; bottom: 16px; z-index: 1; display: flex; align-items: center; justify-content: center; width: 44px; height: 36px; background: var(--strip); color: var(--strip-ink); transition: width 200ms ease-out; }
+.au-card:hover i { width: 58px; }
+.au-card i svg { width: 22px; height: 12px; }
+.au-foot { width: min(1120px, calc(100% - 48px)); margin: 0 auto; padding: 26px 0 44px; border-top: 1px dotted #6a6a6a; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 10px 24px; color: #a9a9a9; font-size: 12px; line-height: 1.5; }
+.au-foot a { color: #fff; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-decoration: none; }
+.au-foot a:hover { color: var(--yellow); }
+@media (max-width: 900px) { .au-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } .au-card:nth-child(7n + 1) { grid-column: span 2; aspect-ratio: 3 / 2; min-height: 0; } }
+@media (max-width: 600px) {
+  .au-bar { height: 72px; padding: 0 12px; }
+  .au-bar img { width: 42px; height: 42px; }
+  .au-bar b { font-size: 20px; }
+  .au-bar a:last-child { font-size: 11px; }
+  .au-hero { grid-template-columns: 1fr; width: calc(100% - 40px); gap: 44px; padding-top: 44px; }
+  .au-photo { width: 78%; margin-left: 4%; box-shadow: 10px 10px 0 var(--pink); }
+  .au-name { font-size: clamp(60px, 21vw, 96px); }
+  .au-bio { font-size: 16px; }
+  .au-list { width: calc(100% - 40px); }
+  .au-list-head { flex-direction: column; align-items: flex-start; }
+  .au-grid { grid-template-columns: 1fr; gap: 20px; }
+  .au-card, .au-card:nth-child(7n + 1) { grid-column: auto; aspect-ratio: 4 / 5; }
+  .au-card h3, .au-card:nth-child(7n + 1) h3 { right: 52px; font-size: clamp(18px, 5.2vw, 22px); }
+  .au-foot { width: calc(100% - 40px); flex-direction: column; }
+}
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } .au-card img, .au-card i, .au-social a { transition: none; } }
