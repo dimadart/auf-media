@@ -388,3 +388,15 @@ body:has(#uaf-header) ._-2ywZ_0 { width: 100vw; max-width: 100vw; min-width: 0; 
   body:has(#uaf-header) ._-2ywZ_0 ._3kHpE_0 { margin: 0; align-self: stretch; width: auto; height: auto; padding-bottom: 10px; }
   body:has(#uaf-header) ._-2ywZ_0 ._1s2Fq_0 { position: relative !important; inset: auto; margin: 0 auto; }
 }
+/* slogan stands apart as a motto: space and a short stroke under it; the opening screen shows the picture and two lines of the first headline */
+.uaf-hero-copy h1._1rogb_0 { position: relative; padding-bottom: 26px; letter-spacing: -.02em; }
+.uaf-hero-copy h1._1rogb_0::after { content: ''; position: absolute; left: 50%; bottom: 0; width: 64px; height: 5px; background: #fdfd38; transform: translateX(-50%) rotate(-2deg); }
+.uaf-masthead { height: max(200px, calc(100svh - 380px)); }
+@media (max-width: 1100px) { .uaf-masthead { height: max(200px, calc(100svh - 330px)); } }
+.uaf-hero-copy { padding-bottom: 64px; }
+@media (max-width: 600px) {
+  .uaf-hero-copy h1._1rogb_0 { padding-bottom: 20px; }
+  .uaf-hero-copy h1._1rogb_0::after { width: 48px; height: 4px; }
+  .uaf-masthead { height: max(150px, calc(100svh - 330px)); }
+  .uaf-hero-copy { padding-top: 36px; padding-bottom: 52px; }
+}
