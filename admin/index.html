@@ -177,9 +177,19 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
 .ed-ask input { flex: 1; min-width: 0; padding: 8px 9px; border: 1px solid var(--fline); background: var(--field); color: var(--text); outline: 0; }
 .ed-ask input:focus-visible { border-color: var(--focus); }
 .ed-ask .btn { min-height: 36px; box-shadow: none; }
+.who { display: flex; gap: 4px; flex-wrap: wrap; justify-content: flex-end; }
+.who span { padding: 4px 8px; color: #fff; font-size: 11px; font-weight: 700; white-space: nowrap; }
+#edpeers { position: fixed; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+#edpeers i { position: absolute; display: block; }
+#edpeers .sel { opacity: .26; }
+#edpeers .car { width: 2px; }
+#edpeers .car b { position: absolute; left: 0; bottom: 100%; padding: 2px 6px 3px; font: 700 10.5px/1.1 Arial, Helvetica, sans-serif; color: #fff; white-space: nowrap; }
+.card .dots { display: inline-flex; align-items: center; gap: 3px; color: var(--text); font-weight: 700; }
+.card .dots i { width: 9px; height: 9px; border-radius: 50%; }
+.dlg .list li { align-items: center; }
 [hidden] { display: none !important; }
 @media (max-width: 860px) {
-  .ed-top { padding: 8px 12px; gap: 6px; } .ed-top .cnt { display: none; }
+  .ed-top { padding: 8px 12px; gap: 6px; flex-wrap: wrap; } .ed-top .cnt, .ed-top .sp { display: none; } .ed-top #edstatus { flex: 1 1 100%; order: 9; } .ed-top .who { flex: 1; }
   .ed-page { width: calc(100% - 32px); padding-top: 26px; }
   #edlede { font-size: 18.5px; } #edbody { font-size: 18px; } #edbody blockquote { font-size: 20px; }
   .ed-tools { left: 0 !important; right: 0; top: auto !important; bottom: 0; box-shadow: none; border-top: 1px solid var(--line); overflow-x: auto; }
@@ -199,7 +209,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     <p class="foot">AUF MEDIA · прототип админки</p>
   </aside>
   <main>
-    <p class="proto">Прототип: всё, что вы меняете, хранится только в этом браузере. Входа по паролю нет, письма-приглашения не отправляются.</p>
+    <p class="proto">Прототип: всё, что вы меняете, хранится только в этом браузере. Входа по паролю нет, письма-приглашения не отправляются, совместная работа видна между окнами этого браузера.</p>
     <div class="top">
       <h1 id="title"></h1>
       <div class="as"><span>Смотреть как:</span><select id="viewas" aria-label="Смотреть как роль"></select><button type="button" class="tgl" data-theme-toggle></button></div>
@@ -212,7 +222,9 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     <button type="button" class="tgl back" data-edback>← Назад</button>
     <span id="edstatus" role="status"></span>
     <span class="sp"></span>
+    <span class="who" id="edwho"></span>
     <span class="cnt" id="edcount"></span>
+    <button type="button" class="tgl" data-edhist>Версии</button>
     <button type="button" class="tgl" data-eddetails>Детали</button>
     <button type="button" class="tgl" data-theme-toggle></button>
   </header>
@@ -246,6 +258,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   </div>
   <form class="ed-ask" id="edask" hidden><input id="edaskin" type="url" autocomplete="off"><button class="btn" type="submit">ОК</button></form>
   <input type="file" id="edfile" accept="image/*" hidden>
+  <div id="edpeers" aria-hidden="true"></div>
 </section>
 <dialog id="dlg"><div class="dlg" id="dlgbody"></div></dialog>
 
@@ -305,7 +318,17 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   var state;
   try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
   if (!state || state.v !== 1) state = fresh();
-  function save() { try { localStorage.setItem(KEY, JSON.stringify(state)); return true; } catch (e) { return false; } }
+  // What a window is looking at is its own business; materials and team are shared between windows.
+  var TABKEY = 'auf-admin-tab', TABF = ['viewAs', 'view', 'month', 'editing'], PALETTE = ['#ff3d8b', '#4d63ff', '#12a36b', '#ff7a00', '#9b5cff', '#0097b8'], tab = null;
+  try { tab = JSON.parse(sessionStorage.getItem(TABKEY)); } catch (e) {}
+  if (!tab || typeof tab.id !== 'string') tab = { id: uid(), color: PALETTE[Math.floor(Math.random() * PALETTE.length)] };
+  TABF.forEach(function (k) { if (k in tab) state[k] = tab[k]; });
+  state.editing = tab.editing || null;
+  function save() {
+    TABF.forEach(function (k) { tab[k] = state[k]; });
+    try { sessionStorage.setItem(TABKEY, JSON.stringify(tab)); } catch (e) {}
+    try { localStorage.setItem(KEY, JSON.stringify(Object.assign({}, state, { editing: null }))); return true; } catch (e) { return false; }
+  }
 
   var role = function () { return state.viewAs; };
   var atLeast = function (r) { return RANK[role()] >= RANK[r]; };
@@ -341,14 +364,14 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   }
   var sel = document.getElementById('viewas');
   sel.innerHTML = ROLES.map(function (r) { return '<option value="' + r.id + '">' + r.name + '</option>'; }).join('');
-  sel.addEventListener('change', function () { state.viewAs = sel.value; if (state.view === 'inbox' && !atLeast('editor')) state.view = 'home'; save(); render(); });
+  sel.addEventListener('change', function () { state.viewAs = sel.value; if (state.view === 'inbox' && !atLeast('editor')) state.view = 'home'; save(); render(); sendHere(); });
 
   function cardHtml(c) {
     var late = c.deadline && c.deadline < TODAY && c.stage !== 'published';
     return '<button type="button" class="card' + (isMine(c) ? ' mine' : '') + '" data-card="' + c.id + '"' + (canMove(c, c.stage) ? ' draggable="true"' : '') + '><strong>' + esc(c.title) + '</strong><span class="meta">'
       + (c.rubric ? '<span class="tag">' + esc(c.rubric) + '</span>' : '') + '<span>' + esc(mname(c.author)) + '</span>'
       + (c.deadline ? '<span class="' + (late ? 'late' : '') + '">дедлайн ' + human(c.deadline) + '</span>' : '')
-      + (c.publish ? '<span>выход ' + human(c.publish) + '</span>' : '') + (c.body ? '<span class="words">' + nfmt(countWords(c.body)) + ' сл.</span>' : '') + (c.demo ? '<span class="tag o">демо</span>' : '') + '</span></button>';
+      + (c.publish ? '<span>выход ' + human(c.publish) + '</span>' : '') + (c.body ? '<span class="words">' + nfmt(countWords(c.body)) + ' сл.</span>' : '') + (c.demo ? '<span class="tag o">демо</span>' : '') + peerDots(c.id) + '</span></button>';
   }
   function filtered() {
     var q = filters.q.trim().toLowerCase();
@@ -441,6 +464,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
         + '<h2>Что нужно от вас — около 10 минут</h2><ol><li>Зарегистрироваться на supabase.com и создать проект.</li><li>Прислать адрес проекта и два ключа из его настроек.</li><li>Сказать, с какого домена слать письма (или купить домен для журнала).</li></ol>'
         + '<h2>Что будет после подключения</h2><ul><li>Вход по почте и паролю, приглашение письмом из раздела «Команда».</li><li>Общая доска: изменения видят все сразу.</li><li>Роли из таблицы «Кто что может» начинают действовать по-настоящему.</li><li>Заявки с сайта падают в «Заявки».</li></ul>'
         + '<h2>Редактор текста</h2><p>У каждого материала есть текст: откройте карточку и нажмите «Открыть текст». Черновик сохраняется сам, но пока тоже только в этом браузере. Фото с компьютера уменьшается и хранится там же, поэтому места хватит на несколько десятков снимков.</p>'
+        + '<h2>Совместная работа</h2><p>В одном тексте могут быть сразу несколько человек: видно, кто открыт в материале, где стоит чужой курсор и что человек выделил, правки появляются на лету. Сейчас это работает между окнами одного браузера, потому что общей базы ещё нет. Чтобы попробовать, откройте админку во втором окне, выберите там «Смотреть как: Редактор» и откройте тот же материал. После подключения Supabase тот же механизм свяжет разных людей на разных компьютерах.</p><p>Ограничение прототипа: если двое одновременно печатают в одном и том же абзаце, побеждает последняя правка и буква может потеряться. В разных абзацах правки не мешают друг другу.</p>'
         + '<h2>Чего здесь нет намеренно</h2><p>Публикации на сайт кнопкой. Сейчас сайт собирается скриптами и выкладывается вручную, поэтому этап «Опубликовано» на доске — это отметка, а не выпуск. Связать редактор с сайтом — отдельный этап после того, как заработает общая база.</p>'
         + '</div>';
     }
@@ -489,6 +513,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
       var write = event.submitter && event.submitter.dataset.then === 'write';
       if (!edit) { if (write) { state.editing = c.id; save(); dlg.close(); render(); scrollTo(0, 0); } return; }
       var t = form.title.value.trim(); if (!t) { form.title.focus(); return; }
+      if (!isNew) { var live = cardById(c.id); if (!live) { dlg.close(); return render(); } c = live; }
       c.title = t; c.rubric = form.rubric.value; c.format = form.format.value; c.stage = form.stage.value; c.deadline = form.deadline.value; c.notes = form.notes.value.trim();
       if (full) { c.author = form.author.value; c.editor = form.editor.value; c.publish = form.publish.value; }
       if (isNew) state.cards.unshift(c);
@@ -572,26 +597,25 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     });
     return out;
   }
-  // The only way text gets into storage or onto the page: a whitelist of blocks and inline tags.
-  function serialize(root) {
-    var out = '';
-    [].forEach.call(root.childNodes, function (n) {
-      if (n.nodeType === 3) { if (n.nodeValue.trim()) out += '<p>' + esc(n.nodeValue) + '</p>'; return; }
-      if (n.nodeType !== 1) return;
-      var t = n.tagName, cap = n.querySelector && n.querySelector('figcaption'), capText = cap ? esc(cap.textContent.trim()) : '';
-      if (t === 'FIGURE') {
-        var v = n.getAttribute('data-video'), img = n.querySelector('img');
-        if (v && okUrl(v)) out += '<figure data-video="' + esc(v) + '"><figcaption>' + capText + '</figcaption></figure>';
-        else if (img && okUrl(img.getAttribute('src') || '', true)) out += '<figure><img src="' + esc(img.getAttribute('src')) + '" alt=""><figcaption>' + capText + '</figcaption></figure>';
-      } else if (t === 'HR') out += '<hr>';
-      else if (t === 'UL' || t === 'OL') { var li = inline(n); if (li) out += '<' + t.toLowerCase() + '>' + li + '</' + t.toLowerCase() + '>'; }
-      else {
-        var tag = t === 'H2' || t === 'H3' || t === 'BLOCKQUOTE' ? t.toLowerCase() : 'p', body = inline(n);
-        if (body.replace(/<br>/g, '').trim()) out += '<' + tag + '>' + body + '</' + tag + '>';
-      }
-    });
-    return out;
+  // The only way text gets into storage, onto the page or to other windows: a whitelist of blocks and inline tags.
+  function blockOf(n, keepEmpty) {
+    if (n.nodeType === 3) return n.nodeValue.trim() ? '<p>' + esc(n.nodeValue) + '</p>' : '';
+    if (n.nodeType !== 1) return '';
+    var t = n.tagName, id = n.getAttribute('data-id'), at = id && /^[a-z0-9]{4,12}$/.test(id) ? ' data-id="' + id + '"' : '';
+    var cap = n.querySelector('figcaption'), capText = cap ? esc(cap.textContent.trim()) : '';
+    if (t === 'FIGURE') {
+      var v = n.getAttribute('data-video'), img = n.querySelector('img');
+      if (v && okUrl(v)) return '<figure' + at + ' data-video="' + esc(v) + '"><figcaption>' + capText + '</figcaption></figure>';
+      if (img && okUrl(img.getAttribute('src') || '', true)) return '<figure' + at + '><img src="' + esc(img.getAttribute('src')) + '" alt=""><figcaption>' + capText + '</figcaption></figure>';
+      return '';
+    }
+    if (t === 'HR') return '<hr' + at + '>';
+    if (t === 'BUTTON' || t === 'SCRIPT' || t === 'STYLE') return '';
+    var list = t === 'UL' || t === 'OL', tag = list || t === 'H2' || t === 'H3' || t === 'BLOCKQUOTE' ? t.toLowerCase() : 'p', body = inline(n);
+    if (!body.replace(/<br>/g, '').replace(/<li><\/li>/g, '').trim()) { if (!keepEmpty) return ''; body = list ? '<li><br></li>' : '<br>'; }
+    return '<' + tag + at + '>' + body + '</' + tag + '>';
   }
+  function serialize(root, keepEmpty) { return [].map.call(root.childNodes, function (n) { return blockOf(n, keepEmpty); }).join(''); }
   function ytId(u) { var m = /(?:youtube\.com\/(?:watch\?(?:.*&)?v=|shorts\/|embed\/)|youtu\.be\/)([\w-]{11})/.exec(u); return m ? m[1] : ''; }
   function decorate() {
     [].forEach.call(edBody.querySelectorAll('figure'), function (f) {
@@ -618,28 +642,36 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
     var t = edTitle.value.replace(/\s+/g, ' ').trim();
     if (t) edCard.title = t;
     edCard.lede = edLede.value.trim(); edCard.body = serialize(edBody); edCard.updated = Date.now();
+    var hl = edCard.hist && edCard.hist[edCard.hist.length - 1];
+    if (!hl || Date.now() - hl.at > 180000) snap(edCard);
     var ok = save();
-    edStatus.textContent = ok ? 'Сохранено в этом браузере' : 'Не сохранено: в браузере кончилось место';
+    if (!ok) { state.cards.forEach(function (x) { if (x.hist) x.hist = x === edCard ? x.hist.slice(-1) : []; }); ok = save(); }
+    if (!ok) { edCard.hist = []; ok = save(); }
+    edStatus.textContent = ok ? 'Все изменения сохранены' : 'Не сохранено: в браузере кончилось место';
     return ok;
   }
-  function edDirty() { if (!edCan) return; edStatus.textContent = 'Сохраняю…'; clearTimeout(edTimer); edTimer = setTimeout(edFlush, 500); edStats(); }
+  function edDirty() { if (!edCan) return; edStatus.textContent = 'Сохраняю…'; clearTimeout(edTimer); edTimer = setTimeout(edFlush, 300); edStats(); syncOut(); }
   function hideFloat() { edTools.hidden = !(narrow() && edCan && edCard); edPlus.hidden = true; edIns.hidden = true; edPlus.setAttribute('aria-expanded', 'false'); }
   function openEditor(c) {
-    edCard = c; edCan = canEdit(c);
-    document.getElementById('edmeta').innerHTML = (c.rubric ? '<span class="tag y">' + esc(c.rubric) + '</span>' : '') + '<span class="tag">' + STAGES[stageIx(c.stage)].name + '</span><span>' + esc(mname(c.author)) + '</span>' + (c.deadline ? '<span>дедлайн ' + human(c.deadline) + '</span>' : '') + (c.publish ? '<span>выход ' + human(c.publish) + '</span>' : '');
+    edCard = c; edCan = canEdit(c); edMeta();
     edTitle.value = c.title; edLede.value = c.lede || ''; edTitle.readOnly = edLede.readOnly = !edCan;
     edLede.hidden = !edCan && !c.lede;
     var tpl = document.createElement('template'); tpl.innerHTML = c.body || '';
-    edBody.innerHTML = serialize(tpl.content) || '<p><br></p>';
+    edBody.innerHTML = serialize(tpl.content, true) || '<p><br></p>';
     edBody.contentEditable = edCan ? 'true' : 'false';
     edBody.setAttribute('data-ph', edCan ? 'Начните писать…' : c.demo ? 'Это демо-карточка: текст с сайта сюда не загружен.' : 'Текста пока нет.');
     decorate(); grow(edTitle); grow(edLede); edStats(); hideFloat(); edAsk.hidden = true;
-    edStatus.textContent = edCan ? 'Сохраняется в этом браузере' : 'Только просмотр';
-    document.getElementById('edhint').textContent = edCan ? (narrow() ? 'Кнопки оформления, фото и видео — на панели внизу.' : 'Выделите текст, чтобы оформить его. На пустой строке слева появится «+» для фото, видео и разделителя.') + ' Быстрый ввод: «## » заголовок, «> » цитата, «- » список, «---» разделитель. Публикация на сайт пока не подключена.' : 'В этой роли чужой текст можно только читать.';
-    if (edLoaded !== c.id && edCan) { edLoaded = c.id; (c.title ? edBody : edTitle).focus(); }
-    edLoaded = c.id;
+    edStatus.textContent = edCan ? 'Сохраняется само' : 'Только просмотр';
+    document.getElementById('edhint').textContent = edCan ? (narrow() ? 'Кнопки оформления, фото и видео — на панели внизу.' : 'Выделите текст, чтобы оформить его. На пустой строке слева появится «+» для фото, видео и разделителя.') + ' Быстрый ввод: «## » заголовок, «> » цитата, «- » список, «---» разделитель. Кнопки «Сохранить» нет: каждая правка записывается сама, прошлые копии лежат в «Версиях». Публикация на сайт пока не подключена.' : 'В этой роли чужой текст можно только читать. Правки автора вы видите сразу.';
+    var first = edLoaded !== c.id; edLoaded = c.id;
+    if (first) { if (edCan) { snap(c); (c.title ? edBody : edTitle).focus(); } collabOpen(); } else resetSent();
+    queuePeers();
   }
-  function edClose() { edFlush(); edCard = null; edLoaded = null; state.editing = null; save(); render(); scrollTo(0, 0); }
+  function edMeta() {
+    var c = edCard;
+    document.getElementById('edmeta').innerHTML = (c.rubric ? '<span class="tag y">' + esc(c.rubric) + '</span>' : '') + '<span class="tag">' + STAGES[stageIx(c.stage)].name + '</span><span>' + esc(mname(c.author)) + '</span>' + (c.deadline ? '<span>дедлайн ' + human(c.deadline) + '</span>' : '') + (c.publish ? '<span>выход ' + human(c.publish) + '</span>' : '');
+  }
+  function edClose() { edFlush(); edCard = null; edLoaded = null; state.editing = null; save(); render(); scrollTo(0, 0); sendHere(); }
 
   function topBlock(node) { while (node && node.parentNode !== edBody) node = node.parentNode; return node; }
   function selRange() { var s = getSelection(); return s.rangeCount && edBody.contains(s.anchorNode) ? s.getRangeAt(0) : null; }
@@ -813,9 +845,188 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   });
   edEl.addEventListener('click', function (event) {
     if (event.target.closest('[data-edback]')) return edClose();
+    if (event.target.closest('[data-edhist]')) return openHist();
     if (event.target.closest('[data-eddetails]')) { edFlush(); openCard(edCard.id); }
   });
   addEventListener('pagehide', function () { if (edCard) edFlush(); });
+  document.addEventListener('visibilitychange', function () { if (document.hidden && edCard) edFlush(); });
+
+  // ---------- live collaboration ----------
+  // Transport in the prototype is BroadcastChannel: it connects windows of one browser.
+  // The messages (here / hello / full / ops) are the same ones a shared realtime channel would carry.
+  var peers = {}, chan = null, edSent = { order: [], html: {}, title: '', lede: '' }, edWantFull = false, peerRaf = 0, hereRaf = 0;
+  var edPeers = document.getElementById('edpeers'), edWho = document.getElementById('edwho');
+  var IDRE = /^[a-z0-9]{4,12}$/;
+  try { chan = new BroadcastChannel('auf-admin-collab'); } catch (e) {}
+  function post(m) { if (!chan) return; m.tab = tab.id; try { chan.postMessage(m); } catch (e) {} }
+  function myName() { return role() === 'owner' ? mname(state.me) : ROLES.filter(function (x) { return x.id === role(); })[0].name; }
+  function byId(id) { return IDRE.test(id) ? edBody.querySelector(':scope > [data-id="' + id + '"]') : null; }
+  function ensureIds() {
+    var seen = {};
+    [].forEach.call(edBody.children, function (el) {
+      var id = el.getAttribute('data-id');
+      if (!id || seen[id] || !IDRE.test(id)) { id = uid(); el.setAttribute('data-id', id); }
+      seen[id] = 1;
+    });
+  }
+  function snapshot() {
+    var o = { order: [], html: {}, title: edTitle.value, lede: edLede.value };
+    [].forEach.call(edBody.children, function (el) { var id = el.getAttribute('data-id'); o.order.push(id); o.html[id] = blockOf(el, true); });
+    return o;
+  }
+  function resetSent() { ensureIds(); edSent = snapshot(); }
+  function make(html) { var a = document.createElement('template'); a.innerHTML = String(html); var b = document.createElement('template'); b.innerHTML = serialize(a.content, true); return b.content.firstElementChild; }
+  function textOff(el, node, off) { var r = document.createRange(); r.selectNodeContents(el); try { r.setEnd(node, off); } catch (e) { return 0; } return r.toString().length; }
+  function locate(el, n) {
+    var w = document.createTreeWalker(el, NodeFilter.SHOW_TEXT), t, last = null;
+    while ((t = w.nextNode())) { if (n <= t.nodeValue.length) return [t, n]; n -= t.nodeValue.length; last = t; }
+    return last ? [last, last.nodeValue.length] : [el, 0];
+  }
+  function myCaret() {
+    var a = document.activeElement;
+    if (a === edTitle || a === edLede) return { f: a === edTitle ? 'title' : 'lede' };
+    var r = selRange(), b = r && topBlock(r.startContainer), id = b && b.getAttribute && b.getAttribute('data-id');
+    if (!id) return null;
+    return { id: id, s: textOff(b, r.startContainer, r.startOffset), e: topBlock(r.endContainer) === b ? textOff(b, r.endContainer, r.endOffset) : b.textContent.length };
+  }
+  function sendHere() { hereRaf = 0; post({ t: 'here', card: edCard ? edCard.id : null, name: myName(), color: tab.color, caret: edCard ? myCaret() : null }); }
+  function queueHere() { if (!hereRaf) hereRaf = setTimeout(sendHere, 40); }
+  function queuePeers() { if (!peerRaf) peerRaf = setTimeout(drawPeers, 16); }
+
+  function syncOut() {
+    if (!edCard || !edCan) return;
+    ensureIds();
+    var now = snapshot(), ops = [], blocks = {}, m = { t: 'ops', card: edCard.id }, any = false;
+    now.order.forEach(function (id, i) { if (!(id in edSent.html)) ops.push({ ins: id, after: i ? now.order[i - 1] : null }); if (edSent.html[id] !== now.html[id]) { blocks[id] = now.html[id]; any = true; } });
+    edSent.order.forEach(function (id) { if (!(id in now.html)) ops.push({ del: id }); });
+    if (now.title !== edSent.title) { m.title = now.title; any = true; }
+    if (now.lede !== edSent.lede) { m.lede = now.lede; any = true; }
+    edSent = now;
+    if (!any && !ops.length) return;
+    m.ops = ops; m.blocks = blocks; post(m); queuePeers();
+  }
+  function setField(el, v) { if (typeof v !== 'string' || el.value === v) return; var s = el.selectionStart, focused = document.activeElement === el; el.value = v; if (focused) try { el.setSelectionRange(s, s); } catch (e) {} grow(el); }
+  function applyOps(m) {
+    if (!Array.isArray(m.ops) || !m.blocks || typeof m.blocks !== 'object') return;
+    var r = selRange(), ab = r && topBlock(r.startContainer), aid = ab && ab.getAttribute && ab.getAttribute('data-id'), keep = aid ? myCaret() : null, done = {};
+    m.ops.forEach(function (op) { if (op && op.del) { var el = byId(op.del); if (el) el.remove(); } });
+    m.ops.forEach(function (op) {
+      if (!op || !op.ins || !IDRE.test(op.ins) || byId(op.ins) || !m.blocks[op.ins]) return;
+      var el = make(m.blocks[op.ins]); if (!el) return;
+      el.setAttribute('data-id', op.ins);
+      var ref = op.after ? byId(op.after) : null;
+      edBody.insertBefore(el, op.after ? (ref ? ref.nextSibling : null) : edBody.firstChild);
+      done[op.ins] = 1;
+    });
+    Object.keys(m.blocks).forEach(function (id) {
+      if (done[id]) return;
+      var el = byId(id), neu = el && make(m.blocks[id]);
+      if (neu) { neu.setAttribute('data-id', id); edBody.replaceChild(neu, el); }
+    });
+    if (!edBody.firstChild) edBody.innerHTML = '<p><br></p>';
+    setField(edTitle, m.title); setField(edLede, m.lede);
+    decorate(); edSent = (ensureIds(), snapshot());
+    if (keep && keep.id) {
+      var mine = byId(keep.id);
+      if (mine) { var a = locate(mine, keep.s), b = locate(mine, keep.e), nr = document.createRange(); try { nr.setStart(a[0], a[1]); nr.setEnd(b[0], b[1]); var s = getSelection(); s.removeAllRanges(); s.addRange(nr); } catch (e) {} }
+    }
+    edStats(); queuePeers();
+  }
+  function applyFull(m) {
+    var tpl = document.createElement('template'); tpl.innerHTML = String(m.html || '');
+    edBody.innerHTML = serialize(tpl.content, true) || '<p><br></p>';
+    setField(edTitle, m.title); setField(edLede, m.lede);
+    decorate(); resetSent(); edStats(); queuePeers();
+  }
+  function collabOpen() { resetSent(); edWantFull = true; post({ t: 'hello', card: edCard.id }); sendHere(); setTimeout(function () { edWantFull = false; }, 1500); queuePeers(); }
+  function peerDots(id) {
+    var on = Object.keys(peers).filter(function (k) { return peers[k].card === id; });
+    return on.length ? '<span class="dots" title="Сейчас в тексте: ' + esc(on.map(function (k) { return peers[k].name; }).join(', ')) + '">' + on.map(function (k) { return '<i style="background:' + peers[k].color + '"></i>'; }).join('') + 'в тексте</span>' : '';
+  }
+  function peersChanged(moved) { queuePeers(); if (moved && !edCard && !dlg.open) render(); }
+  function drawPeers() {
+    peerRaf = 0; var html = '', chips = '';
+    if (edCard) Object.keys(peers).forEach(function (k) {
+      var p = peers[k]; if (p.card !== edCard.id) return;
+      chips += '<span style="background:' + p.color + '">' + esc(p.name) + '</span>';
+      var c = p.caret, x, y, h; if (!c || typeof c !== 'object') return;
+      if (c.f) { var fr = (c.f === 'title' ? edTitle : edLede).getBoundingClientRect(); x = fr.left - 12; y = fr.top + 2; h = Math.min(fr.height - 4, 40); }
+      else {
+        var el = byId(String(c.id)); if (!el) return;
+        var a = locate(el, c.s | 0), b = locate(el, c.e | 0), r = document.createRange();
+        try { r.setStart(a[0], a[1]); r.setEnd(b[0], b[1]); } catch (e) { return; }
+        var rects = r.getClientRects(), last = rects[rects.length - 1];
+        if (!r.collapsed) [].slice.call(rects, 0, 60).forEach(function (q) { html += '<i class="sel" style="left:' + q.left + 'px;top:' + q.top + 'px;width:' + q.width + 'px;height:' + q.height + 'px;background:' + p.color + '"></i>'; });
+        if (last) { x = last.right; y = last.top; h = last.height; } else { var br = el.getBoundingClientRect(); x = br.left; y = br.top; h = Math.min(br.height, 30); }
+      }
+      html += '<i class="car" style="left:' + x + 'px;top:' + y + 'px;height:' + h + 'px;background:' + p.color + '"><b style="background:' + p.color + '">' + esc(p.name) + '</b></i>';
+    });
+    edPeers.innerHTML = html; edWho.innerHTML = chips;
+  }
+  if (chan) chan.onmessage = function (ev) {
+    var m = ev.data; if (!m || typeof m !== 'object' || typeof m.tab !== 'string') return;
+    if (m.tab === tab.id) { tab.id = uid(); save(); return sendHere(); }
+    if (m.t === 'bye') { if (peers[m.tab]) { delete peers[m.tab]; peersChanged(true); } return; }
+    if (m.t === 'here') {
+      var old = peers[m.tab], moved = !old || old.card !== m.card || old.name !== m.name;
+      peers[m.tab] = { card: typeof m.card === 'string' ? m.card : null, name: String(m.name || '').slice(0, 40), color: /^#[0-9a-f]{6}$/i.test(m.color) ? m.color : '#ff3d8b', caret: m.caret, at: Date.now() };
+      peersChanged(moved); if (!old) sendHere(); return;
+    }
+    if (!edCard || m.card !== edCard.id) return;
+    if (m.t === 'hello') return post({ t: 'full', card: edCard.id, to: m.tab, html: serialize(edBody, true), title: edTitle.value, lede: edLede.value });
+    if (m.t === 'full') { if (m.to && (m.to !== tab.id || !edWantFull)) return; edWantFull = false; return applyFull(m); }
+    if (m.t === 'ops') applyOps(m);
+  };
+  setInterval(function () {
+    sendHere(); var gone = false, t = Date.now();
+    Object.keys(peers).forEach(function (k) { if (t - peers[k].at > 6000) { delete peers[k]; gone = true; } });
+    if (gone) peersChanged(true);
+  }, 2000);
+  document.addEventListener('selectionchange', function () { if (edCard) queueHere(); });
+  [edTitle, edLede].forEach(function (el) { el.addEventListener('focus', queueHere); el.addEventListener('blur', queueHere); });
+  addEventListener('scroll', queuePeers, { passive: true });
+  addEventListener('resize', queuePeers);
+  addEventListener('pagehide', function () { post({ t: 'bye' }); });
+  addEventListener('storage', function (e) {
+    if (e.key !== KEY || !e.newValue) return;
+    var s; try { s = JSON.parse(e.newValue); } catch (x) { return; }
+    if (!s || s.v !== 1 || !Array.isArray(s.cards) || !Array.isArray(s.team)) return;
+    state.team = s.team; state.cards = s.cards; state.subs = s.subs || []; state.apps = s.apps || []; state.me = s.me;
+    if (edCard) {
+      var live = cardById(edCard.id);
+      if (!live) { edCard = null; edLoaded = null; state.editing = null; if (dlg.open) dlg.close(); save(); return render(); }
+      edCard = live; return edMeta();
+    }
+    if (!dlg.open) render();
+  });
+
+  // ---------- version history ----------
+  function snap(c) {
+    var h = c.hist || (c.hist = []), last = h[h.length - 1], body = c.body || '';
+    if (!body || body.length > 1500000 || last && last.body === body && last.title === c.title && last.lede === (c.lede || '')) return;
+    h.push({ at: Date.now(), title: c.title, lede: c.lede || '', body: body });
+    var size = function () { return h.reduce(function (n, v) { return n + v.body.length; }, 0); };
+    while (h.length > 8 || h.length > 1 && size() > 1500000) h.shift();
+  }
+  function openHist() {
+    edFlush();
+    var h = (edCard.hist || []).slice().reverse();
+    dlgbody.innerHTML = '<h2>Версии текста</h2>' + (h.length ? '<ul class="list">' + h.map(function (v, i) {
+      return '<li><span><b>' + new Date(v.at).toLocaleString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' }) + '</b> · ' + nfmt(countWords(v.body)) + ' сл.<br><span style="color:var(--mute)">' + esc(v.title) + '</span></span>' + (edCan ? '<button type="button" class="btn ghost" data-restore="' + (edCard.hist.length - 1 - i) + '">Вернуть</button>' : '') + '</li>';
+    }).join('') + '</ul>' : '<p class="empty">Версий пока нет. Копия делается при открытии текста и дальше раз в три минуты, пока вы пишете.</p>')
+      + '<p class="note">Хранится до восьми последних копий. Текущий текст перед возвратом тоже сохраняется как версия.</p><div class="actions"><span></span><button type="button" class="btn ghost" id="histclose">Закрыть</button></div>';
+    dlg.showModal();
+    document.getElementById('histclose').onclick = function () { dlg.close(); };
+  }
+  dlgbody.addEventListener('click', function (event) {
+    var b = event.target.closest('[data-restore]'); if (!b || !edCard || !edCan) return;
+    var v = (edCard.hist || [])[+b.dataset.restore]; if (!v) return;
+    snap(edCard); edCard.title = v.title; edCard.lede = v.lede; edCard.body = v.body;
+    save(); dlg.close(); openEditor(edCard);
+    post({ t: 'full', card: edCard.id, to: null, html: serialize(edBody, true), title: edCard.title, lede: edCard.lede });
+    toast('Версия возвращена');
+  });
+
 
   render();
 })();
