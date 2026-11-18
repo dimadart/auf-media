@@ -346,3 +346,4 @@ img.uaf-fade { filter: blur(14px); transition: opacity 450ms ease-out, filter 60
 img.uaf-fade.is-loaded { filter: none; }
 @keyframes uaf-ph-sweep { from { background-position: 140% 0; } to { background-position: -90% 0; } }
 @media (prefers-reduced-motion: reduce) { .uaf-ph:has(img.uaf-fade:not(.is-loaded))::after { animation: none; } img.uaf-fade { filter: none; } }
+.uaf-hero-copy h1._1rogb_0 { white-space: pre-line; line-height: .92; }
