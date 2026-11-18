@@ -226,6 +226,9 @@ form#call button { box-shadow: 4px 4px 0 #000; }
 #contact:focus-visible { box-shadow: none; }
 @media (min-width: 861px) { .brand { padding-top: clamp(40px, 8svh, 96px); } form#call { margin-top: clamp(16px, 2.8svh, 30px); } }
 @media (max-width: 460px) { form#call { padding: 20px; } }
+.brand-name { position: relative; }
+.soon-tag { position: absolute; right: -.9em; top: -.78em; padding: .42em .7em .5em; background: var(--pink); color: #fff; font-size: .3em; font-weight: 800; letter-spacing: .08em; line-height: 1; text-transform: uppercase; white-space: nowrap; transform: rotate(9deg); box-shadow: 2px 2px 0 #000; }
+.soon-tag { right: -3.2em; top: -2.4em; }
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
@@ -247,7 +250,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
 </head>
 <body>
 <p class="tagline">Культурный журнал о людях, явлениях и событиях в США</p>
-<div class="brand"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span>AUF MEDIA</span></div>
+<div class="brand"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span class="brand-name">AUF MEDIA<b class="soon-tag">Coming soon</b></span></div>
 
 <picture class="bg" aria-hidden="true"><source media="(max-width: 860px)" srcset="../assets/soon/room-m.webp"><img class="room-top" src="../assets/soon/room-top.webp" width="1600" height="309" alt=""><img id="room" src="../assets/soon/room-still.webp" data-loop="../assets/soon/room-loop.webp" width="1600" height="893" alt=""></picture>
 <main>
