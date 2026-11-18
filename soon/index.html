@@ -7,8 +7,8 @@
 <meta name="theme-color" content="#000000">
 <title>AUF MEDIA — скоро открытие</title>
 <meta name="description" content="Скоро открытие. Культурный журнал о людях, явлениях и событиях в США.">
-<link rel="preload" as="image" href="../assets/soon/bg.webp" media="(min-width: 861px)" fetchpriority="high">
-<link rel="preload" as="image" href="../assets/soon/bg-1280.webp" media="(max-width: 860px)" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/soon/room-still.webp" media="(min-width: 861px)" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/soon/room-m.webp" media="(max-width: 860px)" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="../assets/editorial/fonts/unbounded-cyrillic.woff2" crossorigin>
 <style>
 @font-face { font-family: Unbounded; font-style: normal; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
@@ -141,7 +141,55 @@ h1 span:nth-child(2) { font-size: .46em; margin-left: .5em; }
   .foot { order: 6; position: relative; margin-top: -58px; padding-bottom: 18px; justify-content: flex-end; }
   .ribbon { order: 7; }
 }
+
+/* v3: night room. The wall carries the text, the mess lies under it, the guy sits on the right */
+html, body { background: #060d10; }
+body::before { opacity: .12; }
+.bg { position: fixed; z-index: 0; inset: 0; left: 0; width: 100%; background: url(../assets/soon/room-top.png) 0 0 / 100% 100% no-repeat; }
+.bg img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; min-height: 0; object-fit: fill; }
+.bg::after { display: none; }
+main { grid-template-columns: minmax(0, 44vw) 1fr; align-items: start; padding-top: clamp(10px, 3svh, 40px); }
+h1 { font-size: clamp(40px, 6.4vw, 104px); }
+.tap { right: 4vw; top: 12%; }
+.found { bottom: 56px; }
+@media (min-width: 861px) and (max-aspect-ratio: 13/10) { .bg img { width: auto; height: 62svh; left: auto; right: 0; } }
+@media (max-width: 860px) {
+  .bg { position: relative; inset: auto; order: 5; height: auto; min-height: 0; background-image: url(../assets/soon/room-m-top.png); }
+  .bg img { position: static; display: block; width: 100%; height: auto; }
+  .bg::after { display: block; inset: -1px 0 auto 0; width: 100%; height: 38%; background: linear-gradient(180deg, #060d10 0, rgb(6 13 16 / 0) 100%); }
+  main { grid-template-columns: 1fr; padding-top: 22px; }
+  h1 { font-size: 16.5vw; }
+  .foot { margin-top: -58px; }
+}
+
+/* v4: desktop — the animated night room fills the screen, text sits on the dark wall above the sofa */
+@media (min-width: 861px) {
+  html, body { background: #0a171a; }
+  body::before { z-index: 1; opacity: .5; mix-blend-mode: overlay; background: url(../assets/soon/grain.png) 0 0 / 420px 420px; animation: grain .5s steps(1) infinite; }
+  .bg { position: fixed; inset: 0; width: 100%; height: 100%; background: #0a171a; }
+  .bg img { position: absolute; inset: auto 0 0 0; width: 100%; height: auto; object-fit: fill; }
+  .bg img.room-top { bottom: calc(100vw * 893 / 1600 - 100vw * 6 / 1200); }
+  .bg::after { display: block; inset: 0 auto 0 0; width: 58%; height: 100%; background: linear-gradient(90deg, rgb(4 12 14 / .55) 0, rgb(4 12 14 / .25) 60%, rgb(4 12 14 / 0) 100%); }
+  .tagline { background: var(--yellow); }
+  .brand { padding-top: 16px; }
+  main { display: block; flex: none; padding: clamp(8px, 2.2svh, 26px) 0 0 clamp(20px, 5vw, 72px); }
+  .copy { width: min(46vw, 620px); }
+  h1 { font-size: clamp(34px, min(5.2vw, 9svh), 84px); }
+  .lede { margin-top: clamp(12px, 2.4svh, 26px); font-size: clamp(14px, 1.15vw, 17px); max-width: 30em; }
+  form#call { margin-top: clamp(12px, 2.2svh, 24px); max-width: 480px; }
+  form#call label { margin-bottom: 6px; }
+  input[type=tel], form#call button { height: 48px; }
+  input[type=tel] { background: rgb(0 0 0 / .55); }
+  .note { margin-top: 10px; min-height: 0; }
+  .art { display: none; }
+  .tap { display: none; }
+  .foot { position: fixed; right: 0; bottom: 46px; padding: 0 24px 0 0; }
+  .ribbon { position: fixed; left: 0; right: 0; bottom: 0; }
+  .found { bottom: 58px; }
+}
+@keyframes grain { 0% { background-position: 0 0; } 25% { background-position: -137px 61px; } 50% { background-position: 83px -149px; } 75% { background-position: -59px -97px; } }
 @media (prefers-reduced-motion: reduce) {
+  body::before { animation: none !important; }
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
 }
 </style>
@@ -150,7 +198,7 @@ h1 span:nth-child(2) { font-size: .46em; margin-left: .5em; }
 <p class="tagline">Культурный журнал о людях, явлениях и событиях в США</p>
 <div class="brand"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span>AUF MEDIA</span></div>
 
-<picture class="bg" aria-hidden="true"><source media="(max-width: 860px)" srcset="../assets/soon/bg-1280.webp"><img src="../assets/soon/bg.webp" width="2048" height="1152" alt=""></picture>
+<picture class="bg" aria-hidden="true"><source media="(max-width: 860px)" srcset="../assets/soon/room-m.webp"><img class="room-top" src="../assets/soon/room-top.webp" width="1600" height="309" alt=""><img id="room" src="../assets/soon/room-still.webp" data-loop="../assets/soon/room-loop.webp" width="1600" height="893" alt=""></picture>
 <main>
   <div class="copy">
     <h1><span>Скоро</span><span>открываемся</span></h1>
@@ -305,6 +353,15 @@ h1 span:nth-child(2) { font-size: .46em; margin-left: .5em; }
     }, 900);
   });
 
+
+  // desktop backdrop: show the still first, swap to the loop once it has loaded
+  (function () {
+    var img = document.getElementById('room');
+    if (!img || reduce || !matchMedia('(min-width: 861px)').matches) return;
+    var loop = new Image();
+    loop.onload = function () { img.src = loop.src; };
+    loop.src = img.dataset.loop;
+  })();
   // phone form
   var form = document.getElementById('call'), input = form.phone, note = document.getElementById('note'), button = form.querySelector('button');
   function say(text, state) { note.textContent = text; if (state) note.dataset.state = state; else delete note.dataset.state; }
