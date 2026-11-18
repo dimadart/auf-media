@@ -244,6 +244,25 @@ form#call button { box-shadow: 4px 4px 0 #000; }
   #contact, form#call button { height: 44px; }
   form#call .note { margin-top: 8px; font-size: 12px; }
 }
+/* v13: two buttons under the text, both forms live in popups */
+.cta { display: flex; flex-wrap: wrap; gap: 16px 18px; margin-top: clamp(18px, 3.4svh, 36px); }
+.cta button { height: 54px; padding: 0 22px; font-size: 13px; }
+.cta-alt { background: rgb(0 0 0 / .45); color: #fff; border-color: #fff; box-shadow: 5px 5px 0 var(--blue); }
+.cta-alt:active { box-shadow: 1px 1px 0 var(--blue); }
+@media (hover: hover) { .cta-alt:hover { box-shadow: 7px 7px 0 var(--blue); background: #fff; color: #000; } }
+dialog.dark { width: min(540px, calc(100vw - 28px)); background: #08161a; color: #fff; border: 1px solid rgb(255 255 255 / .6); box-shadow: 9px 9px 0 var(--yellow); }
+dialog.dark .sheet { padding: 30px 26px 26px; }
+dialog.dark form#call { max-width: none !important; margin: 0 !important; padding: 0 !important; border: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+dialog.dark form#call button { margin-top: 0; background: var(--yellow); color: #000; border-color: #000; box-shadow: 4px 4px 0 #000; }
+dialog.dark .ways legend { font-size: clamp(20px, 5vw, 28px) !important; margin-bottom: 18px !important; }
+dialog.dark .ways label { margin: 0; }
+dialog.dark #contact, dialog.dark form#call button { height: 50px !important; }
+dialog.dark .note { color: #b9c4c4; }
+dialog.dark .note[data-state=error] { color: #ff7aa9; }
+dialog.dark .done { margin-top: 0; }
+dialog.dark .done-title { font-size: clamp(30px, 8vw, 54px); }
+dialog.dark .x { background: #fff; color: #000; border-color: #000; }
+@media (max-width: 860px) { dialog.dark .sheet { padding: 26px 18px 22px; } }
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
@@ -273,6 +292,13 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     <h1><span>Скоро</span><span>открываемся</span></h1>
     <p class="lede">Независимый журнал из&nbsp;Нью-Йорка о&nbsp;людях, культуре и&nbsp;времени, в&nbsp;котором мы&nbsp;живём.</p>
     <p class="more">Мы&nbsp;рассказываем о&nbsp;тех, кто создаёт культуру сегодня: о&nbsp;музыке, кино, моде, искусстве и&nbsp;жизни больших городов. В&nbsp;мире, где всё больше разногласий, мы&nbsp;ищем&nbsp;то, что нас объединяет.</p>
+    <div class="cta"><button type="button" class="cta-main" id="launch-open">Узнай о&nbsp;запуске первым</button><button type="button" class="cta-alt" id="authors-open">Стать автором</button></div>
+  </div>
+  <div class="art"><span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span></div>
+</main>
+
+<dialog id="launch" class="dark" aria-label="Узнай о запуске первым">
+  <div class="sheet">
     <form id="call" novalidate data-endpoint="">
       <fieldset class="ways">
         <legend>Узнай о&nbsp;запуске первым</legend>
@@ -292,10 +318,8 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
       <p class="done-text">Как только AUF появится на&nbsp;свет, ты узнаешь первым. До&nbsp;встречи!</p>
     </div>
   </div>
-  <div class="art"><span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span></div>
-</main>
-
-<div class="foot"><button type="button" class="authors" id="authors-open">Стать автором →</button></div>
+  <button type="button" class="x" aria-label="Закрыть">×</button>
+</dialog>
 
 <dialog id="authors" aria-labelledby="authors-title">
   <div class="sheet">
@@ -493,6 +517,11 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
       .then(function () { button.disabled = false; });
   });
 
+  // launch popup
+  var launch = document.getElementById('launch');
+  document.getElementById('launch-open').addEventListener('click', function () { if (launch.showModal) launch.showModal(); else launch.setAttribute('open', ''); });
+  launch.querySelector('.x').addEventListener('click', function () { launch.close ? launch.close() : launch.removeAttribute('open'); });
+  launch.addEventListener('click', function (event) { if (event.target === launch) launch.close(); });
   // authors popup
   var dialog = document.getElementById('authors'), pitch = document.getElementById('pitch'), pitchNote = document.getElementById('pitch-note'), pitchButton = pitch.querySelector('button');
   function tell(text, state) { pitchNote.textContent = text; if (state) pitchNote.dataset.state = state; else delete pitchNote.dataset.state; }
