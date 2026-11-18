@@ -322,7 +322,7 @@
         const piece = document.createElement(index % 3 === 0 ? 'img' : 'i');
         piece.className = 'uaf-more-piece';
         piece.setAttribute('aria-hidden', 'true');
-        if (piece.tagName === 'IMG') { piece.src = pieces[index % pieces.length]; piece.alt = ''; } else piece.style.background = colours[index % colours.length];
+        if (piece.tagName === 'IMG') { piece.src = pieces[(index / 3) % pieces.length]; piece.alt = ''; } else piece.style.background = colours[index % colours.length];
         piece.style.left = `${box.left + box.width * (.15 + Math.random() * .7)}px`;
         piece.style.top = `${box.top + box.height / 2}px`;
         document.body.append(piece);
