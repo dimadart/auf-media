@@ -193,6 +193,9 @@ h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden
 .found { display: none !important; }
 .lede { margin-top: 0 !important; }
 @media (min-width: 861px) { main { padding-top: clamp(18px, 4svh, 44px); } .lede { font-size: clamp(16px, 1.35vw, 20px); } }
+/* v6: no tagline strip, no ribbon */
+.tagline, .ribbon { display: none !important; }
+@media (min-width: 861px) { .foot { bottom: 22px; } .brand { padding-top: 26px; } }
 @media (prefers-reduced-motion: reduce) {
   body::before { animation: none !important; }
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
