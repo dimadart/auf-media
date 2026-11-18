@@ -283,3 +283,9 @@ body:has(#uaf-header) .Nl1Bp_0 { text-wrap: pretty; }
   body:has(#uaf-header) section._164-5_0:nth-of-type(even) ._2JcRy_0 { transform: rotate(-8deg); }
   body:has(#uaf-header) section._164-5_0 ._2JcRy_0 img { width: 100%; height: 100%; object-fit: contain; }
 }
+/* deck caption climbs onto the cards; fingers can swipe the deck */
+.uaf-reel { -webkit-touch-callout: none; -webkit-tap-highlight-color: transparent; }
+.uaf-reels-bar { position: relative; z-index: 3; align-items: flex-start; margin-top: clamp(-92px, -5.6vw, -52px); }
+.uaf-reels-arrow { margin-top: 34px; }
+.uaf-reels-counter { display: inline-block; margin: 0 0 12px; padding: 7px 12px 6px; background: #fdfd38; color: #0b0b0b; transform: rotate(-1.5deg); }
+@media (max-width: 600px) { .uaf-reels-bar { margin-top: -40px; } }

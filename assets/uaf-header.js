@@ -191,27 +191,17 @@
       frame = requestAnimationFrame(step);
     };
     const go = step => { target = Math.round(target) + step; sync(); animate(); };
-    deck.addEventListener('pointerdown', event => {
-      if (!event.isPrimary || event.button !== 0) return;
+    const dragStart = (id, x) => {
       cancelAnimationFrame(frame);
       suppress = false;
-      dragging = { id: event.pointerId, x: event.clientX, start: position, time: performance.now(), captured: false };
-    });
-    deck.addEventListener('pointermove', event => {
-      if (!dragging || event.pointerId !== dragging.id) return;
-      const delta = event.clientX - dragging.x;
-      if (!dragging.captured) {
-        if (Math.abs(delta) < 8) return;
-        dragging.captured = true;
-        suppress = true;
-        deck.setPointerCapture(event.pointerId);
-        deck.classList.add('is-dragging');
-      }
-      position = dragging.start - delta / (cards[0].offsetWidth * .8);
+      dragging = { id, x, start: position, time: performance.now(), captured: false };
+    };
+    const dragMove = x => {
+      position = dragging.start - (x - dragging.x) / (cards[0].offsetWidth * .8);
       render();
-    });
-    const release = event => {
-      if (!dragging || (event.pointerId !== undefined && event.pointerId !== dragging.id)) return;
+    };
+    const dragEnd = () => {
+      if (!dragging) return;
       const moved = position - dragging.start;
       const velocity = moved / Math.max(1, performance.now() - dragging.time) * 1000;
       const captured = dragging.captured;
@@ -219,15 +209,61 @@
       deck.classList.remove('is-dragging');
       if (!captured) return;
       let next = Math.round(position);
-      if (next === Math.round(position - moved) && Math.abs(moved) > .12 && Math.abs(velocity) > .6) next += Math.sign(moved);
+      if (next === Math.round(position - moved) && Math.abs(moved) > .1 && Math.abs(velocity) > .5) next += Math.sign(moved);
       target = next;
       sync();
       animate();
-      setTimeout(() => { suppress = false; }, 0);
+      setTimeout(() => { suppress = false; }, 350);
+    };
+    // mouse and pen: pointer events
+    deck.addEventListener('pointerdown', event => {
+      if (event.pointerType === 'touch' || !event.isPrimary || event.button !== 0) return;
+      dragStart(event.pointerId, event.clientX);
+    });
+    deck.addEventListener('pointermove', event => {
+      if (event.pointerType === 'touch' || !dragging || event.pointerId !== dragging.id) return;
+      if (!dragging.captured) {
+        if (Math.abs(event.clientX - dragging.x) < 8) return;
+        dragging.captured = true;
+        suppress = true;
+        deck.setPointerCapture(event.pointerId);
+        deck.classList.add('is-dragging');
+      }
+      dragMove(event.clientX);
+    });
+    const release = event => {
+      if (event.pointerType === 'touch' || !dragging || dragging.touch || (event.pointerId !== undefined && event.pointerId !== dragging.id)) return;
+      dragEnd();
     };
     deck.addEventListener('pointerup', release);
     deck.addEventListener('pointercancel', release);
     deck.addEventListener('lostpointercapture', release);
+    // fingers: touch events, so a sideways swipe moves the deck and an up-down one still scrolls the page
+    deck.addEventListener('touchstart', event => {
+      if (event.touches.length !== 1) { dragEnd(); return; }
+      const touch = event.touches[0];
+      dragStart(touch.identifier, touch.clientX);
+      dragging.touch = true;
+      dragging.y = touch.clientY;
+    }, { passive: true });
+    deck.addEventListener('touchmove', event => {
+      if (!dragging || !dragging.touch) return;
+      const touch = [...event.touches].find(item => item.identifier === dragging.id);
+      if (!touch) return;
+      const dx = touch.clientX - dragging.x;
+      const dy = touch.clientY - dragging.y;
+      if (!dragging.captured) {
+        if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return;
+        if (Math.abs(dy) > Math.abs(dx)) { dragging = null; return; }
+        dragging.captured = true;
+        suppress = true;
+        deck.classList.add('is-dragging');
+      }
+      if (event.cancelable) event.preventDefault();
+      dragMove(touch.clientX);
+    }, { passive: false });
+    deck.addEventListener('touchend', dragEnd);
+    deck.addEventListener('touchcancel', dragEnd);
     deck.addEventListener('dragstart', event => event.preventDefault());
     deck.addEventListener('wheel', event => {
       if (Math.abs(event.deltaX) <= Math.abs(event.deltaY)) return;
