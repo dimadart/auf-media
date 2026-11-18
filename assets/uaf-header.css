@@ -289,3 +289,4 @@ body:has(#uaf-header) .Nl1Bp_0 { text-wrap: pretty; }
 .uaf-reels-arrow { margin-top: 34px; }
 .uaf-reels-counter { display: inline-block; margin: 0 0 12px; padding: 7px 12px 6px; background: #fdfd38; color: #0b0b0b; transform: rotate(-1.5deg); }
 @media (max-width: 600px) { .uaf-reels-bar { margin-top: -40px; } }
+.uaf-reels-deck { z-index: 0; }
