@@ -338,3 +338,11 @@ body:has(#uaf-header) section._164-5_0 .T8Oks_0 { margin-bottom: 14px; }
 body:has(#uaf-header) section._164-5_0[data-editorial-slot] ._2b0aj_0 { display: inline-block; padding: 6px 12px 5px; background: #fdfd38; color: #0b0b0b; font: 700 11px/1.2 Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; transform: rotate(-2deg); }
 body:has(#uaf-header) section._164-5_0:nth-of-type(even)[data-editorial-slot] ._2b0aj_0 { transform: rotate(1.5deg); }
 body:has(#uaf-header) section.uaf-lead { margin-bottom: 52px; }
+/* while a cover downloads: its blurred preview with a light sweep across it */
+.uaf-ph { position: relative; overflow: hidden; background-color: #141414; background-size: cover; background-position: center; }
+body:has(#uaf-header) a._3Npu7_0, body:has(#uaf-header) a._3u9_N_0 { background: #141414; }
+.uaf-ph:has(img.uaf-fade:not(.is-loaded))::after { content: ''; position: absolute; inset: 0; z-index: 1; background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / .28) 48%, rgb(253 253 56 / .22) 52%, transparent 70%) 0 0 / 250% 100% no-repeat; animation: uaf-ph-sweep 1.15s linear infinite; pointer-events: none; }
+img.uaf-fade { filter: blur(14px); transition: opacity 450ms ease-out, filter 600ms ease-out, transform 400ms cubic-bezier(.2, .7, .2, 1); }
+img.uaf-fade.is-loaded { filter: none; }
+@keyframes uaf-ph-sweep { from { background-position: 140% 0; } to { background-position: -90% 0; } }
+@media (prefers-reduced-motion: reduce) { .uaf-ph:has(img.uaf-fade:not(.is-loaded))::after { animation: none; } img.uaf-fade { filter: none; } }
