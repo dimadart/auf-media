@@ -1,6 +1,6 @@
 html:has(#uaf-header) { background: #000; color-scheme: dark; }
 body:has(#uaf-header) { background: #000; }
-.uaf-masthead { height: calc(72px + 38svh); position: relative; z-index: 1; pointer-events: none; }
+.uaf-masthead { height: calc(72px + 56svh); position: relative; z-index: 1; pointer-events: none; }
 .uaf-hero-copy { position: relative; width: 100%; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; gap: 28px; padding: 24px 24px 36px; background: none; }
 .uaf-hero-copy h1._1rogb_0 { width: 100%; max-width: 1200px; margin: 0; padding: 0; font-size: clamp(48px, 7vw, 100px); line-height: .95; letter-spacing: -.035em; color: #ffff00; white-space: normal; text-align: center; }
 .uaf-description { max-width: 620px; margin: 0; color: #fff; text-align: center; font: 18px/1.45 Arial, sans-serif; text-wrap: balance; }
