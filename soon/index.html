@@ -8,7 +8,7 @@
 <title>AUF MEDIA — скоро открытие</title>
 <meta name="description" content="Независимый журнал из Нью-Йорка о людях, культуре и времени, в котором мы живём.">
 <link rel="preload" as="image" href="../assets/soon/room-still.webp" media="(min-width: 861px)" fetchpriority="high">
-<link rel="preload" as="image" href="../assets/soon/room-m.webp" media="(max-width: 860px)" fetchpriority="high">
+<link rel="preload" as="image" href="../assets/soon/room-m-still.webp" media="(max-width: 860px)" fetchpriority="high">
 <link rel="preload" as="font" type="font/woff2" href="../assets/editorial/fonts/unbounded-cyrillic.woff2" crossorigin>
 <style>
 @font-face { font-family: Unbounded; font-style: normal; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
@@ -263,6 +263,24 @@ dialog.dark .done { margin-top: 0; }
 dialog.dark .done-title { font-size: clamp(30px, 8vw, 54px); }
 dialog.dark .x { background: #fff; color: #000; border-color: #000; }
 @media (max-width: 860px) { dialog.dark .sheet { padding: 26px 18px 22px; } }
+/* v14: phone — text on the wall, the animated room below, page scrolls */
+@media (max-width: 860px) {
+  html, body { background: #091c22; }
+  body::before { z-index: 3; opacity: .5; mix-blend-mode: overlay; background: url(../assets/soon/grain.png) 0 0 / 420px 420px; animation: grain .5s steps(1) infinite; }
+  .brand { justify-content: flex-start; gap: 14px; padding: 30px 20px 0 !important; font-size: 24px; }
+  .brand img { width: 64px; }
+  main { position: relative; z-index: 2; display: block; padding: 18px 20px 0 !important; }
+  .copy { width: auto; }
+  .lede { font-size: 19px !important; line-height: 1.35; color: #fff; max-width: none; }
+  .more { font-size: 14px; margin-top: 12px; }
+  .cta { flex-direction: column; gap: 16px; margin-top: 24px; }
+  .cta button { width: calc(100% - 6px); height: 54px; }
+  .bg { position: relative; inset: auto; order: 5; width: 100%; height: auto; min-height: 0; margin-top: -30vw; background: none; }
+  .bg img { position: static; display: block; width: 100%; height: auto; }
+  .bg img.room-top { display: none; }
+  .bg::after { display: block; inset: -1px 0 auto 0; width: 100%; height: 9%; background: linear-gradient(180deg, #091c22 0, rgb(9 28 34 / 0) 100%); }
+  .art { display: none; }
+}
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
@@ -286,7 +304,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
 <p class="tagline">Культурный журнал о людях, явлениях и событиях в США</p>
 <div class="brand"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span class="brand-name">AUF MEDIA<b class="soon-tag">Coming soon</b></span></div>
 
-<picture class="bg" aria-hidden="true"><source media="(max-width: 860px)" srcset="../assets/soon/room-m.webp"><img class="room-top" src="../assets/soon/room-top.webp" width="1600" height="309" alt=""><img id="room" src="../assets/soon/room-still.webp" data-loop="../assets/soon/room-loop.webp" width="1600" height="893" alt=""></picture>
+<picture class="bg" aria-hidden="true"><source id="room-m" media="(max-width: 860px)" srcset="../assets/soon/room-m-still.webp" data-loop="../assets/soon/room-m-loop.webp"><img class="room-top" src="../assets/soon/room-top.webp" width="1600" height="309" alt=""><img id="room" src="../assets/soon/room-still.webp" data-loop="../assets/soon/room-loop.webp" width="1600" height="893" alt=""></picture>
 <main>
   <div class="copy">
     <h1><span>Скоро</span><span>открываемся</span></h1>
@@ -463,13 +481,14 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
   });
 
 
-  // desktop backdrop: show the still first, swap to the loop once it has loaded
+  // backdrop: show the still first, swap to the loop once it has loaded
   (function () {
-    var img = document.getElementById('room');
-    if (!img || reduce || !matchMedia('(min-width: 861px)').matches) return;
+    var img = document.getElementById('room'), source = document.getElementById('room-m');
+    if (!img || reduce) return;
+    var mobile = !matchMedia('(min-width: 861px)').matches;
     var loop = new Image();
-    loop.onload = function () { img.src = loop.src; };
-    loop.src = img.dataset.loop;
+    loop.onload = function () { if (mobile) source.srcset = loop.src; else img.src = loop.src; };
+    loop.src = mobile ? source.dataset.loop : img.dataset.loop;
   })();
   // launch notice form: e-mail by default, Telegram or SMS on request
   var form = document.getElementById('call'), input = form.contact, note = document.getElementById('note'), button = form.querySelector('button');
