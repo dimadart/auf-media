@@ -297,6 +297,15 @@ br.wide { display: none; }
   main { order: 1; padding: 22px 20px 44px !important; }
   .bg::after { height: 12%; }
 }
+/* v17: phone — logo sits on the animation, animation cropped so the description starts on the first screen */
+@media (max-width: 860px) {
+  body { position: relative; }
+  .brand { position: absolute; z-index: 3; left: 0; top: 28px; padding: 34px 20px 0 !important; }
+  .bg { margin-top: 0 !important; height: min(calc(100svh - 28px - 84px), 222.2vw) !important; overflow: hidden; }
+  .bg img { position: absolute !important; left: 0; bottom: min(0px, (100svh - 780px) * .42); width: 100% !important; height: auto !important; }
+  .bg::after { height: 22%; background: linear-gradient(180deg, rgb(9 28 34 / .85) 0, rgb(9 28 34 / 0) 100%); }
+  main { padding-top: 20px !important; }
+}
 /* v8: thin yellow ribbon on top */
 .ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
 .ribbon div { padding: 7px 0; animation-duration: 70s; }
