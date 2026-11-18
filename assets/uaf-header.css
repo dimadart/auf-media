@@ -81,7 +81,7 @@ html:has(.uaf-dialog[open]) { overflow: hidden; }
   body:has(#uaf-header) ._2sU3z_0 > ._2p8cZ_0 { margin-top: 16px; }
   .uaf-dialog { padding: 20px; }
 }
-@media (prefers-reduced-motion: reduce) { #uaf-header::before { transition: none; } }
+@media (prefers-reduced-motion: reduce) { #uaf-header::before, .uaf-tagline { transition: none; } }
 
 @media (max-width: 600px) {
   body:has(#uaf-header) ._3gVfa_0 { margin-bottom: 40px; }
@@ -168,13 +168,15 @@ body:has(#uaf-header) a._3Npu7_0:focus-visible, body:has(#uaf-header) a._3u9_N_0
 @media (prefers-reduced-motion: reduce) { body:has(#uaf-header) a._3Npu7_0 img, body:has(#uaf-header) a._3u9_N_0 img, body:has(#uaf-header) a._3Npu7_0 .cQZVQ_0, body:has(#uaf-header) a._3u9_N_0 ._2hVQi_0 { transition: none; } }
 
 /* ── Editorial refinement: hierarchy, labels, actions ─────────────────────────────────────────── */
-.uaf-tagline { position: absolute; left: 96px; top: 0; height: 72px; display: none; align-items: center; max-width: 210px; margin: 0; color: #b9b9b9; font: 700 10px/1.35 Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; pointer-events: none; }
+.uaf-tagline { position: absolute; left: 0; right: 0; top: 72px; display: flex; align-items: center; justify-content: center; min-height: 30px; margin: 0; padding: 6px 16px; box-sizing: border-box; background: #fdfd38; color: #0b0b0b; font: 700 11px/1.3 Arial, sans-serif; letter-spacing: .12em; text-align: center; text-transform: uppercase; pointer-events: none; transition: opacity 180ms ease-out, transform 180ms ease-out; }
+#uaf-header.is-compact .uaf-tagline { opacity: 0; transform: translateY(-100%); }
+.uaf-hero-copy .uaf-description { display: none; }
+.uaf-hero-copy { padding-top: 44px; }
 .uaf-header-right { align-items: center; gap: 4px; }
 .uaf-nav { display: none; align-items: center; gap: 2px; margin-right: 6px; }
 #uaf-header .uaf-nav button { padding: 10px 12px; font: 700 12px/1 Arial, sans-serif; letter-spacing: .09em; text-transform: uppercase; }
 #uaf-header .uaf-nav button:hover { color: #fdfd38; }
 @media (min-width: 900px) { .uaf-nav { display: flex; } }
-@media (min-width: 1180px) { .uaf-tagline { display: flex; } .uaf-hero-copy .uaf-description { display: none; } }
 .uaf-dialog-note, .uaf-about-text { margin: -8px 0 24px; color: #c9c9c9; font-size: 15px; line-height: 1.5; }
 .uaf-about-text { margin-top: 0; color: #fff; font-size: 18px; }
 .uaf-dialog nav a:hover, .uaf-dialog nav button:hover { color: #fdfd38; }
