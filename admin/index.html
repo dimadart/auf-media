@@ -372,13 +372,14 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     ['Аналитика, шоп, финансы', 1, 1, 0, 0],
     ['Приглашать людей и менять роли', 1, 0, 0, 0],
     ['Назначать C-Level', 1, 0, 0, 0],
+    ['Журнал действий и кто когда заходил', 1, 0, 0, 0],
     ['Настройки, копия данных и сброс', 1, 0, 0, 0]
   ];
   var RUBRICS = ['Музыка', 'Мода', 'Кино', 'Технологии', 'Арт', 'Город', 'Изнутри', 'Наш радар', 'Фотография', 'Секс и наука', 'Культура', 'На репите', 'Видео'];
   var FORMATS = ['Текст', 'Интервью', 'Репортаж', 'Видео', 'Фото', 'Подборка'];
-  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска материалов', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Как запустить', 'adm']];
+  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска материалов', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['log', 'Журнал', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Как запустить', 'adm']];
   var GROUPS = [['ed', 'Редакция'], ['biz', 'Проект'], ['adm', 'Управление']];
-  var NEED = { inbox: 'editor', tasks: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', settings: 'owner' };
+  var NEED = { inbox: 'editor', tasks: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', log: 'owner', settings: 'owner' };
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -429,13 +430,13 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   var mname = function (id) { var m = member(id); return m ? m.name : '—'; };
   var stageIx = function (id) { return STAGES.map(function (s) { return s.id; }).indexOf(id); };
   var isMine = function (c) { return c.author === state.me; };
-  var allowed = function (v) { return !NEED[v] || atLeast(NEED[v]); };
+  var allowed = function (v) { return (v !== 'log' || cloudOn) && (!NEED[v] || atLeast(NEED[v])); };
   var clevels = function () { return state.team.filter(function (m) { return m.role === 'chief'; }).length; };
   function canEdit(c) { return atLeast('editor') || isMine(c); }
   function canMove(c, to) { if (atLeast('editor')) return true; return isMine(c) && stageIx(to) <= 2 && stageIx(c.stage) <= 2; }
 
   var view = document.getElementById('view'), title = document.getElementById('title'), nav = document.getElementById('nav'), dlg = document.getElementById('dlg'), dlgbody = document.getElementById('dlgbody');
-  var filters = { q: '', rubric: '', stage: '', author: '', mine: false, tkind: '', twho: '', pq: '', pcat: '', pchk: '' }, inboxTab = 'apps', lastInvite = null;
+  var filters = { q: '', rubric: '', stage: '', author: '', mine: false, tkind: '', twho: '', pq: '', pcat: '', pchk: '', lwho: '', lkind: '' }, inboxTab = 'apps', lastInvite = null;
 
   function toast(text) {
     var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = text;
@@ -535,14 +536,14 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
         var locked = m.role === 'owner' || !manage || (role() === 'chief' && RANK[m.role] >= RANK.chief && m.id !== state.me);
         return '<tr><td><b>' + esc(m.name) + '</b>' + (m.id === state.me ? ' <span class="tag o">это вы</span>' : '') + '</td><td>' + esc(m.email || '—') + '</td><td>'
           + (locked ? esc(ROLES.filter(function (r) { return r.id === m.role; })[0].name) : '<select data-role="' + m.id + '" aria-label="Роль">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (m.role === r.id ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select>')
-          + '</td><td>' + (m.status === 'active' ? '<span class="tag g">активен</span>' : '<span class="tag p">приглашение</span>') + '</td><td>' + (locked ? '' : (cloudOn ? '<button type="button" class="btn ghost" data-resend="' + esc(m.email) + '">Письмо ещё раз</button> ' : '') + '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
+          + '</td><td>' + (m.status !== 'active' ? '<span class="tag p">приглашение</span>' : cloudOn && !m.first ? '<span class="tag o">письмо отправлено, ещё не входил</span>' : '<span class="tag g">активен</span>') + '</td>' + (cloudOn ? '<td>' + (m.seen ? esc(when(m.seen)) : '—') + '</td>' : '') + '<td>' + (locked ? '' : (cloudOn ? '<button type="button" class="btn ghost" data-resend="' + esc(m.email) + '" title="Письмо со ссылкой: человек войдёт по ней и задаст новый пароль">' + (m.first ? 'Сбросить пароль' : 'Письмо ещё раз') + '</button> ' : '') + '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
       }).join('');
       var head = '<tr><th>Что можно</th>' + ROLES.map(function (r) { return '<th>' + r.name + '</th>'; }).join('') + '</tr>';
       var perm = PERMS.map(function (p) { return '<tr><td>' + p[0] + '</td>' + p.slice(1).map(function (v) { return '<td>' + (v === 1 ? '<span class="yes">да</span>' : v === 2 ? '<span class="part">только редакторов и журналистов</span>' : '<span class="no">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('');
       return (manage ? '<div class="panel" style="margin-top:0"><h2>Пригласить по почте</h2><form class="invite" id="invite"><div><label for="in">Имя</label><input id="in" name="name" type="text" required autocomplete="off"></div><div><label for="ie">Почта</label><input id="ie" name="email" type="email" required autocomplete="off" placeholder="name@example.com"></div><div><label for="ir">Роль</label><select id="ir" name="role">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (r.id === 'reporter' ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select></div><button class="btn" type="submit">Пригласить</button></form>'
         + (lastInvite && cloudOn ? '<div class="mail"><b>' + esc(lastInvite.name) + ' в списке приглашённых.</b>\n\nПисьмо само не уходит. Отправьте человеку ссылку:\n' + location.origin + location.pathname + '\n\nТам он вводит почту ' + esc(lastInvite.email) + ' и получает письмо со ссылкой для входа. Уровень: «' + esc(lastInvite.role) + '».</div>' : lastInvite ? '<div class="mail"><b>Так будет выглядеть письмо (в прототипе оно не отправлено):</b>\n\nКому: ' + esc(lastInvite.email) + '\nТема: Приглашение в редакцию AUF MEDIA\n\n' + esc(lastInvite.name) + ', привет!\n\nТебя приглашают в редакцию AUF MEDIA с ролью «' + esc(lastInvite.role) + '».\nНажми на кнопку, придумай пароль — и ты внутри.\n\n[ Войти в редакцию ]\n\nСсылка действует 24 часа.</div>' : '')
         + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">Приглашать людей и менять уровни пока может только MAIN.</p></div>')
-        + '<div class="panel"><h2>Команда</h2><div class="tw"><table><thead><tr><th>Имя</th><th>Почта</th><th>Роль</th><th>Статус</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
+        + '<div class="panel"><h2>Команда</h2><div class="tw"><table><thead><tr><th>Имя</th><th>Почта</th><th>Роль</th><th>Статус</th>' + (cloudOn ? '<th>Был в админке</th>' : '') + '<th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
         + '<div class="panel"><h2>Уровни</h2><p class="note" style="margin:0 0 6px">C-Level занято: ' + clevels() + ' из ' + CLEVEL_MAX + '.</p><ul class="list">' + ROLES.map(function (r) { return '<li><b>' + r.name + '</b><span style="flex:1 1 60%;color:var(--mute)">' + r.about + '</span></li>'; }).join('') + '</ul></div>'
         + '<div class="panel"><h2>Кто что может</h2><div class="tw"><table class="perm"><thead>' + head + '</thead><tbody>' + perm + '</tbody></table></div></div>'
         + '';
@@ -559,6 +560,23 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     stats: function () { return '<div class="panel plan" style="margin-top:0"><h2>Аналитика</h2><p>Здесь будут посещаемость сайта, самые читаемые материалы, источники переходов и рост подписчиков.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Выбрать сервис статистики для сайта и поставить его счётчик.</li><li>Дать админке доступ к этим данным.</li><li>Подключить формы со страницы «Скоро», чтобы считать подписчиков.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
     shop: function () { return '<div class="panel plan" style="margin-top:0"><h2>Шоп</h2><p>Здесь будут товары, заказы, остатки и выручка магазина.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Решить, что продаём и через какой сервис принимаем оплату.</li><li>Подключить этот сервис к админке.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
     money: function () { return '<div class="panel plan" style="margin-top:0"><h2>Финансы</h2><p>Здесь будут доходы и расходы, гонорары авторам и то, что уже выплачено.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Общая база (Supabase), чтобы записи видели все C-Level.</li><li>Решить, какие статьи доходов и расходов вести и в какой валюте.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
+    log: function () {
+      if (!auditAt || Date.now() - auditAt > 15000) auditLoad();
+      var names = { cards: 'Материал', tasks: 'Задача проекта', contacts: 'Контакт', contact_notes: 'Заметка в анкете', invites: 'Приглашение', profiles: 'Команда', session: 'Вход' };
+      var acts = { insert: 'создал', update: 'изменил', delete: 'удалил', stage: 'перенёс', role: 'сменил уровень', login: 'зашёл в админку', first: 'первый вход' };
+      var stage = function (k, d) { return d.split(' → ').map(function (x) { var st = (k === 'cards' ? STAGES.map(function (q) { return [q.id, q.name]; }) : TSTAGES).filter(function (q) { return q[0] === x; })[0]; return st ? st[1] : x; }).join(' → '); };
+      var roleName = function (d) { return d.split(' → ').map(function (x) { var r = ROLES.filter(function (q) { return q.id === x; })[0]; return r ? r.name : x; }).join(' → '); };
+      var list = audit.filter(function (a) { return (!filters.lwho || a.actor === filters.lwho) && (!filters.lkind || a.kind === filters.lkind); });
+      var bar = '<div class="bar"><select data-f="lwho" aria-label="Кто"><option value="">Все люди</option>' + state.team.filter(function (m) { return m.status === 'active'; }).map(function (m) { return '<option value="' + m.id + '"' + (filters.lwho === m.id ? ' selected' : '') + '>' + esc(m.name) + '</option>'; }).join('') + '</select><select data-f="lkind" aria-label="Что"><option value="">Все события</option>' + Object.keys(names).map(function (k) { return '<option value="' + k + '"' + (filters.lkind === k ? ' selected' : '') + '>' + names[k] + '</option>'; }).join('') + '</select><button type="button" class="btn ghost" data-logrefresh>Обновить</button></div>';
+      var body = auditErr ? '<p class="empty">' + esc(auditErr) + '</p>'
+        : !auditAt ? '<p class="empty">Загружаем…</p>'
+        : !list.length ? '<p class="empty">Событий нет.</p>'
+        : '<div class="tw"><table><thead><tr><th>Когда</th><th>Кто</th><th>Что сделал</th><th>С чем</th></tr></thead><tbody>' + list.map(function (a) {
+          var det = a.action === 'stage' ? stage(a.kind, a.detail) : a.kind === 'profiles' || a.kind === 'invites' ? roleName(a.detail) : a.detail;
+          return '<tr><td style="white-space:nowrap">' + esc(when(a.at)) + '</td><td>' + esc(a.actor_name || '—') + '</td><td>' + (acts[a.action] || esc(a.action)) + (det ? ': ' + esc(det) : '') + '</td><td>' + (a.kind === 'session' ? '' : '<span class="tag">' + (names[a.kind] || esc(a.kind)) + '</span> ' + esc(a.title)) + '</td></tr>';
+        }).join('') + '</tbody></table></div>';
+      return bar + '<div class="panel" style="margin-top:0">' + body + '</div><p class="note">Последние ' + AUDITMAX + ' событий. Журнал ведёт сама база, изменить или стереть запись из админки нельзя. Правки одного материала одним человеком записываются не чаще раза в полчаса. Журнал видит только MAIN.</p>';
+    },
     settings: function () {
       return '<div class="panel" style="margin-top:0"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
         + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
@@ -1563,7 +1581,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     var notes = {};
     raw.contact_notes.forEach(function (n) { (notes[n.contact_id] || (notes[n.contact_id] = [])).push({ id: n.id, by: n.author, at: Date.parse(n.created_at), text: n.body }); });
     var next = {
-      team: raw.profiles.map(function (p) { return { id: p.id, name: p.name, email: p.email, role: p.role, status: 'active' }; })
+      team: raw.profiles.map(function (p) { return { id: p.id, name: p.name, email: p.email, role: p.role, status: 'active', first: p.first_seen || '', seen: p.last_seen || '' }; })
         .concat(raw.invites.map(function (v) { return { id: 'inv:' + v.email, name: v.name, email: v.email, role: v.role, status: 'invited' }; }))
         .sort(function (a, b) { return RANK[b.role] - RANK[a.role] || (a.status < b.status ? -1 : a.status > b.status ? 1 : 0) || (a.email < b.email ? -1 : 1); }),
       cards: raw.cards.map(function (r) { return Object.assign({}, r.data, { id: r.id, stage: r.stage, author: r.author || r.data.author || '' }); }).sort(by('_at', -1)),
@@ -1579,7 +1597,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (!allowed(state.view)) state.view = 'home';
     fixTags(); markSynced();
     document.getElementById('asrole').hidden = cloudRole !== 'owner';
-    if (first) { save(); render(); return gateShow(needPw ? 'setpw' : null, needPw && cloudUser.user_metadata && cloudUser.user_metadata.pw ? 'again' : ''); }
+    if (first) { cloudSeen(); save(); render(); return gateShow(needPw ? 'setpw' : null, needPw && cloudUser.user_metadata && cloudUser.user_metadata.pw ? 'again' : ''); }
     if (same) return;
     if (edCard) {
       var live = cardById(edCard.id);
@@ -1676,6 +1694,18 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     var o = await mailLink(email);
     toast(o.error ? mailWhy(String(o.error.message || '')) : 'Письмо отправлено на ' + email);
   }
+  var audit = [], auditAt = 0, auditErr = '', auditBusy = false, AUDITMAX = 300;
+  function when(v) { var d = new Date(v); if (isNaN(d)) return ''; var day = iso(d) === TODAY ? 'сегодня' : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); return day + ', ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); }
+  async function auditLoad() {
+    if (auditBusy || !sb) return; auditBusy = true;
+    var r = await sb.from('audit').select('*').order('at', { ascending: false }).limit(AUDITMAX);
+    auditBusy = false; auditAt = Date.now();
+    if (r.error) auditErr = /audit/.test(String(r.error.message)) && /find the table|does not exist|schema cache/.test(String(r.error.message)) ? 'Журнал ещё не включён: запустите файл auf-supabase-4.sql в Supabase.' : 'Не получилось загрузить журнал: ' + cloudWhy(r.error);
+    else { auditErr = ''; audit = r.data || []; }
+    if (state.view === 'log' && !busy()) render();
+  }
+  function cloudSeen() { if (sb && cloudUser && synced && !document.hidden) sb.rpc('touch_seen').then(function () {}, function () {}); }
+  setInterval(cloudSeen, 5 * 60 * 1000);
   function cloudLogout() { cloudStop(); synced = null; cloudUser = null; sb.auth.signOut({ scope: 'local' }).catch(function () {}); gateShow('login'); }
   function cloudBoot() {
     var bad = /error_description=([^&]+)/.exec(location.hash), hadLink = /access_token=|error=/.test(location.hash);
@@ -1722,6 +1752,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 
   document.addEventListener('click', function (e) {
     if (!cloudOn || !e.target.closest) return;
+    if (e.target.closest('[data-logrefresh]')) { auditAt = 0; return auditLoad(); }
     var rs = e.target.closest('[data-resend]'); if (rs && cloudRole === 'owner') return cloudResend(rs.dataset.resend);
     if (e.target.closest('[data-logout]')) { if (gate.hidden && !confirm('Выйти из редакции на этом устройстве?')) return; return cloudLogout(); }
     if (e.target.closest('[data-importcopy]') && cloudRole === 'owner') importCopy();
