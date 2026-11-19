@@ -431,6 +431,34 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   .dlg .actions > span:first-child .btn { border: 0; }
   dialog { border-radius: 14px; }
 }
+
+/* ---------- Beta: ideas terminal ---------- */
+.bbar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto auto; gap: 8px; align-items: center; margin-bottom: 12px; }
+.bbar input[type=search] { width: 100%; }
+.bhot { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 14px; font-size: 13px; color: var(--mute); }
+.bhot button { padding: 5px 10px; border: 1px solid var(--cline); border-radius: 999px; background: none; color: var(--text); font: 500 13px/1.2 Arial, Helvetica, sans-serif; cursor: pointer; }
+.bhot button:hover, .bhot button[aria-pressed=true] { background: var(--hover); border-color: var(--ghost); }
+.bhot button i { font-style: normal; color: var(--mute); margin-left: 4px; }
+.bstat { margin: 0 0 10px; font-size: 13px; color: var(--mute); }
+.feed { list-style: none; margin: 0; padding: 0; }
+.feed li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 4px 14px; align-items: start; padding: 12px 0; border-top: 1px solid var(--line); }
+.feed li:first-child { border-top: 0; }
+.feed .fm { grid-column: 1 / -1; font-size: 12.5px; color: var(--mute); display: flex; flex-wrap: wrap; gap: 2px 8px; }
+.feed .fm b { color: var(--text); font-weight: 600; }
+.feed .ft { font-size: 15px; line-height: 1.35; font-weight: 600; text-decoration: none; overflow-wrap: anywhere; }
+.feed .ft:hover { text-decoration: underline; }
+.feed .fn { grid-column: 1; margin: 2px 0 0; font-size: 13px; line-height: 1.4; color: var(--mute); overflow-wrap: anywhere; }
+.feed .fn a { color: var(--mute); }
+.feed .btn { grid-row: 2; grid-column: 2; white-space: nowrap; padding: 7px 12px; font-size: 13px; min-height: 0; }
+.bsrc { list-style: none; margin: 0 0 14px; padding: 0; max-height: 46vh; overflow-y: auto; }
+.bsrc li { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 2px 10px; align-items: center; padding: 8px 0; border-top: 1px solid var(--line); font-size: 14px; }
+.bsrc li small { grid-column: 2; color: var(--mute); font-size: 12.5px; overflow-wrap: anywhere; }
+.bsrc li small.bad { color: var(--p-ink); }
+.bsrc li button { grid-row: 1 / span 2; grid-column: 3; border: 0; background: none; color: var(--mute); cursor: pointer; font-size: 13px; padding: 8px; }
+@media (max-width: 860px) {
+  .bbar { grid-template-columns: 1fr 1fr; } .bbar input[type=search] { grid-column: 1 / -1; }
+  .feed li { grid-template-columns: 1fr; } .feed .btn { grid-row: auto; grid-column: 1; justify-self: start; min-height: 40px; }
+}
 </style>
 </head>
 <body>
@@ -536,9 +564,9 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   ];
   var RUBRICS = ['Музыка', 'Мода', 'Кино', 'Технологии', 'Арт', 'Город', 'Изнутри', 'Наш радар', 'Фотография', 'Секс и наука', 'Культура', 'На репите', 'Видео'];
   var FORMATS = ['Текст', 'Интервью', 'Репортаж', 'Видео', 'Фото', 'Подборка'];
-  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['mail', 'Почта', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['log', 'Журнал', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Справка', 'adm']];
+  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['mail', 'Почта', 'ed'], ['beta', 'Beta', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['log', 'Журнал', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Справка', 'adm']];
   var GROUPS = [['ed', 'Редакция'], ['biz', 'Проект'], ['adm', 'Управление']];
-  var NEED = { inbox: 'editor', tasks: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', log: 'owner', team: 'owner', plan: 'owner' };
+  var NEED = { inbox: 'editor', tasks: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', log: 'owner', team: 'owner', plan: 'owner', beta: 'owner' };
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -790,6 +818,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
         }).join('') + '</tbody></table></div>';
       return bar + '<div class="panel" style="margin-top:0">' + body + '</div><p class="note">Последние ' + AUDITMAX + ' событий. Журнал ведёт сама база, изменить или стереть запись из админки нельзя. Правки одного материала одним человеком записываются не чаще раза в полчаса. Журнал видит только MAIN.</p>';
     },
+    beta: function () { return betaView(); },
     settings: function () {
       if (!atLeast('owner')) {
         var me = member(state.me) || {}, mine = (state.boxes || []).filter(function (b) { return b.owner === state.me; });
@@ -1993,6 +2022,190 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     toast('Ящик ' + address + ' забрали'); pullSet.mailboxes = 1; pullWant = true; cloudPull();
   }
   document.addEventListener('change', function (e) { if (e.target.id === 'mailboxsel') { mailBox = e.target.value; mailAt = 0; mailRows = []; render(); } });
+
+  // ---------- Beta: ideas terminal (MAIN only). Headlines are fetched by the beta-pull function and kept for two weeks. ----------
+  var beta = { items: [], sources: [], at: 0, err: '', busy: false, prog: '', q: '', sec: 'all', tag: '', days: 3, lim: 150, auto: false };
+  var BSEC = [['all', 'Всё'], ['press', 'Издания'], ['trends', 'Тренды'], ['social', 'Соцсети'], ['contacts', 'Наши контакты']];
+  var BKIND = { rss: 'Издание или сайт (адрес RSS-ленты)', telegram: 'Telegram-канал (имя канала)', trends: 'Google Trends (код страны: US, DE, KZ)', wiki: 'Википедия (код языка: ru, en, de)' };
+  var BSECOF = { rss: 'press', telegram: 'social', trends: 'trends', wiki: 'trends' };
+  var BSTOP = ' которые который которая которого после перед через между когда чтобы почему также более менее около против будет будут были было быть может могут свой своих своей этого этом этой этот очень только можно нужно новый новая новое новые новых первый первая первые года году годы лет россии россия время человек люди людей стал стала стали себя снова теперь уже ещё если есть какой какие самый самых как что это для при или его они она оно мы вы with from that this what when have will your about after their more than into over just they been were here there which would could should best most first year years news review says said people week today watch show shows season world life best time york make made back down like inside where does these those them being every while other still also little never still under again want need know right going thing things really takes take gets get  '.split(' ');
+  var bsrc = function (id) { return beta.sources.filter(function (x) { return x.id === id; })[0]; };
+  var bname = function (it) { var x = it.source && bsrc(it.source); return it.section === 'contacts' ? (it.meta && it.meta.name || 'Контакт') + (it.meta && it.meta.net ? ', ' + it.meta.net : '') : x ? x.title : 'Источник'; };
+  var bweb = function (u) { return /^https?:\/\//i.test(String(u || '')) ? String(u) : ''; };
+  function bago(v) {
+    var m = Math.round((Date.now() - new Date(v)) / 6e4);
+    return m < 2 ? 'только что' : m < 60 ? m + ' мин назад' : m < 1440 ? Math.round(m / 60) + ' ч назад' : m < 2880 ? 'вчера' : Math.round(m / 1440) + ' дн. назад';
+  }
+  async function betaLoad() {
+    if (!sb) { var t = window.AUF_BETA_TEST; if (t) { beta.items = t.items; beta.sources = t.sources; } beta.at = Date.now(); if (state.view === 'beta') render(); return; }
+    var since = new Date(Date.now() - 7 * 864e5).toISOString(), items = [], err = '';
+    var rs = await sb.from('beta_sources').select('*').order('title');
+    if (rs.error) err = cloudWhy(rs.error);
+    for (var page = 0; page < 6 && !err; page++) {
+      var r = await sb.from('beta_items').select('id,source,section,title,url,note,at,meta').gte('at', since).order('at', { ascending: false }).range(page * 1000, page * 1000 + 999);
+      if (r.error) { err = cloudWhy(r.error); break; }
+      items = items.concat(r.data || []); if (!r.data || r.data.length < 1000) break;
+    }
+    beta.at = Date.now(); beta.err = err ? 'Не получилось загрузить ленту: ' + err : '';
+    if (!err) { beta.sources = rs.data || []; beta.items = items; }
+    if (state.view === 'beta' && !busy()) render();
+    // First visit of the session: refresh by itself when the newest pull is over an hour old.
+    if (!err && !beta.auto) {
+      beta.auto = true;
+      var last = Math.max.apply(null, beta.sources.map(function (x) { return x.pulled_at ? +new Date(x.pulled_at) : 0; }).concat([0]));
+      if (Date.now() - last > 36e5) betaPull(true);
+    }
+  }
+  function betaProg(t) { beta.prog = t; var el = document.getElementById('betaprog'); if (el) el.textContent = t; }
+  async function betaPull(quiet) {
+    if (beta.busy || !sb) return; beta.busy = true;
+    var ids = beta.sources.filter(function (x) { return x.on_; }).map(function (x) { return x.id; }), bad = 0, why = '';
+    var call = async function (body) {
+      var r = await sb.functions.invoke('beta-pull', { body: body });
+      if (r.error) { try { why = (await r.error.context.json()).error; } catch (x) { why = cloudWhy(r.error); } return null; }
+      return r.data;
+    };
+    for (var i = 0; i < ids.length && !why; i += 8) {
+      betaProg('Обновляем источники: ' + i + ' из ' + ids.length + '…');
+      var d = await call({ sources: ids.slice(i, i + 8) });
+      if (d) bad += d.results.filter(function (x) { return x.err; }).length;
+    }
+    for (var from = 0, guard = 0; from !== null && !why && guard < 60; guard++) {
+      betaProg('Проверяем аккаунты наших контактов…');
+      var c = await call({ contacts: true, from: from });
+      from = c ? c.next : null;
+    }
+    beta.busy = false; betaProg('');
+    if (why) { if (!quiet) toast('Не обновилось: ' + why); } else if (!quiet) toast(bad ? 'Обновлено. Не ответили источники: ' + bad + ' — смотрите «Источники»' : 'Лента обновлена');
+    await betaLoad();
+  }
+  function betaRows() {
+    var since = Date.now() - beta.days * 864e5, q = beta.q.trim().toLowerCase();
+    return beta.items.filter(function (it) {
+      if (beta.sec !== 'all' && it.section !== beta.sec) return false;
+      if (+new Date(it.at) < since) return false;
+      if (beta.tag) { var x = it.source && bsrc(it.source); if (!x || x.tag !== beta.tag) return false; }
+      if (!q) return true;
+      return (it.title + ' ' + it.note + ' ' + bname(it)).toLowerCase().indexOf(q) >= 0;
+    });
+  }
+  // Words that several different outlets put in headlines over the last two days: a hint at what everyone writes about.
+  function betaHot() {
+    var since = Date.now() - 2 * 864e5, map = {};
+    beta.items.forEach(function (it) {
+      if (it.section === 'trends' || +new Date(it.at) < since) return;
+      var seen = {}, who = it.source || (it.meta && it.meta.contact) || '';
+      // Names only: a capitalised word that does not open the headline.
+      var first = (it.title.match(/[A-Za-zА-Яа-яЁё]+/) || [''])[0];
+      (it.title.match(/[A-Za-zА-Яа-яЁё][A-Za-zА-Яа-яЁё’'-]{3,}/g) || []).forEach(function (w, i) {
+        var low = w.toLowerCase().replace(/ё/g, 'е'); if (BSTOP.indexOf(low) >= 0) return;
+        if (w.charAt(0) === low.charAt(0) || i === 0 && w.indexOf(first) === 0 || /^(январ|феврал|март|апрел|июн|июл|август|сентябр|октябр|ноябр|декабр)/.test(low) || /^(january|february|march|april|june|july|august|september|october|november|december|monday|tuesday|wednesday|thursday|friday|saturday|sunday)$/.test(low)) return;
+        var key = /[а-я]/.test(low) ? low.slice(0, 6) : low.replace(/[’']s$/, '');
+        if (key.length < 4 || seen[key]) return; seen[key] = 1;
+        var m = map[key] || (map[key] = { key: key, who: {}, forms: {}, n: 0 });
+        m.who[who] = 1; m.n++; m.forms[w] = (m.forms[w] || 0) + 1;
+      });
+    });
+    return Object.keys(map).map(function (k) { var m = map[k]; m.src = Object.keys(m.who).length; m.form = Object.keys(m.forms).sort(function (a, b) { return m.forms[b] - m.forms[a] || a.length - b.length; })[0]; return m; })
+      .filter(function (m) { return m.src >= 3; }).sort(function (a, b) { return b.src - a.src || b.n - a.n; }).slice(0, 14);
+  }
+  function betaList() {
+    var rows = betaRows();
+    if (beta.err) return '<p class="empty">' + esc(beta.err) + '</p>';
+    if (!beta.at) return '<p class="empty">Загружаем…</p>';
+    if (!rows.length) return '<p class="empty">' + (beta.items.length ? 'Ничего не нашлось. Попробуйте другое слово, период или раздел.' : beta.busy ? 'Собираем ленту в первый раз, это около минуты…' : 'Лента пуста. Нажмите «Обновить».') + '</p>';
+    return '<p class="bstat">Найдено: ' + nfmt(rows.length) + '</p><ul class="feed">' + rows.slice(0, beta.lim).map(function (it) {
+      var m = it.meta || {}, url = bweb(it.url), extra = [];
+      if (m.traffic) extra.push('запросов: ' + esc(m.traffic));
+      if (m.views && it.section === 'social') extra.push('просмотров: ' + esc(m.views));
+      if (m.views && it.section === 'trends') extra.push(nfmt(m.views) + ' просмотров за день');
+      if (m.points != null) extra.push(esc(m.points) + ' баллов');
+      if (m.comments != null && bweb(m.talk)) extra.push('<a href="' + esc(m.talk) + '" target="_blank" rel="noopener noreferrer">комментариев: ' + esc(m.comments) + '</a>');
+      var news = (m.news || []).filter(function (n) { return bweb(n.u); }).map(function (n) { return '<a href="' + esc(n.u) + '" target="_blank" rel="noopener noreferrer">' + esc(n.t) + '</a>' + (n.s ? ' (' + esc(n.s) + ')' : ''); }).join(' · ');
+      return '<li><div class="fm"><b>' + esc(bname(it)) + '</b><span>' + esc(bago(it.at)) + '</span>' + extra.map(function (x) { return '<span>' + x + '</span>'; }).join('') + '</div>'
+        + (url ? '<a class="ft" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(it.title) + '</a>' : '<span class="ft">' + esc(it.title) + '</span>')
+        + '<button type="button" class="btn ghost" data-betaidea="' + esc(it.id) + '">В идеи</button>'
+        + (news || it.note ? '<p class="fn">' + (news || esc(it.note)) + '</p>' : '') + '</li>';
+    }).join('') + '</ul>' + (rows.length > beta.lim ? '<p style="text-align:center;margin:14px 0 0"><button type="button" class="btn ghost" data-betamore>Показать ещё</button></p>' : '');
+  }
+  function betaView() {
+    if (!beta.at) betaLoad();
+    if (!cloudOn && !window.AUF_BETA_TEST) return '<div class="panel" style="margin-top:0"><p class="empty">Beta работает на auf.media после входа: ленту собирает сервер.</p></div>';
+    var tags = beta.sources.filter(function (x) { return beta.sec === 'all' || x.section === beta.sec; }).map(function (x) { return x.tag; }).filter(function (t, i, a) { return t && a.indexOf(t) === i; }).sort();
+    if (beta.tag && tags.indexOf(beta.tag) < 0) beta.tag = '';
+    var count = function (sec) { var since = Date.now() - beta.days * 864e5; return beta.items.filter(function (it) { return (sec === 'all' || it.section === sec) && +new Date(it.at) >= since; }).length; };
+    var hot = betaHot(), last = Math.max.apply(null, beta.sources.map(function (x) { return x.pulled_at ? +new Date(x.pulled_at) : 0; }).concat([0]));
+    return '<div class="bbar"><input type="search" id="betaq" data-f="betaq" placeholder="Поиск: имя, тема, слово" aria-label="Поиск по ленте" value="' + esc(beta.q) + '">'
+      + '<select id="betadays" aria-label="Период">' + [[1, 'За сутки'], [3, 'За 3 дня'], [7, 'За неделю']].map(function (d) { return '<option value="' + d[0] + '"' + (beta.days === d[0] ? ' selected' : '') + '>' + d[1] + '</option>'; }).join('') + '</select>'
+      + '<select id="betatag" aria-label="Язык или страна"><option value="">Все языки и страны</option>' + tags.map(function (t) { return '<option' + (beta.tag === t ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('') + '</select>'
+      + '<button type="button" class="btn ghost" data-betasrc>Источники</button><button type="button" class="btn" data-betapull>Обновить</button></div>'
+      + '<div class="tabs" role="tablist" style="flex-wrap:wrap">' + BSEC.map(function (b) { return '<button type="button" role="tab" data-betasec="' + b[0] + '" aria-selected="' + (beta.sec === b[0]) + '">' + b[1] + ' · ' + nfmt(count(b[0])) + '</button>'; }).join('') + '</div>'
+      + (hot.length ? '<div class="bhot"><span>Имена и названия, которые за два дня встретились у нескольких изданий:</span>' + hot.map(function (h) { return '<button type="button" data-betaq="' + esc(h.key) + '" aria-pressed="' + (beta.q.toLowerCase() === h.key) + '" title="Изданий и каналов: ' + h.src + '">' + esc(h.form) + '<i>' + h.src + '</i></button>'; }).join('') + '</div>' : '')
+      + '<div class="panel" style="margin-top:0"><div id="betalist">' + betaList() + '</div></div>'
+      + '<p class="note"><span id="betaprog">' + esc(beta.prog) + '</span>' + (beta.prog ? ' ' : '') + (last ? 'Источники обновлялись ' + esc(bago(last)) + '. ' : '') + 'Лента хранится две недели. Здесь только открытые ленты: издания, тренды поиска Google и Википедии по странам, публичные Telegram-каналы, темы Bluesky, Hacker News. «Наши контакты» — это Telegram-каналы, YouTube и сайты из анкет в «Контактах». Instagram, TikTok, X и комментарии под постами не подключены: у них нет открытой ленты. Раздел видит только MAIN.</p>';
+  }
+  function betaSources() {
+    var rowsHtml = function () {
+      return beta.sources.length ? beta.sources.slice().sort(function (a, b) { return a.section < b.section ? -1 : a.section > b.section ? 1 : a.title.localeCompare(b.title, 'ru'); }).map(function (x) {
+        var sec = BSEC.filter(function (b) { return b[0] === x.section; })[0];
+        return '<li><input type="checkbox" data-bon="' + x.id + '" aria-label="Включён"' + (x.on_ ? ' checked' : '') + '><span>' + esc(x.title) + '</span><button type="button" data-bdel="' + x.id + '">Убрать</button>'
+          + '<small' + (x.err ? ' class="bad"' : '') + '>' + esc((sec ? sec[1] : '') + (x.tag ? ', ' + x.tag : '')) + ' · ' + (x.err ? 'ошибка: ' + esc(x.err) : x.pulled_at ? 'записей в последний раз: ' + x.last_n : 'ещё не обновлялся') + '</small></li>';
+      }).join('') : '<li><span></span><span>Источников нет.</span></li>';
+    };
+    dlgbody.innerHTML = '<h2>Источники</h2><ul class="bsrc" id="bsrclist">' + rowsHtml() + '</ul>'
+      + '<form id="bsrcform"><h3>Добавить</h3><div class="grid2"><div class="full"><label for="bk">Что это</label><select id="bk" name="kind">' + Object.keys(BKIND).map(function (k) { return '<option value="' + k + '">' + BKIND[k] + '</option>'; }).join('') + '</select></div>'
+      + '<div><label for="bt">Название</label><input id="bt" name="title" type="text" required maxlength="80"></div><div><label for="bg">Язык или страна</label><input id="bg" name="tag" type="text" maxlength="40" placeholder="на русском"></div>'
+      + '<div class="full"><label for="bu">Адрес ленты, имя канала или код</label><input id="bu" name="url" type="text" required maxlength="500"></div></div>'
+      + '<div class="actions"><button type="button" class="btn ghost" id="bsrcclose">Закрыть</button><button type="submit" class="btn">Добавить и проверить</button></div></form>';
+    if (!dlg.open) dlg.showModal();
+    var list = document.getElementById('bsrclist'), f = document.getElementById('bsrcform');
+    document.getElementById('bsrcclose').onclick = function () { dlg.close(); render(); };
+    list.onchange = async function (e) {
+      var id = e.target.dataset.bon; if (!id) return;
+      var r = await sb.from('beta_sources').update({ on_: e.target.checked }).eq('id', id);
+      if (r.error) return toast('Не получилось: ' + cloudWhy(r.error));
+      bsrc(id).on_ = e.target.checked;
+    };
+    list.onclick = async function (e) {
+      var id = e.target.dataset.bdel, x = id && bsrc(id); if (!x) return;
+      if (!confirm('Убрать источник «' + x.title + '»? Его записи исчезнут из ленты.')) return;
+      var r = await sb.from('beta_sources').delete().eq('id', id);
+      if (r.error) return toast('Не получилось: ' + cloudWhy(r.error));
+      beta.sources = beta.sources.filter(function (y) { return y.id !== id; }); beta.items = beta.items.filter(function (y) { return y.source !== id; });
+      list.innerHTML = rowsHtml();
+    };
+    f.onsubmit = async function (e) {
+      e.preventDefault();
+      var kind = f.kind.value, url = f.url.value.trim(), btn = f.querySelector('button[type=submit]');
+      if (kind === 'telegram') url = url.replace(/^https?:\/\/t\.me\/(s\/)?/i, '').replace(/^@/, '').replace(/\/$/, '');
+      btn.disabled = true; btn.textContent = 'Проверяем…';
+      var r = await sb.from('beta_sources').insert({ kind: kind, section: BSECOF[kind], title: f.title.value.trim(), url: url, tag: f.tag.value.trim() }).select().single();
+      if (r.error) { btn.disabled = false; btn.textContent = 'Добавить и проверить'; return toast(r.error.code === '23505' ? 'Такой источник уже есть' : 'Не получилось: ' + cloudWhy(r.error)); }
+      var t = await sb.functions.invoke('beta-pull', { body: { sources: [r.data.id] } });
+      var res = !t.error && t.data && t.data.results[0];
+      btn.disabled = false; btn.textContent = 'Добавить и проверить';
+      if (!res || res.err) { await sb.from('beta_sources').delete().eq('id', r.data.id); return toast('Источник не добавлен: ' + (res ? res.err : 'сервер не ответил')); }
+      r.data.pulled_at = new Date().toISOString(); r.data.last_n = res.n; beta.sources.push(r.data);
+      f.reset(); list.innerHTML = rowsHtml(); toast('Добавлено, записей: ' + res.n); beta.at = 0;
+    };
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-betapull],[data-betasrc],[data-betasec],[data-betaq],[data-betaidea],[data-betamore]'); if (!t) return;
+    if ('betapull' in t.dataset) { if (!sb) return toast('Обновление работает на auf.media'); if (beta.busy) return toast('Уже обновляем'); betaPull(); betaProg('Обновляем источники…'); return; }
+    if ('betasrc' in t.dataset) { if (!sb) return toast('Источники настраиваются на auf.media'); return betaSources(); }
+    if ('betamore' in t.dataset) { beta.lim += 150; return render(); }
+    if (t.dataset.betasec) { beta.sec = t.dataset.betasec; beta.lim = 150; return render(); }
+    if (t.dataset.betaq) { beta.q = beta.q.toLowerCase() === t.dataset.betaq ? '' : t.dataset.betaq; beta.lim = 150; return render(); }
+    if (t.dataset.betaidea) {
+      var it = beta.items.filter(function (x) { return x.id === t.dataset.betaidea; })[0]; if (!it) return;
+      openCard(null, { title: it.title.slice(0, 160), notes: 'Откуда идея: ' + bname(it) + (bweb(it.url) ? '\n' + it.url : '') });
+    }
+  });
+  document.addEventListener('input', function (e) { if (e.target.id !== 'betaq') return; beta.q = e.target.value; beta.lim = 150; var el = document.getElementById('betalist'); if (el) el.innerHTML = betaList(); });
+  document.addEventListener('change', function (e) {
+    if (e.target.id === 'betadays') { beta.days = +e.target.value; beta.lim = 150; render(); }
+    if (e.target.id === 'betatag') { beta.tag = e.target.value; beta.lim = 150; render(); }
+  });
   var audit = [], auditAt = 0, auditErr = '', auditBusy = false, AUDITMAX = 300;
   function when(v) { var d = new Date(v); if (isNaN(d)) return ''; var day = iso(d) === TODAY ? 'сегодня' : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); return day + ', ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); }
   async function auditLoad() {
