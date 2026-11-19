@@ -1,6 +1,6 @@
 
 .article-main--spjail2-bg {
-  background-image: url("/auf-media/pages/23d0fa89e67330a5dbb9bf5e.html");
+  background-image: url("/pages/23d0fa89e67330a5dbb9bf5e.html");
   background-repeat: repeat-y;
   background-position: center 150px;
 }
@@ -37,7 +37,7 @@
 @media screen and (max-width: 1300px) {
   .article-main--spjail2-bg {
     background-position: center 0px;
-    background-image: url("/auf-media/pages/23d0fa89e67330a5dbb9bf5e.html");
+    background-image: url("/pages/23d0fa89e67330a5dbb9bf5e.html");
   }
   .article-main--spjail2-bg__1 {
   }

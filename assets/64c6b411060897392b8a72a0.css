@@ -28,7 +28,7 @@
     width: 20px;
     height: 35px;
     left: 0;
-    background: url("/auf-media/assets/3c2a5aaa4258f3879cbe713f.png") center no-repeat;
+    background: url("/assets/3c2a5aaa4258f3879cbe713f.png") center no-repeat;
     background-size: cover;
 }
 .VueCarousel-navigation-next {
@@ -47,7 +47,7 @@
     width: 20px;
     height: 35px;
     left: 0;
-    background: url("/auf-media/assets/3c2a5aaa4258f3879cbe713f.png") center no-repeat;
+    background: url("/assets/3c2a5aaa4258f3879cbe713f.png") center no-repeat;
     background-size: cover;
     -webkit-transform: rotate(180deg);
         -ms-transform: rotate(180deg);

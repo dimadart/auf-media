@@ -1,261 +1,616 @@
-<!DOCTYPE html>
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,follow">
+<meta name="theme-color" content="#000000">
+<title>AUF MEDIA — скоро открытие</title>
+<meta name="description" content="Независимый журнал из Нью-Йорка о людях, культуре и времени, в котором мы живём.">
+<link rel="preload" as="image" href="assets/soon/room-still.webp" media="(min-width: 861px)" fetchpriority="high">
+<link rel="preload" as="image" href="assets/soon/room-m-still.webp" media="(max-width: 860px)" fetchpriority="high">
+<link rel="preload" as="font" type="font/woff2" href="assets/editorial/fonts/unbounded-cyrillic.woff2" crossorigin>
+<style>
+@font-face { font-family: Unbounded; font-style: normal; font-weight: 300 900; font-display: swap; src: url(assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
+@font-face { font-family: Unbounded; font-style: normal; font-weight: 300 900; font-display: swap; src: url(assets/editorial/fonts/unbounded-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+:root { --yellow: #fdfd38; --pink: #ff3d8b; --blue: #0c24fb; --ink: #0a0a0a; }
+* { box-sizing: border-box; }
+html { background: #000; color-scheme: dark; -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: 100%; }
+body { margin: 0; min-height: 100svh; display: flex; flex-direction: column; background: #000; color: #fff; font-family: Unbounded, 'Arial Black', Arial, sans-serif; overflow-x: hidden; cursor: crosshair; -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+body::before { content: ''; position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: .16; mix-blend-mode: screen; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .55 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); }
 
-<html data-n-head="" data-n-head-ssr="">
-<head><meta content="dark" name="color-scheme"/><meta content="#000000" name="theme-color"/>
-<meta charset="utf-8" data-n-head="true"/><meta content="width=device-width, initial-scale=1" data-n-head="true" name="viewport"/><meta content="origin-when-crossorigin" data-n-head="true" name="referrer"/><meta content="AUF MEDIA — независимый культурный журнал о людях, явлениях и событиях в США. Музыка, кино, искусство, мода, технологии и город." data-hid="description" data-n-head="true" name="description"/><title data-n-head="true">AUF MEDIA — культурный журнал о людях, явлениях и событиях в США</title><link data-n-head="true" href="assets/767c849cad225725f1b6f05f.ico" rel="icon" type="image/x-icon"/><link href="assets/uaf-site.css" rel="stylesheet"/><style data-vue-ssr-id="9eee813e:0">
-.nuxt-progress {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  right: 0px;
-  height: 2px;
-  width: 0%;
-  -webkit-transition: width 0.2s, opacity 0.4s;
-  -o-transition: width 0.2s, opacity 0.4s;
-  transition: width 0.2s, opacity 0.4s;
-  opacity: 1;
-  background-color: #efc14e;
-  z-index: 999999;
+.tagline { position: relative; z-index: 2; margin: 0; padding: 7px 12px; background: var(--yellow); color: #000; font: 700 min(11px, 2.45vw)/1.2 Arial, sans-serif; letter-spacing: .12em; text-align: center; text-transform: uppercase; white-space: nowrap; }
+.brand { position: relative; z-index: 2; display: flex; align-items: center; justify-content: center; gap: 12px; padding: 22px 20px 0; font-weight: 800; font-size: 15px; letter-spacing: .14em; }
+.brand img { width: 44px; height: auto; display: block; }
+
+main { position: relative; z-index: 2; flex: 1; width: min(1180px, 100%); margin: 0 auto; padding: 18px 28px 30px; display: grid; grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr); align-items: center; gap: 18px 40px; }
+.copy { min-width: 0; }
+h1 { margin: 0; font-size: clamp(38px, 6.1vw, 86px); font-weight: 900; line-height: 1; letter-spacing: -.02em; text-transform: uppercase; }
+h1 span { display: block; width: fit-content; padding: .1em .22em .14em; color: #000; }
+h1 span:nth-child(1) { background: var(--yellow); transform: rotate(-2.2deg); }
+h1 span:nth-child(2) { margin: -.1em 0 0 .7em; background: var(--pink); color: #fff; font-size: .6em; transform: rotate(1.4deg); }
+.lede { max-width: 30em; margin: 30px 0 0; font: 400 clamp(15px, 1.35vw, 18px)/1.5 Arial, sans-serif; color: #e9e9e9; }
+.lede b { color: #fff; }
+
+form { margin: 26px 0 0; max-width: 520px; cursor: auto; }
+form label { display: block; margin-bottom: 9px; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.row { display: flex; gap: 10px; }
+input[type=tel] { flex: 1; min-width: 0; height: 54px; padding: 0 16px; border: 2px solid #fff; border-radius: 0; background: #000; color: #fff; font: 700 17px/1 Arial, sans-serif; letter-spacing: .03em; outline: 0; }
+input[type=tel]::placeholder { color: #8b8b8b; font-weight: 400; }
+input[type=tel]:focus-visible { border-color: var(--yellow); box-shadow: 4px 4px 0 var(--pink); }
+button { height: 54px; padding: 0 20px; border: 2px solid #000; border-radius: 0; background: var(--yellow); color: #000; font: 800 13px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; cursor: pointer; box-shadow: 5px 5px 0 var(--pink); transition: transform .12s ease, box-shadow .12s ease; }
+button:active { transform: translate(4px, 4px); box-shadow: 1px 1px 0 var(--pink); }
+button:focus-visible { outline: 3px solid #fff; outline-offset: 3px; }
+@media (hover: hover) { button:hover { transform: translate(-1px, -1px); box-shadow: 7px 7px 0 var(--pink); } }
+.note { min-height: 1.5em; margin: 14px 0 0; font: 400 13px/1.5 Arial, sans-serif; color: #b9b9b9; }
+.note[data-state=error] { color: #ff7aa9; }
+.note[data-state=ok] { color: var(--yellow); font-weight: 700; }
+
+.art { position: relative; min-width: 0; justify-self: center; width: min(100%, 560px, 62svh); }
+.art-in { position: relative; animation: bob 5.5s ease-in-out infinite; }
+.art img { display: block; width: 100%; height: auto; user-select: none; -webkit-user-drag: none; }
+.sign { position: absolute; left: 34.6%; top: 9.9%; width: 31.6%; height: 7.1%; display: grid; place-items: center; color: #17203f; font-size: clamp(9px, 1.55vw, 17px); font-weight: 900; letter-spacing: .06em; white-space: nowrap; transform: rotate(4.6deg) skewX(4deg); pointer-events: none; }
+.tap { position: absolute; right: -2%; top: -1%; padding: 9px 12px 10px; background: var(--blue); color: #fff; font-size: clamp(10px, 1vw, 12px); font-weight: 800; line-height: 1.25; letter-spacing: .05em; text-transform: uppercase; transform: rotate(7deg); animation: nudge 1.6s ease-in-out infinite; pointer-events: none; }
+@keyframes bob { 50% { transform: translateY(-9px) rotate(-.8deg); } }
+@keyframes nudge { 50% { transform: rotate(4deg) scale(1.07); } }
+
+.found { position: fixed; z-index: 4; left: 16px; bottom: 56px; display: flex; flex-direction: column; align-items: flex-start; gap: 6px; pointer-events: none; }
+.found b { padding: 7px 10px 8px; background: #fff; color: #000; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; transform: rotate(-2deg); }
+.found i { padding: 6px 10px 7px; background: var(--pink); color: #fff; font-size: 10px; font-style: normal; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; transform: rotate(1.5deg); opacity: 0; transition: opacity .25s ease; }
+.found i.on { opacity: 1; }
+.found.pop b { animation: pop .3s ease-out; }
+@keyframes pop { 40% { transform: rotate(-2deg) scale(1.16); } }
+
+.ribbon { position: relative; z-index: 3; overflow: hidden; background: var(--yellow); color: #000; font-size: 13px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; white-space: nowrap; }
+.ribbon div { display: inline-block; padding: 11px 0; animation: ribbon 46s linear infinite; }
+@keyframes ribbon { to { transform: translateX(-50%); } }
+
+.foot { position: relative; z-index: 3; display: flex; justify-content: flex-end; padding: 0 20px 14px; }
+.authors { height: 40px; padding: 0 14px; border: 2px solid #fff; background: #000; color: #fff; font-size: 11px; box-shadow: 4px 4px 0 var(--blue); transform: rotate(-1.5deg); }
+.authors:active { box-shadow: 1px 1px 0 var(--blue); }
+@media (hover: hover) { .authors:hover { transform: rotate(-1.5deg) translate(-1px, -1px); box-shadow: 6px 6px 0 var(--blue); background: var(--yellow); color: #000; border-color: #000; } }
+dialog { width: min(560px, calc(100vw - 28px)); max-height: calc(100svh - 28px); padding: 0; border: 3px solid #000; background: var(--yellow); color: #000; box-shadow: 9px 9px 0 var(--pink); overflow: visible; cursor: auto; }
+dialog::backdrop { background: rgb(0 0 0 / .78); }
+dialog[open] { animation: sheet .28s cubic-bezier(.2, .9, .3, 1.2); }
+@keyframes sheet { from { opacity: 0; transform: translateY(24px) rotate(-2deg) scale(.96); } }
+.sheet { max-height: calc(100svh - 34px); overflow-y: auto; padding: 30px 26px 26px; }
+dialog .x { position: absolute; right: -12px; top: -14px; width: 42px; height: 42px; padding: 0; background: #000; color: #fff; border-color: #fff; font: 400 24px/1 Arial, sans-serif; box-shadow: none; transform: rotate(6deg); }
+dialog .deco { position: absolute; left: -34px; bottom: -30px; width: 104px; height: 104px; transform: rotate(-10deg); pointer-events: none; }
+dialog .eyebrow { margin: 0 0 14px; font-size: 10px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; }
+dialog h2 { margin: 0; font-size: clamp(22px, 5.4vw, 34px); font-weight: 900; line-height: 1.08; text-transform: uppercase; }
+dialog h2 span { display: block; width: fit-content; padding: .1em .24em .16em; }
+dialog h2 span:nth-child(1) { background: #000; color: #fff; transform: rotate(-1.6deg); }
+dialog h2 span:nth-child(2) { margin: .12em 0 0 .5em; background: var(--pink); color: #fff; font-size: .72em; transform: rotate(1.2deg); }
+dialog p.txt { margin: 20px 0 0; font: 400 15px/1.5 Arial, sans-serif; }
+dialog form { max-width: none; margin-top: 18px; }
+dialog label { margin: 14px 0 7px; font-size: 10px; }
+dialog input[type=text], dialog textarea { display: block; width: 100%; padding: 13px 14px; border: 2px solid #000; border-radius: 0; background: #fff; color: #000; font: 400 16px/1.4 Arial, sans-serif; outline: 0; resize: vertical; }
+dialog input[type=text]:focus-visible, dialog textarea:focus-visible { box-shadow: 4px 4px 0 var(--blue); }
+dialog form button { margin-top: 18px; background: #000; color: #fff; border-color: #000; box-shadow: 5px 5px 0 var(--blue); }
+dialog .note { color: #000; }
+dialog .note[data-state=error] { color: #b00040; font-weight: 700; }
+dialog .note[data-state=ok] { color: #000; }
+
+#fly { position: fixed; inset: 0; z-index: 5; overflow: hidden; pointer-events: none; contain: strict; }
+#fly img { position: absolute; left: 0; top: 0; will-change: transform, opacity; user-select: none; }
+
+@media (max-width: 860px) {
+  main { grid-template-columns: 1fr; padding: 10px 20px 26px; gap: 6px; text-align: left; }
+  .art { order: -1; width: min(86%, 380px, 44svh); margin-top: 4px; }
+  .lede { margin-top: 22px; }
+  .tap { right: auto; left: -4%; top: auto; bottom: 0; transform: rotate(-6deg); }
+  .tagline { padding: 7px 4px; font-size: min(11px, 2.3vw); letter-spacing: .04em; }
+  @keyframes nudge { 50% { transform: rotate(-3deg) scale(1.07); } }
+  .brand { justify-content: flex-start; padding: 16px 20px 0; }
+  .foot { justify-content: center; padding-bottom: 18px; }
+  dialog .deco { left: -14px; bottom: -34px; width: 84px; height: 84px; }
+  .sheet { padding: 26px 18px 22px; }
+  .found { left: auto; right: 12px; bottom: auto; top: 44px; align-items: flex-end; }
 }
-</style><style data-vue-ssr-id="288e567e:0">
-</style><style data-vue-ssr-id="93b5a48a:0">
-@-webkit-keyframes right-to-left {
-from {
-    right: 0;
+@media (max-width: 460px) {
+  .row { flex-direction: column; }
+  input[type=tel] { flex: none; }
+  button { width: calc(100% - 5px); }
+  h1 { font-size: 15vw; }
+  h1 span:nth-child(2) { margin-left: .25em; font-size: .5em; }
 }
-to {
-    right: 50%;
+
+/* v2: the illustration is the backdrop, black half on the left carries the text */
+body::before { opacity: .3; }
+.bg { position: fixed; z-index: 0; top: 0; bottom: 0; left: 30vw; width: max(100vw, 177.78svh); margin: 0; }
+.bg img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: left center; }
+.bg::after { content: ''; position: absolute; inset: 0 auto 0 -1px; width: 22%; background: linear-gradient(90deg, #000 0, rgb(0 0 0 / .0) 100%); }
+.brand { justify-content: flex-start; padding: 22px 0 0 clamp(20px, 5vw, 72px); }
+main { width: 100%; margin: 0; padding: 18px 0 30px clamp(20px, 5vw, 72px); grid-template-columns: minmax(0, 40vw) 1fr; align-items: center; }
+h1 { font-size: clamp(44px, 7.6vw, 118px); }
+h1 span:nth-child(2) { font-size: .46em; margin-left: .5em; }
+.lede { max-width: 26em; }
+.art { position: static; width: auto; justify-self: stretch; align-self: stretch; }
+.tap { right: 6vw; top: 16%; }
+.foot { padding-right: 24px; }
+@media (max-width: 860px) {
+  .bg { position: relative; left: 0; top: auto; bottom: auto; order: 5; width: 100%; height: 56vw; min-height: 210px; }
+  .bg img { object-position: 30% center; }
+  .bg::after { inset: -1px 0 auto 0; width: 100%; height: 34%; background: linear-gradient(180deg, #000 0, rgb(0 0 0 / 0) 100%); }
+  .brand { padding: 16px 20px 0; }
+  main { grid-template-columns: 1fr; padding: 22px 20px 26px; flex: none; }
+  h1 { font-size: 16.5vw; margin: 16px 0 0 4px; }
+  .authors { width: auto; }
+  h1 span:nth-child(2) { font-size: .42em; margin-left: .25em; }
+  .art { display: none; }
+  .foot { order: 6; position: relative; margin-top: -58px; padding-bottom: 18px; justify-content: flex-end; }
+  .ribbon { order: 7; }
 }
+
+/* v3: night room. The wall carries the text, the mess lies under it, the guy sits on the right */
+html, body { background: #060d10; }
+body::before { opacity: .12; }
+.bg { position: fixed; z-index: 0; inset: 0; left: 0; width: 100%; background: url(assets/soon/room-top.png) 0 0 / 100% 100% no-repeat; }
+.bg img { position: absolute; left: 0; bottom: 0; width: 100%; height: auto; min-height: 0; object-fit: fill; }
+.bg::after { display: none; }
+main { grid-template-columns: minmax(0, 44vw) 1fr; align-items: start; padding-top: clamp(10px, 3svh, 40px); }
+h1 { font-size: clamp(40px, 6.4vw, 104px); }
+.tap { right: 4vw; top: 12%; }
+.found { bottom: 56px; }
+@media (min-width: 861px) and (max-aspect-ratio: 13/10) { .bg img { width: auto; height: 62svh; left: auto; right: 0; } }
+@media (max-width: 860px) {
+  .bg { position: relative; inset: auto; order: 5; height: auto; min-height: 0; background-image: url(assets/soon/room-m-top.png); }
+  .bg img { position: static; display: block; width: 100%; height: auto; }
+  .bg::after { display: block; inset: -1px 0 auto 0; width: 100%; height: 38%; background: linear-gradient(180deg, #060d10 0, rgb(6 13 16 / 0) 100%); }
+  main { grid-template-columns: 1fr; padding-top: 22px; }
+  h1 { font-size: 16.5vw; }
+  .foot { margin-top: -58px; }
 }
-@keyframes right-to-left {
-from {
-    right: 0;
+
+/* v4: desktop — the animated night room fills the screen, text sits on the dark wall above the sofa */
+@media (min-width: 861px) {
+  html, body { background: #0a171a; }
+  body::before { z-index: 1; opacity: .5; mix-blend-mode: overlay; background: url(assets/soon/grain.png) 0 0 / 420px 420px; animation: grain .5s steps(1) infinite; }
+  .bg { position: fixed; inset: 0; width: 100%; height: 100%; background: #0a171a; }
+  .bg img { position: absolute; inset: auto 0 0 0; width: 100%; height: auto; object-fit: fill; }
+  .bg img.room-top { bottom: calc(100vw * 893 / 1600 - 100vw * 6 / 1200); }
+  .bg::after { display: block; inset: 0 auto 0 0; width: 58%; height: 100%; background: linear-gradient(90deg, rgb(4 12 14 / .55) 0, rgb(4 12 14 / .25) 60%, rgb(4 12 14 / 0) 100%); }
+  .tagline { background: var(--yellow); }
+  .brand { padding-top: 16px; }
+  main { display: block; flex: none; padding: clamp(8px, 2.2svh, 26px) 0 0 clamp(20px, 5vw, 72px); }
+  .copy { width: min(46vw, 620px); }
+  h1 { font-size: clamp(34px, min(5.2vw, 9svh), 84px); }
+  .lede { margin-top: clamp(12px, 2.4svh, 26px); font-size: clamp(14px, 1.15vw, 17px); max-width: 30em; }
+  form#call { margin-top: clamp(12px, 2.2svh, 24px); max-width: 480px; }
+  form#call label { margin-bottom: 6px; }
+  input[type=tel], form#call button { height: 48px; }
+  input[type=tel] { background: rgb(0 0 0 / .55); }
+  .note { margin-top: 10px; min-height: 0; }
+  .art { display: none; }
+  .tap { display: none; }
+  .foot { position: fixed; right: 0; bottom: 46px; padding: 0 24px 0 0; }
+  .ribbon { position: fixed; left: 0; right: 0; bottom: 0; }
+  .found { bottom: 58px; }
 }
-to {
-    right: 50%;
+@keyframes grain { 0% { background-position: 0 0; } 25% { background-position: -137px 61px; } 50% { background-position: 83px -149px; } 75% { background-position: -59px -97px; } }
+/* v5: no big headline, no sticker counter */
+h1 { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.found { display: none !important; }
+.lede { margin-top: 0 !important; }
+@media (min-width: 861px) { main { padding-top: clamp(18px, 4svh, 44px); } .lede { font-size: clamp(16px, 1.35vw, 20px); } }
+/* v6: no tagline strip, no ribbon */
+.tagline { display: none !important; }
+@media (min-width: 861px) { .foot { bottom: 22px; } .brand { padding-top: 26px; } }
+/* v9: launch notice with a channel switch */
+.ways { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; padding: 0; border: 0; }
+.ways legend { float: left; width: 100%; margin: 0 0 10px; padding: 0; font-size: 12px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.ways label { display: block; margin: 0; cursor: pointer; }
+.ways input { position: absolute; opacity: 0; pointer-events: none; }
+.ways span { display: block; padding: 8px 12px 9px; border: 2px solid #fff; color: #fff; font-size: 11px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; background: rgb(0 0 0 / .45); }
+.ways input:checked + span { background: var(--pink); border-color: var(--pink); }
+.ways input:focus-visible + span { outline: 3px solid var(--yellow); outline-offset: 2px; }
+#contact { flex: 1; min-width: 0; height: 48px; padding: 0 16px; border: 2px solid #fff; border-radius: 0; background: rgb(0 0 0 / .55); color: #fff; font: 700 17px/1 Arial, sans-serif; outline: 0; }
+#contact::placeholder { color: #8b8b8b; font-weight: 400; }
+#contact:focus-visible { border-color: var(--yellow); box-shadow: 4px 4px 0 var(--pink); }
+@media (max-width: 460px) { #contact { flex: none; height: 54px; } }
+/* v10: after sign-up */
+.done { margin-top: clamp(18px, 3.4svh, 36px); outline: 0; }
+.done[hidden], form[hidden] { display: none; }
+.done-title { margin: 0; font-size: clamp(30px, 4.4vw, 62px); font-weight: 900; line-height: 1; text-transform: uppercase; }
+.done-title span { display: block; width: fit-content; padding: .12em .26em .16em; background: var(--yellow); color: #000; transform: rotate(-2deg); animation: stamp .35s cubic-bezier(.2, .9, .3, 1.3); }
+.done-text { max-width: 24em; margin: 22px 0 0; font: 400 clamp(16px, 1.4vw, 21px)/1.45 Arial, sans-serif; color: #fff; }
+@keyframes stamp { from { opacity: 0; transform: rotate(-9deg) scale(1.5); } }
+/* v11: mission line, framed form */
+.more { max-width: 34em; margin: 14px 0 0; font: 400 clamp(14px, 1.05vw, 16px)/1.5 Arial, sans-serif; color: #c9d2d2; }
+form#call { max-width: 520px !important; padding: 24px; border: 1px solid rgb(255 255 255 / .55); background: rgb(3 10 12 / .72); -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+.ways legend { margin-bottom: 16px; font-size: clamp(18px, 1.7vw, 24px); font-weight: 800; letter-spacing: .02em; line-height: 1.15; }
+.ways span { border-width: 1px; border-color: rgb(255 255 255 / .6); background: transparent; }
+.ways input:checked + span { background: #fff; border-color: #fff; color: #000; }
+form#call .note { margin-bottom: 0; }
+form#call button { box-shadow: 4px 4px 0 #000; }
+#contact:focus-visible { box-shadow: none; }
+@media (min-width: 861px) { .brand { padding-top: clamp(40px, 8svh, 96px); } form#call { margin-top: clamp(16px, 2.8svh, 30px); } }
+@media (max-width: 460px) { form#call { padding: 20px; } }
+.brand-name { position: relative; }
+.soon-tag { position: absolute; right: -.9em; top: -.78em; padding: .42em .7em .5em; background: var(--pink); color: #fff; font-size: .3em; font-weight: 800; letter-spacing: .08em; line-height: 1; text-transform: uppercase; white-space: nowrap; transform: rotate(9deg); box-shadow: 2px 2px 0 #000; }
+.soon-tag { right: -1.6em; top: -.35em; font-size: .21em; padding: .4em .6em .46em; transform: rotate(-8deg); box-shadow: 1px 2px 0 rgb(0 0 0 / .7); }
+/* v12: compact left column so the tote and the boxes on the sofa stay visible */
+@media (min-width: 861px) {
+  .brand { padding-top: clamp(40px, 6.4svh, 76px) !important; gap: clamp(12px, 1.2vw, 18px); font-size: clamp(20px, min(2.6vw, 4.6svh), 40px); }
+  .brand img { width: clamp(52px, min(6.4vw, 11svh), 104px); }
+  main { padding-top: clamp(8px, 2svh, 24px) !important; }
+  .copy { width: min(48vw, 640px); }
+  .lede { font-size: clamp(15px, min(1.5vw, 2.7svh), 23px) !important; }
+  .more { max-width: 40em; margin-top: clamp(6px, 1.3svh, 14px); font-size: clamp(12.5px, min(1.05vw, 1.9svh), 16px); }
+  form#call { margin-top: clamp(10px, 2.2svh, 26px) !important; padding: clamp(16px, 2.7svh, 24px) 24px; }
+  .ways { margin-bottom: 8px; }
+  .ways legend { margin-bottom: clamp(8px, 1.5svh, 14px); font-size: clamp(16px, min(1.7vw, 2.9svh), 24px); }
+  .ways span { padding: 6px 11px 7px; }
+  #contact, form#call button { height: 44px; }
+  form#call .note { margin-top: 8px; font-size: 12px; }
 }
+/* v13: two buttons under the text, both forms live in popups */
+.cta { display: flex; flex-wrap: wrap; gap: 16px 18px; margin-top: clamp(18px, 3.4svh, 36px); }
+.cta button { height: 54px; padding: 0 22px; font-size: 13px; }
+.cta-alt { background: rgb(0 0 0 / .45); color: #fff; border-color: #fff; box-shadow: 5px 5px 0 var(--blue); }
+.cta-alt:active { box-shadow: 1px 1px 0 var(--blue); }
+@media (hover: hover) { .cta-alt:hover { box-shadow: 7px 7px 0 var(--blue); background: #fff; color: #000; } }
+dialog.dark { width: min(540px, calc(100vw - 28px)); background: #08161a; color: #fff; border: 1px solid rgb(255 255 255 / .6); box-shadow: 9px 9px 0 var(--yellow); }
+dialog.dark .sheet { padding: 30px 26px 26px; }
+dialog.dark form#call { max-width: none !important; margin: 0 !important; padding: 0 !important; border: 0; background: none; -webkit-backdrop-filter: none; backdrop-filter: none; }
+dialog.dark form#call button { margin-top: 0; background: var(--yellow); color: #000; border-color: #000; box-shadow: 4px 4px 0 #000; }
+dialog.dark .ways legend { font-size: clamp(20px, 5vw, 28px) !important; margin-bottom: 18px !important; }
+dialog.dark .ways label { margin: 0; }
+dialog.dark #contact, dialog.dark form#call button { height: 50px !important; }
+dialog.dark .note { color: #b9c4c4; }
+dialog.dark .note[data-state=error] { color: #ff7aa9; }
+dialog.dark .done { margin-top: 0; }
+dialog.dark .done-title { font-size: clamp(30px, 8vw, 54px); }
+dialog.dark .x { background: #fff; color: #000; border-color: #000; }
+@media (max-width: 860px) { dialog.dark .sheet { padding: 26px 18px 22px; } }
+/* v14: phone — text on the wall, the animated room below, page scrolls */
+@media (max-width: 860px) {
+  html, body { background: #091c22; }
+  body::before { z-index: 3; opacity: .5; mix-blend-mode: overlay; background: url(assets/soon/grain.png) 0 0 / 420px 420px; animation: grain .5s steps(1) infinite; }
+  .brand { justify-content: flex-start; gap: 14px; padding: 30px 20px 0 !important; font-size: 24px; }
+  .brand img { width: 64px; }
+  main { position: relative; z-index: 2; display: block; padding: 18px 20px 0 !important; }
+  .copy { width: auto; }
+  .lede { font-size: 19px !important; line-height: 1.35; color: #fff; max-width: none; }
+  .more { font-size: 14px; margin-top: 12px; }
+  .cta { flex-direction: column; gap: 16px; margin-top: 24px; }
+  .cta button { width: calc(100% - 6px); height: 54px; }
+  .bg { position: relative; inset: auto; order: 5; width: 100%; height: auto; min-height: 0; margin-top: -30vw; background: none; }
+  .bg img { position: static; display: block; width: 100%; height: auto; }
+  .bg img.room-top { display: none; }
+  .bg::after { display: block; inset: -1px 0 auto 0; width: 100%; height: 9%; background: linear-gradient(180deg, #091c22 0, rgb(9 28 34 / 0) 100%); }
+  .art { display: none; }
 }
-.articleItem-newsflash.in-viewport,
-.articleItem-video.in-viewport,
-.articleItem-horizontal.in-viewport {
-   position: relative;
-   visibility: visible;
-   -webkit-animation: right-to-left 2 1s linear alternate;
-           animation: right-to-left 2 1s linear alternate;
+/* v15: lede in bold caps like the homepage headlines; mission text in two lines on desktop */
+.lede { font-family: Arial, Helvetica, sans-serif !important; font-weight: 700 !important; text-transform: uppercase; letter-spacing: 0; text-wrap: balance; }
+br.wide { display: none; }
+@media (min-width: 861px) {
+  .lede { font-size: clamp(18px, min(1.95vw, 3.5svh), 30px) !important; line-height: 1.08 !important; max-width: none !important; width: max-content; white-space: nowrap; text-wrap: nowrap; }
+  .more { max-width: none !important; width: max-content; white-space: nowrap; }
+  br.wide { display: inline; }
 }
-</style><style data-vue-ssr-id="878bea90:0">
-@media (min-width: 801px) {
-._3Zl6M_0 {
-    height: 0 !important;
-    width: 0 !important;
-    opacity: 0;
-    visibility: hidden;
+@media (max-width: 860px) { .lede { font-size: 21px !important; line-height: 1.12 !important; } }
+/* v16: phone order — logo, animation, then text and buttons */
+@media (max-width: 860px) {
+  .brand { position: relative; z-index: 2; order: -1; }
+  .bg { order: 0 !important; margin-top: -18vw !important; }
+  main { order: 1; padding: 22px 20px 44px !important; }
+  .bg::after { height: 12%; }
 }
+/* v17: phone — logo sits on the animation, animation cropped so the description starts on the first screen */
+@media (max-width: 860px) {
+  body { position: relative; }
+  .brand { position: absolute; z-index: 3; left: 0; top: 28px; padding: 34px 20px 0 !important; }
+  .bg { margin-top: 0 !important; height: min(calc(100svh - 28px - 84px), 222.2vw) !important; overflow: hidden; }
+  .bg img { position: absolute !important; left: 0; bottom: min(0px, (100svh - 780px) * .42); width: 100% !important; height: auto !important; }
+  .bg::after { height: 22%; background: linear-gradient(180deg, rgb(9 28 34 / .85) 0, rgb(9 28 34 / 0) 100%); }
+  main { padding-top: 20px !important; }
 }
-@media (max-width: 800px) {
-._3Y3PA_0 {
-    height: 0 !important;
-    width: 0 !important;
-    opacity: 0;
-    visibility: hidden;
-}
-}
-</style><style data-vue-ssr-id="512d9478:0">
-._1kl11_0 {
-  text-decoration: none;
-  text-align: center;
-  position: relative;
-  z-index: 10;
-}
-._1kl11_0:hover ._1rmMP_0 {
-    opacity: 0.7;
-}
-._1rmMP_0 {
-  will-change: opacity;
-  -webkit-transition: opacity linear 0.3s;
-  -o-transition: opacity linear 0.3s;
-  transition: opacity linear 0.3s;
-  max-width: 220px;
-}
-@media (max-width: 480px) {
-._1rmMP_0 {
-      max-width: 165px;
-}
-}
-</style><style data-vue-ssr-id="3888cab1:0">
-.oldChrome {
-  position: fixed;
-  top: 20px;
-  -webkit-transform: translateX(-50%);
-      -ms-transform: translateX(-50%);
-          transform: translateX(-50%);
-}
-</style><style data-vue-ssr-id="3076366c:0">
-.nuxt-search--opened {
-  overflow: hidden;
-  padding-right: 15px !important;
-}
-</style><style data-vue-ssr-id="010f96ba:0">
-</style><style data-vue-ssr-id="1c110dac:0">
-._3Akee_0 {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-      -ms-flex-align: center;
-          align-items: center;
-  -webkit-box-pack: center;
-      -ms-flex-pack: center;
-          justify-content: center;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-      -ms-flex-direction: row;
-          flex-direction: row;
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
-}
-</style><style data-vue-ssr-id="01339547:0">
-.fKK0__0 {
-  display: inline-block;
-  vertical-align: middle;
-}
-</style><style data-vue-ssr-id="1fba7021:0">
-</style><style data-vue-ssr-id="749bc39c:0">
-@-webkit-keyframes right-to-left {
-from {
-    right: 0;
-}
-to {
-    right: 50%;
-}
-}
-@keyframes right-to-left {
-from {
-    right: 0;
-}
-to {
-    right: 50%;
-}
-}
-.relatedArticleSlide.in-viewport {
-  position: relative;
-  visibility: visible;
-  -webkit-animation: right-to-left 2 1s linear alternate;
-          animation: right-to-left 2 1s linear alternate;
-}
-</style><style data-vue-ssr-id="be0c8a68:0">
-</style><style data-vue-ssr-id="0d0c9caa:0">
-</style><style data-vue-ssr-id="71c1e09c:0">
-</style><style data-vue-ssr-id="2862c2d6:0">
-</style><style data-vue-ssr-id="273498cb:0">
-</style><style data-vue-ssr-id="0153a48e:0">
-</style><style data-vue-ssr-id="6c08cec6:0">
-</style>
-<style>.archive-navigation{position:fixed;bottom:16px;right:16px;z-index:2147483000;display:flex;gap:18px;padding:14px 20px;border-radius:30px;background:#111;color:#fff;box-shadow:0 2px 18px #0003;font:14px Arial,sans-serif}.archive-navigation a{color:#fff!important;text-decoration:none}.archive-navigation a:hover{text-decoration:underline}.archive-navigation a:focus-visible{outline:2px solid #fff;outline-offset:4px}body{padding-bottom:70px!important}</style><link href="assets/uaf-header.css" id="uaf-header-style" rel="stylesheet"/><meta content="noindex,follow" name="robots"/><link as="image" data-uaf-preload="" fetchpriority="high" href="assets/uaf-hero-tall.webp" media="(max-width: 700px)" rel="preload"/><link as="image" data-uaf-preload="" fetchpriority="high" href="assets/uaf-hero-wide.webp" media="(min-width: 701px)" rel="preload"/><style id="uaf-boot-style">/* Inlined in <head>: the opening screen has to paint before any stylesheet or picture arrives. */
-#uaf-loader { display: none; }
-._39dQA_0 > .fqxlk_0 { background-image: url("assets/uaf-hero-wide.webp"); }
-@media (max-width: 700px) { ._39dQA_0 > .fqxlk_0 { background-image: url("assets/uaf-hero-tall.webp"); } }
-html.uaf-booting #uaf-loader { position: fixed; inset: 0; z-index: 20000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 26px; background: #000; color: #fff; transition: opacity 260ms ease-out, visibility 0s linear 260ms; animation: uaf-loader-failsafe 400ms 7s forwards; }
-html.uaf-booting { background: #000; }
-.uaf-loader-mark { display: flex; flex-direction: column; align-items: center; gap: 14px; }
-.uaf-loader-mark img { width: 104px; height: auto; animation: uaf-loader-wolf 900ms steps(1, end) infinite; }
-.uaf-loader-mark span { font: 700 30px/1 Arial, sans-serif; letter-spacing: -.045em; word-spacing: .18em; }
-#uaf-loader i { position: relative; width: 132px; height: 6px; background: #2a2a2a; overflow: hidden; transform: rotate(-2deg); }
-#uaf-loader i::after { content: ''; position: absolute; inset: 0; background: #fdfd38; transform-origin: left center; animation: uaf-loader-bar 6s cubic-bezier(.1, .7, .2, 1) forwards; }
-html.uaf-ready #uaf-loader i::after { animation: none; transform: scaleX(1); }
-html.uaf-ready #uaf-loader { opacity: 0; visibility: hidden; pointer-events: none; }
-@keyframes uaf-loader-wolf { 0% { transform: rotate(-4deg); } 33% { transform: rotate(3deg) translateY(-3px); } 66% { transform: rotate(-1deg) translateX(2px); } }
-@keyframes uaf-loader-bar { from { transform: scaleX(.04); } to { transform: scaleX(.82); } }
-@keyframes uaf-loader-failsafe { to { opacity: 0; visibility: hidden; } }
-/* opening sequence: picture first, then the slogan, then the lead stories */
-html.uaf-booting .uaf-hero-copy h1, html.uaf-booting .uaf-tagline, html.uaf-booting section._164-5_0, html.uaf-booting ._3gVfa_0 > ._2fO7I_0 > .uaf-section-label { opacity: 0; }
-html.uaf-booting .uaf-hero-copy h1 { transform: translateY(26px) scale(.97); }
-html.uaf-booting section._164-5_0, html.uaf-booting ._3gVfa_0 > ._2fO7I_0 > .uaf-section-label { transform: translateY(34px); }
-html.uaf-booting.uaf-stage-slogan .uaf-hero-copy h1, html.uaf-booting.uaf-stage-slogan .uaf-tagline { opacity: 1; transform: none; transition: opacity 380ms ease-out, transform 480ms cubic-bezier(.2, .8, .2, 1); }
-html.uaf-booting.uaf-stage-stories section._164-5_0, html.uaf-booting.uaf-stage-stories ._3gVfa_0 > ._2fO7I_0 > .uaf-section-label { opacity: 1; transform: none; transition: opacity 400ms ease-out, transform 520ms cubic-bezier(.2, .8, .2, 1); }
-html.uaf-booting.uaf-stage-stories section._164-5_0:nth-of-type(2) { transition-delay: 90ms; }
-html.uaf-booting.uaf-stage-stories section._164-5_0:nth-of-type(3) { transition-delay: 180ms; }
+/* v18: dark authors popup with a terms choice */
+#authors.dark h2 span:nth-child(1) { background: var(--yellow); color: #000; }
+#authors.dark p.txt { color: #dfe6e6; }
+#authors.dark input[type=text], #authors.dark textarea { background: rgb(0 0 0 / .5); color: #fff; border: 1px solid rgb(255 255 255 / .6); }
+#authors.dark input[type=text]::placeholder, #authors.dark textarea::placeholder { color: #8b9696; }
+#authors.dark input[type=text]:focus-visible, #authors.dark textarea:focus-visible { border-color: var(--yellow); box-shadow: none; }
+#authors.dark form button { background: var(--yellow); color: #000; border-color: #000; box-shadow: 4px 4px 0 #000; }
+#authors.dark .note[data-state=error] { color: #ff7aa9; font-weight: 400; }
+.terms { margin: 16px 0 0; padding: 0; border: 0; }
+.terms legend { padding: 0; margin-bottom: 9px; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; }
+.terms label { display: flex !important; align-items: center; gap: 11px; min-height: 40px; margin: 0 !important; font: 400 15px/1.3 Arial, sans-serif !important; letter-spacing: 0 !important; text-transform: none !important; cursor: pointer; }
+.terms input { flex: none; width: 22px; height: 22px; margin: 0; accent-color: #fdfd38; cursor: pointer; }
+.terms label { align-items: flex-start !important; padding: 8px 0; }
+.terms small { display: block; margin-top: 3px; font-size: 12.5px; line-height: 1.35; color: #9aa6a6; }
+.terms .hint { margin: 4px 0 0; font: 400 12px/1.4 Arial, sans-serif; color: #9aa6a6; }
+/* v8: thin yellow ribbon on top */
+.ribbon { order: -2; font-size: 11px; letter-spacing: .14em; }
+.ribbon div { padding: 7px 0; animation-duration: 70s; }
+@media (min-width: 861px) { .ribbon { position: fixed; top: 0; bottom: auto; left: 0; right: 0; } }
+/* v7: bigger brand, lower */
+.brand { gap: 18px; font-size: clamp(24px, 2.6vw, 40px); letter-spacing: .1em; }
+.brand img { width: clamp(70px, 6.4vw, 104px); }
+@media (min-width: 861px) { .brand { padding-top: clamp(48px, 11svh, 120px); } main { padding-top: clamp(16px, 3svh, 34px); } .lede { font-size: clamp(17px, 1.5vw, 23px); line-height: 1.4; max-width: 24em; color: #fff; } form#call { margin-top: clamp(18px, 3.4svh, 36px); } }
+@media (max-width: 860px) { .brand { padding-top: 36px; } }
+dialog p.txt + p.txt { margin-top: 12px; }
+dialog .deco { left: auto !important; right: -30px; bottom: -34px !important; transform: rotate(8deg) scaleX(-1); }
+dialog h2 span:nth-child(1) { font-size: 1em; }
 @media (prefers-reduced-motion: reduce) {
-  .uaf-loader-mark img, #uaf-loader i::after { animation: none; }
-  html.uaf-booting .uaf-hero-copy h1, html.uaf-booting section._164-5_0, html.uaf-booting ._3gVfa_0 > ._2fO7I_0 > .uaf-section-label { transform: none; }
+  body::before { animation: none !important; }
+  .done-title span { animation: none; }
+  .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
 }
-</style><script id="uaf-boot">document.documentElement.classList.add('uaf-booting');</script></head>
-<body data-n-head=""><div aria-label="Загрузка AUF MEDIA" data-hero="assets/uaf-hero-wide.webp" data-hero-tall="assets/uaf-hero-tall.webp" id="uaf-loader" role="status"><div class="uaf-loader-mark"><img alt="" height="100" src="assets/uaf-logo-combined-white.svg" width="119"/><span>AUF MEDIA</span></div><i></i></div>
-<div data-server-rendered="true" id="__nuxt"><div class="nuxt-progress" style="width:0%;height:2px;background-color:black;opacity:0;"></div><div id="__layout"><div class="_301nK_0"><div class="vue-portal-target"></div> <div class="adv _3Zl6M_0 _3Y3PA_0"><div class="ya-banner ya-banner--desktop" id="yandex-adfox-ads-0.8072681883446582"></div> <div class="ya-banner ya-banner--mobile" id="yandex-adfox-ads-0.29407357679391977"></div></div> <div class="_39dQA_0"><div class="fqxlk_0"><div class="_1Zdrm_0" style="background-color:undefined;opacity:0;"></div></div> <div class="ppHsO_0" style="background-color:#0e0e23;"></div></div> <section class="uaf-masthead"></section> <div class="_2b6H__0"> <div><div class="_3gVfa_0"><div class="uaf-hero-copy"><h1 aria-label="Read. Watch. AUF" class="_1rogb_0" style="-webkit-clip-path:none;clip-path:none;"><span aria-hidden="true" class="uaf-motto-fixed">Read. Watch.</span><span aria-hidden="true" class="uaf-swap" data-words="AUF|Connect|Explore|Спорь|Listen|Танцуй|Discover|Удивляйся|Repeat"><span>AUF</span></span></h1><p class="uaf-description">Культурный журнал о людях, явлениях и событиях в США</p></div><!-- --> <div class="_2fO7I_0"><section class="hx2cQ_0 _164-5_0 uaf-lead" data-content-state="sample" data-editorial-slot="1" data-excerpt="Можно не понять ни слова и всё равно услышать своё. О языке, интонации и привычках слушателя." data-palette="1"><div class="_3Akee_0"><a class="_1ZMPG_0 ICh8I_0" href="/auf-media/read/music-beyond-english/" showarticlesubtitle="true" theme="light"><div class="_1x5FF_0 T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">МУЗЫКА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="_1lFOR_0"><div class="_3FncU_0"><span class="yg2f0_0">Будущее американской музыки не обязано петь по‑английски</span></div> <div class="_3gxOF_0 _2JcRy_0"><img alt="Иллюстрация-коллаж: ухо в наушнике, пластинка с глобусом в центре, поющий рот с языком-волной и рука, рвущая словарь; их связывают цветные волнистые линии." class="_2MYQZ_0 rJQsp_0" decoding="async" src="/auf-media/assets/editorial/stickers/01.webp"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div></div><p class="uaf-lead-excerpt">Можно не понять ни слова и всё равно услышать своё. О языке, интонации и привычках слушателя.</p> <!-- --> <div class="_2-mlf_0"><span class="uaf-cta">Читать</span><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _164-5_0 uaf-also" data-content-state="sample" data-editorial-slot="2" data-excerpt="Что остаётся от личного пространства, когда дом становится съёмочной площадкой. Эссе о быте и работе в одной комнате." data-palette="2"><div class="_3Akee_0"><a class="_1ZMPG_0 ICh8I_0" href="/auf-media/read/content-house-as-set/" showarticlesubtitle="true" theme="light"><div class="_1x5FF_0 T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">ИЗНУТРИ</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="_1lFOR_0"><div class="_3FncU_0"><span class="yg2f0_0">Секс, контент, аренда: внутри OnlyFans‑дома в LA</span></div> <div class="_3gxOF_0 _2JcRy_0"><img alt="Иллюстрация: кукольный дом в разрезе с кольцевой лампой над кроватью, телефоном на штативе, холодильником с контейнерами и сушилкой; рука держит ключ с сердечком." class="_2MYQZ_0 rJQsp_0" decoding="async" src="/auf-media/assets/editorial/stickers/02.webp"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div></div><p class="uaf-lead-excerpt">Что остаётся от личного пространства, когда дом становится съёмочной площадкой. Эссе о быте и работе в одной комнате.</p> <!-- --> <div class="_2-mlf_0"><span class="uaf-cta">Читать</span><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _164-5_0 uaf-also" data-content-state="sample" data-editorial-slot="3" data-excerpt="Сделать ещё один вариант теперь легко. Решить, какой из них нужен, — по-прежнему трудно. О выборе и собственных ограничениях." data-palette="3"><div class="_3Akee_0"><a class="_1ZMPG_0 ICh8I_0" href="/auf-media/read/what-is-worth-making/" showarticlesubtitle="true" theme="light"><div class="_1x5FF_0 T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">ТЕХНОЛОГИИ</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="_1lFOR_0"><div class="_3FncU_0"><span class="yg2f0_0">Если создать можно всё, что вообще стоит создавать?</span></div> <div class="_3gxOF_0 _2JcRy_0"><img alt="Иллюстрация: палец нерешительно завис над большой красной кнопкой, из-под которой торчат банан, стул, планета, ботинок, кот и труба; рядом пустая рама." class="_2MYQZ_0 rJQsp_0" decoding="async" src="/auf-media/assets/editorial/stickers/03.webp"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div></div><p class="uaf-lead-excerpt">Сделать ещё один вариант теперь легко. Решить, какой из них нужен, — по‑прежнему трудно. О выборе и собственных ограничениях.</p> <!-- --> <div class="_2-mlf_0"><span class="uaf-cta">Читать</span><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div></a></div> <!-- --></section></div> <!-- --></div><div class="uaf-content-body"><div class="_3gVfa_0 _2sU3z_0"><p class="uaf-section-label uaf-section-note">Выбор редакции</p><h3 class="_3Vxe0_0"><a class="_3jY2O_0">
-          SPOTLIGHT
-        </a></h3> <div class="_2fO7I_0 _2p8cZ_0"><section class="hx2cQ_0 RdSK9_0" data-content-state="sample" data-editorial-slot="4" data-excerpt="Безупречный образ иногда хочется испортить одной странной вещью. Зачем гардеробу неловкость." data-palette="0"><div class="_3Akee_0"><a class="_3S0Ql_0" href="/auf-media/read/tired-of-good-taste/" showarticlesubtitle="true" showtextarticleimage="true" staticbackgrounds="true" textarticletype="white" theme="light"><div class="_3gxOF_0 _3x-6p_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAACQBQCdASoeABQAPt1eqU2opSQiKA1REBuJbACdMoRz78AAxR/L5WKHRC7YMuE1rbRgg/wNAAD9D+UC5HfVZxFeY/TVd6fxnB/r6vdwFM6XaqQ/DZjli90OWwPKYgkzFfp5r5QyK8SKQPUggZ2hin44/TtSdYphRrAAAA==);"><img alt="Иллюстрация: античный мраморный бюст в неоновых спортивных очках, леопардовом платке и бусах; рядом носок в шлёпанце и сабо с джиббитсами." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/04.webp" srcset="/auf-media/assets/editorial/covers/04-900.webp 900w, /auf-media/assets/editorial/covers/04.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <p class="_2bLkN_0">Хороший вкус немного надоел</p> <div class="_3GJIp_0"><div class="qjUyD_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div> <div class="T8Oks_0 C5807_0 ZTL79_0"><span class="_2b0aj_0 _2h1iS_0">МОДА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div></div></a></div> <!-- --></section><section class="hx2cQ_0 RdSK9_0" data-content-state="sample" data-editorial-slot="5" data-excerpt="Одолженная камера, одна комната, знакомые в кадре. Почему стоит дать шанс фильму, о котором ещё никто не рассказал." data-palette="1"><div class="_3Akee_0"><a class="_3S0Ql_0" href="/auf-media/read/next-director-films-friends/" showarticlesubtitle="true" showtextarticleimage="true" staticbackgrounds="true" textarticletype="white" theme="light"><div class="_3gxOF_0 _3x-6p_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAwBQCdASoeABQAPt1YpE0opKMiMBgMARAbiWgAuy/AgtDTLHHyKd7AxVNZy/oJJaprAAD+5pBCc1+KUh4FFzqqjADWolrmzi8+dbrYjYLU75aRZOjpXqKSerUXRgCsf6R0cDNd4f6Zm3ts5/t8cq5MaKaYD9zVwWV78W63QlRZOdoju3uRemgAAAA=);"><img alt="Иллюстрация-коллаж: телефон в руке с хлопушкой вместо экрана, метёлка для пыли вместо микрофона-пушки и рупор на пластиковой табуретке, между ними вьётся киноплёнка." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/05.webp" srcset="/auf-media/assets/editorial/covers/05-900.webp 900w, /auf-media/assets/editorial/covers/05.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <p class="_2bLkN_0">Твой следующий любимый режиссёр пока снимает друзей</p> <div class="_3GJIp_0"><div class="qjUyD_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div> <div class="T8Oks_0 C5807_0 ZTL79_0"><span class="_2b0aj_0 _2h1iS_0">КИНО</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div></div></a></div> <!-- --></section><section class="hx2cQ_0 RdSK9_0" data-content-state="sample" data-editorial-slot="6" data-excerpt="На снимке не слышно пола под ногами и не чувствуется прохлада зала. Что теряется, когда искусство превращается в картинку." data-palette="2"><div class="_3Akee_0"><a class="_3S0Ql_0" href="/auf-media/read/art-that-wont-fit-instagram/" showarticlesubtitle="true" showtextarticleimage="true" staticbackgrounds="true" textarticletype="white" theme="light"><div class="_3gxOF_0 _3x-6p_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAACwBACdASoeABQAPt1epkyopSOiMAgBEBuJaACdMoACnjLfcaztBsg8FL5NwYHAAM4Mo5a+rxMhcQHL/GihQKtdJoXTwbxdqFDXteswSbgruGbFqrLMDBdC2rovqpoYntBFujw3m3YXCM4dAfpSoJWPyj7F/3kQ930gZdYxb6ZGrAAA);"><img alt="Иллюстрация: огромная скульптурная ступня и абстрактная форма вырываются из треснувшего экрана телефона; в углу маленький зритель перед скульптурой." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/06.webp" srcset="/auf-media/assets/editorial/covers/06-900.webp 900w, /auf-media/assets/editorial/covers/06.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <p class="_2bLkN_0">Искусство, которое не помещается в Instagram</p> <div class="_3GJIp_0"><div class="qjUyD_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div> <div class="T8Oks_0 C5807_0 ZTL79_0"><span class="_2b0aj_0 _2h1iS_0">АРТ</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div></div></a></div> <!-- --></section><section class="hx2cQ_0 RdSK9_0" data-content-state="sample" data-editorial-slot="7" data-excerpt="Кабели, вода, очередь на входе, уборка после гостей. О незаметной работе, без которой хорошая ночь не складывается." data-palette="3"><div class="_3Akee_0"><a class="_3S0Ql_0" href="/auf-media/read/who-makes-the-night/" showarticlesubtitle="true" showtextarticleimage="true" staticbackgrounds="true" textarticletype="white" theme="light"><div class="_3gxOF_0 _3x-6p_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRqYAAABXRUJQVlA4IJoAAADwBACdASoeABQAPtFapkyoJaOiMAwBABoJagCxG46B0a+j+CV/m9+Cc+ekQj9VxmAA/u+Qhn92tI9UoqNCCSMkN1W8LkHY5B87U9SYrrGm05YmvlifVR6DWbxLkOw8rmJTxLzOusFwv4T5kM0hJgN7EnErZI+QaHri2H6Fc86dXbajtM6Kw5XZyLPRYIBhjc+KWU/z7f3FoAAA);"><img alt="Иллюстрация-коллаж: четыре пары рук — сматывают кабель, трясут шейкер, моют пол шваброй и держат фонарик — вокруг маленького диско-шара." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/07.webp" srcset="/auf-media/assets/editorial/covers/07-900.webp 900w, /auf-media/assets/editorial/covers/07.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <p class="_2bLkN_0">Кто делает ночь: люди по другую сторону танцпола</p> <div class="_3GJIp_0"><div class="qjUyD_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div> <div class="T8Oks_0 C5807_0 ZTL79_0"><span class="_2b0aj_0 _2h1iS_0">ГОРОД</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div></div></a></div> <!-- --></section></div> <div class="_-2ywZ_0"><div class="_3kHpE_0"><a aria-disabled="true" class="uaf-youtube" rel="noopener" rootclassname="_3zn01_0 kBfws_0"><div class="_1Y108_0"><div class="_1s2Fq_0 kBfws_0 _1JT3u_0"><span class="_1wXO3_0 _2Shje_0">Заглядывай в Telegram</span></div></div></a></div> <div class="_1L_pL_0 _3gtR7_0"><p class="_13p41_0">СМОТРИ AUF MEDIA ✦ НОВЫЕ ЛИЦА ✦ НОВЫЕ СЦЕНЫ ✦ READ. WATCH. AUF ✦ СМОТРИ AUF MEDIA ✦ НОВЫЕ ЛИЦА ✦ НОВЫЕ СЦЕНЫ ✦ READ. WATCH. AUF ✦ СМОТРИ AUF MEDIA ✦ НОВЫЕ ЛИЦА ✦ НОВЫЕ СЦЕНЫ ✦ READ. WATCH. AUF ✦ </p> <p aria-hidden="true" class="_13p41_0">СМОТРИ AUF MEDIA ✦ НОВЫЕ ЛИЦА ✦ НОВЫЕ СЦЕНЫ ✦ READ. WATCH. AUF ✦ СМОТРИ AUF MEDIA ✦ НОВЫЕ ЛИЦА ✦ НОВЫЕ СЦЕНЫ ✦ READ. WATCH. AUF ✦ СМОТРИ AUF MEDIA ✦ НОВЫЕ ЛИЦА ✦ НОВЫЕ СЦЕНЫ ✦ READ. WATCH. AUF ✦ </p></div></div></div><div class="_3gVfa_0"><!-- --> <div class="_2fO7I_0 _3ndnT_0"><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="8" data-excerpt="Как любовь к кино превращается в способ показать свой вкус — и при чём тут логотип студии на кепке." data-palette="0"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/cinema-or-merch/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRpIAAABXRUJQVlA4IIYAAADQBQCdASoeABQAPtVYpEyoJSOiMAwBABqJagCxHzRCmCkSTNzZhhhEsttmjgeGGVKBAMtGUegAAP6vVWSpW55jKGDZYBAlvzy2kjf/ika6y5Q8sd1YcJgnpiKScfo+IpxM6HD+NToRbkVqPucL7jnWdLWIq1MqdpICt7wRMLQx0EDglmAAAA==);"><img alt="Иллюстрация: в креслах кинозала вместо зрителей сидят шопер, кепка, худи и ведёрко попкорна со значками; на экране грустит бобина в кепке." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/08.webp" srcset="/auf-media/assets/editorial/covers/08-900.webp 900w, /auf-media/assets/editorial/covers/08.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">КИНО</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Ты любишь кино или мерч A24?</span></span></div> <div class="_2nNh8_0 vkdUc_0"><span class="Nl1Bp_0" style="background-color:#fdfd38;color:#0C24fb;">Как любовь к кино превращается в способ показать свой вкус — и при чём тут логотип студии на кепке.</span></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="9" data-excerpt="Смена оплачивает аренду, ночь остаётся музыке. Эссе о жизни между доставкой, репетицией и счетами." data-palette="1"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/day-delivery-night-sound/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRpQAAABXRUJQVlA4IIgAAABwBQCdASoeABQAPtlap0yoJSOiMBgMAQAbCWwAsR8cgX+qgJaQdNvE54HWr/opnw4kd2ZAAP6uMHDSr9wlQufnT9yEH5l/3z7jgYSUBW8XaYc0lht5iWYNtMpMEfLjEGf2fVL5AIFnayVfqXWFkFierwoPKD9zEKCM3cOIFRigngQdyvrNAAAA);"><img alt="Иллюстрация: слева день и скутер с пластинками вместо колёс, справа ночь с луной; из курьерского рюкзака торчат синтезатор, провода и колонка." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/09.webp" srcset="/auf-media/assets/editorial/covers/09-900.webp 900w, /auf-media/assets/editorial/covers/09.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">МУЗЫКА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Днём — доставка. Ночью — новый звук LA</span></span></div> <div class="_2nNh8_0 vkdUc_0"><span class="Nl1Bp_0" style="background-color:#fdfd38;color:#0C24fb;">Смена оплачивает аренду, ночь остаётся музыке. Эссе о жизни между доставкой, репетицией и счетами.</span></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section></div> <!-- --></div><div class="_3gVfa_0 ZVu4s_0"><!-- --> <div class="_2fO7I_0 TlAHE_0"><section class="hx2cQ_0 _3IPux_0" data-content-state="sample" data-editorial-slot="10" data-excerpt="Заметить автора до громкой афиши — не значит открыть его миру. О внимании, которое не превращает человека в трофей." data-palette="2"><div class="_3Akee_0"><a class="_3u9_N_0" href="/auf-media/read/remember-the-faces/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white" theme="light"><div class="MFHcI_0"></div> <div class="_3gxOF_0 _1Z0uD_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAACwBACdASoeABQAPt1ep0yopSOiMAgBEBuJQBbZBDc70udmLuwcj86wO4pZn9IYAP7CTm7S+i7lRqTnSLQWxHHy0cMDKO3XtlfcXWC6xLDcmWL/31SYyk54fNjCoKDzflp7zunTDpTiDZU4v94EALmE9oTPEvh3o6ArKAAA);"><img alt="Иллюстрация-коллаж: пять нарисованных портретов вымышленных молодых людей на цветных карточках, под каждым пустая табличка для имени." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/10.webp" srcset="/auf-media/assets/editorial/covers/10-900.webp 900w, /auf-media/assets/editorial/covers/10.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">НАШ РАДАР</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="xj7Lm_0"><div class="_3GUWQ_0"><span class="_1TiTf_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Запомните лица. Имена ещё успеете</span></span></div></div> <div class="_2hVQi_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _3IPux_0" data-content-state="sample" data-editorial-slot="11" data-excerpt="Яркая рубашка, странная обувь и знакомый вопрос у двери. Где кончается чужая уместность и начинается свой выбор." data-palette="3"><div class="_3Akee_0"><a class="_3u9_N_0" href="/auf-media/read/would-you-wear-that/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white" theme="light"><div class="MFHcI_0"></div> <div class="_3gxOF_0 _1Z0uD_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRoIAAABXRUJQVlA4IHYAAAAQBQCdASoeABQAPt1cqU4opKOiMBgIARAbiWwAuy/AgKo6sKuUl0s50ltXVqEp3Z6YAPZqpk6xy9lWB1R5vPzMv/g4MtrKoiHtxTRWMEPsVsJL0HCH64P2gCuRnoUzMzX/TYigQYi3GiNIAQDVIqBxFwHRIAAA);"><img alt="Иллюстрация-коллаж: хмурый взгляд мамы с поднятой бровью, ноги в рваных сетчатых колготках и розовых меховых сапогах, рука с утюгом." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/11.webp" srcset="/auf-media/assets/editorial/covers/11-900.webp 900w, /auf-media/assets/editorial/covers/11.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">МОДА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="xj7Lm_0"><div class="_3GUWQ_0"><span class="_1TiTf_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Одеться так, чтобы мама спросила: «Ты в этом пойдёшь?»</span></span></div></div> <div class="_2hVQi_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _3IPux_0" data-content-state="sample" data-editorial-slot="12" data-excerpt="Свет ещё горит, стулья уже на столах. Заметка о часе, которого нет в городском расписании." data-palette="0"><div class="_3Akee_0"><a class="_3u9_N_0" href="/auf-media/read/america-between-shifts/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white" theme="light"><div class="MFHcI_0"></div> <div class="_3gxOF_0 _1Z0uD_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRpYAAABXRUJQVlA4IIoAAAAQBQCdASoeABQAPt1YpU0opKMiMBgMARAbiWwAnTKEfKiAA739v+EbF1aQZceWYpaAAP7oyStS+cjlFUuJz1qu153mkR5+vPFJUVyamHV3nsOyrxNIsRGfOhoS8PS/0oW6jgT2hRPZ1AWNuIUu2NtsHzDvGXkIXs0UVqPlY5biwUphKxFberOgAAA=);"><img alt="Иллюстрация: на одной вешалке сшиты пополам фартук официантки и сигнальный жилет; рядом стакан кофе, пар от которого превращается в шоссе, и часы." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/12.webp" srcset="/auf-media/assets/editorial/covers/12-900.webp 900w, /auf-media/assets/editorial/covers/12.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">ФОТОГРАФИЯ</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="xj7Lm_0"><div class="_3GUWQ_0"><span class="_1TiTf_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Америка между двумя сменами</span></span></div></div> <div class="_2hVQi_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a></div> <!-- --></section></div> <!-- --></div><div class="_3gVfa_0"><!-- --> <div class="_2fO7I_0 _3ndnT_0"><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="13" data-excerpt="Техника больше не подводит, а работа всё равно кажется пустой. О разнице между удачной формой и мыслью, ради которой она нужна." data-palette="1"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/beauty-is-not-enough/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRnYAAABXRUJQVlA4IGoAAACQBACdASoeABQAPtFYpkyoJSOiMAwBABoJZQC+SCHfvL+JkUaxydu6YjTbKAAA/vBAqR7eSHtevOICaoU68cnpvISrijxPbl3Jat0uJ42uwDl7do2A+oP1Rp9G64K9kpgrkDMM1U0CYOgA);"><img alt="Иллюстрация: рука подносит кисть ко рту как микрофон, из милой картины с цветами торчит чёрный мегафон, палитра в форме речевого пузыря." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/13.webp" srcset="/auf-media/assets/editorial/covers/13-900.webp 900w, /auf-media/assets/editorial/covers/13.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">АРТ</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Красиво делать я умею. Теперь хочется сказать что‑то</span></span></div> <div class="_2nNh8_0 vkdUc_0"><span class="Nl1Bp_0" style="background-color:#fdfd38;color:#0C24fb;">Техника больше не подводит, а работа всё равно кажется пустой. О разнице между удачной формой и мыслью, ради которой она нужна.</span></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="14" data-excerpt="Одного «всё было хорошо» мало. Эссе о языке близости и вопросах, на которые не ответишь галочкой." data-palette="2"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/good-sex-more-than-one-answer/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRoQAAABXRUJQVlA4IHgAAADQBACdASoeABQAPt1gp04opaOiMBgIARAbiUATploYGPDsRpi6XlbVr7JgadDlYAD90UkYJvTvfXxksswq6M58wuXpGYmMM3IGSLTtvjCqzlBsBuShdd7KL9WUfUE6LGROaBV1xNhpMrN0FFMcy1asrbVUQEVA8AA=);"><img alt="Иллюстрация-коллаж: кровать с двумя парами ног в разных носках, скромно взорвавшаяся петарда, планшет с пятью звёздами оценки и две лампы — одна горит, другая нет." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/14.webp" srcset="/auf-media/assets/editorial/covers/14-900.webp 900w, /auf-media/assets/editorial/covers/14.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">СЕКС И НАУКА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Оргазм был. Хороший ли это был секс?</span></span></div> <div class="_2nNh8_0 vkdUc_0"><span class="Nl1Bp_0" style="background-color:#fdfd38;color:#0C24fb;">Одного «всё было хорошо» мало. Эссе о языке близости и вопросах, на которые не ответишь галочкой.</span></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section></div> <!-- --></div><div class="_3gVfa_0 _2BZW3_0" data-lazy-background="assets/uaf-video-backdrop.webp"><h3 class="_3Vxe0_0 _1O3MS_0"><a class="_3jY2O_0">
-          VIDEO
-        </a></h3> <div class="_2fO7I_0 _16nbd_0"><section class="hx2cQ_0 _30I-X_0" data-content-state="sample" data-editorial-slot="15" data-excerpt="Пустой зал ещё не похож на вечеринку. Что происходит до первых гостей и после последнего трека." data-palette="3" data-reel-cover="/auf-media/assets/editorial/reels/15.webp"><div class="_3Akee_0"><a class="_3sZNl_0 w8kgj_0" href="/auf-media/read/before-the-doors-open/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white"><div class="_3gxOF_0 _3XqPX_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRoYAAABXRUJQVlA4IHoAAAAQBQCdASoeABQAPt1ep0yopSOiMAgBEBuJZACsACHf4oSY4MH5I0JJDvSejOPrGb1AAP7xgIS9HPQ2I5+QPKAPjUqEt/ZH24+uFSVX+TcrjCMAhNWXSGU3bFNVBMeuVi1r9ky2n81iTresqmmendKxEn1yyDKmBbfAAA==);"><img alt="Иллюстрация-коллаж: диско-шар в картонной коробке рядом со стремянкой, руки рвут розовый скотч, под закрытой дверью виден ряд ботинок ждущих гостей." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/15.webp" srcset="/auf-media/assets/editorial/covers/15-900.webp 900w, /auf-media/assets/editorial/covers/15.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 uaf-video-category"><span class="_2b0aj_0">ОДИН ВЕЧЕР · NYC</span></div><p class="srhe5_0">До открытия дверей: как собирают независимую вечеринку</p> <div class="_3Y5J__0"><!-- --> <div class="_3gmEZ_0 _2zsI0_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _30I-X_0" data-content-state="sample" data-editorial-slot="16" data-excerpt="Одну сцену убрать, другую спасти, третью перепридумать. Эссе о маленьком бюджете и больших решениях." data-palette="0" data-reel-cover="/auf-media/assets/editorial/reels/16.webp"><div class="_3Akee_0"><a class="_3sZNl_0 w8kgj_0" href="/auf-media/read/first-film-last-money/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white"><div class="_3gxOF_0 _3XqPX_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRqAAAABXRUJQVlA4IJQAAABQBQCdASoeABQAPtFUpUyoJKOiMAwBABoJaACdOUFUXecBFZjpDseL4d9U6YAB+TkNPEAA/ovISo9Jxpz+NnpwphetYSfofBS10kb5AVHKojbvmXQXrwklO7AEwfcamJ2dQtHGxDAfzl7tfBRTjA05Kj5f4pfq/ZjccYuJx+jPyoXkjIFhE9LUgVVxIeaNU3hRGAAA);"><img alt="Иллюстрация-коллаж: разбитая свинья-копилка перед кинохлопушкой, рука опускает последнюю монету в камеру, из пустого кошелька вылетает моль." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/16.webp" srcset="/auf-media/assets/editorial/covers/16-900.webp 900w, /auf-media/assets/editorial/covers/16.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 uaf-video-category"><span class="_2b0aj_0">В ПРОЦЕССЕ · LA</span></div><p class="srhe5_0">Первый фильм. Последние деньги. Снимаем</p> <div class="_3Y5J__0"><!-- --> <div class="_3gmEZ_0 _2zsI0_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _30I-X_0" data-content-state="sample" data-editorial-slot="17" data-excerpt="Мастерская, стол с друзьями, берег. Эссе о личной карте города, которая умещается в три точки." data-palette="1" data-reel-cover="/auf-media/assets/editorial/reels/17.webp"><div class="_3Akee_0"><a class="_3sZNl_0 w8kgj_0" href="/auf-media/read/artist-map-of-a-city/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white"><div class="_3gxOF_0 _3XqPX_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRp4AAABXRUJQVlA4IJIAAACwBQCdASoeABQAPt1mp04opiOiMBgIARAbiWoAnTKDGCyOgsEGmHlCs39fLOJASFtlIEa7KAAA/oulZn69KxCExV2K5rwuuP/6rbfPmCEQkAQGqdUUivCEaHDzdt/x477fqVjMPxe/7JAmzyp98RQQN84JPbRE5lykbxbe3G6J0ca3pjOqYxPbm583TyTwzAAAAA==);"><img alt="Иллюстрация: кисть, воткнутая в песок, цветёт пальмовыми листьями; из тюбика краски выливается океанская волна, в коробке с рисом и плантанами вместо вилки кисточка." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/17.webp" srcset="/auf-media/assets/editorial/covers/17-900.webp 900w, /auf-media/assets/editorial/covers/17.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 uaf-video-category"><span class="_2b0aj_0">СВОИ МЕСТА · MIAMI</span></div><p class="srhe5_0">Майами глазами художника: мастерская, любимая забегаловка, океан</p> <div class="_3Y5J__0"><!-- --> <div class="_3gmEZ_0 _2zsI0_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div></a></div> <!-- --></section></div> <!-- --></div><div class="_3gVfa_0"><!-- --> <div class="_2fO7I_0 _3ndnT_0"><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="18" data-excerpt="Четверо слышат одну песню по-разному. О споре, после которого хочется продолжать репетицию." data-palette="2"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/small-stage-big-ego/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRnoAAABXRUJQVlA4IG4AAAAQBQCdASoeABQAPt1eo0yopSMiMBgMARAbiWoAsR6EfgA9DH/sji6ZqTsrpMiVvcpwAP0cki4viim2Ijp0P6LedrnLZ/9tbkAm+O1oU9cKrIJ3SUpyb3WLDnZuudji95A6J8HpwfXzLh5X+vAAAA==);"><img alt="Иллюстрация: крошечный певец в розовом костюме на маленькой сцене отбрасывает гигантскую тень в короне; в зале три зрителя." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/18.webp" srcset="/auf-media/assets/editorial/covers/18-900.webp 900w, /auf-media/assets/editorial/covers/18.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">МУЗЫКА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Маленькая сцена. Огромное эго. Отличная музыка</span></span></div> <div class="_2nNh8_0 vkdUc_0"><span class="Nl1Bp_0" style="background-color:#fdfd38;color:#0C24fb;">Четверо слышат одну песню по‑разному. О споре, после которого хочется продолжать репетицию.</span></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="19" data-excerpt="Несколько стульев, фильм на стене и чай после титров. О культурном вечере, для которого хватит одной комнаты." data-palette="3"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/small-flat-big-culture/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRogAAABXRUJQVlA4IHwAAAAwBQCdASoeABQAPs1Qo0ynpKMiN/qoAPAZiWgAnTLQw0Dz302RHi7oj0BQba7HZbw0YAD+PxzxsqDwfJayYSQCwqFmYnFOTgKhb/75Wt9Y01kYjzNlfgTVBLCI8dhp4AUaZKTcYEYjOZih+nPUeJ+QbT2Y7ssBcHFAAAAA);"><img alt="Иллюстрация: в открытой банке из-под сардин уместилась квартира с книгами, пластинками и проектором; друзья лежат рядком, как шпроты. Рядом коврик с горой обуви." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/19.webp" srcset="/auf-media/assets/editorial/covers/19-900.webp 900w, /auf-media/assets/editorial/covers/19.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">КУЛЬТУРА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Квартира маленькая. Культурная жизнь — большая</span></span></div> <div class="_2nNh8_0 vkdUc_0"><span class="Nl1Bp_0" style="background-color:#fdfd38;color:#0C24fb;">Несколько стульев, фильм на стене и чай после титров. О культурном вечере, для которого хватит одной комнаты.</span></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section></div> <!-- --></div><div class="_3gVfa_0 ZVu4s_0"><!-- --> <div class="_2fO7I_0 TlAHE_0"><section class="hx2cQ_0 _3IPux_0" data-content-state="sample" data-editorial-slot="20" data-excerpt="Потёртый локоть и чужая штопка запускают воображение. Почему старая вещь кажется историей, даже когда мы её не знаем." data-palette="0"><div class="_3Akee_0"><a class="_3u9_N_0" href="/auf-media/read/jacket-with-a-past/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white" theme="light"><div class="MFHcI_0"></div> <div class="_3gxOF_0 _1Z0uD_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRowAAABXRUJQVlA4IIAAAABQBQCdASoeABQAPt1cpEyopSOiMAgBEBuJbAC7M2hkkAwcHvvZQN4d19TSgI9zjTt6zAAA/laQhWa/3ss7WMHrX+ORvFWO9/WA6fka6GEqOpSezeJFUuzz8/x14a0XdX2+OfJTyhAXBeYTpp4WeHMnOiBe5bPlBV/s/R+wZIAAAA==);"><img alt="Иллюстрация: в потёртой кожаной куртке на вешалке улыбается привидение; рядом содержимое кармана — билет, спички, помада, серёжка — и пустой ценник." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/20.webp" srcset="/auf-media/assets/editorial/covers/20-900.webp 900w, /auf-media/assets/editorial/covers/20.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">МОДА</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="xj7Lm_0"><div class="_3GUWQ_0"><span class="_1TiTf_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Эту куртку до меня носил кто‑то интересный</span></span></div></div> <div class="_2hVQi_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _3IPux_0" data-content-state="sample" data-editorial-slot="21" data-excerpt="Сначала материал издаёт неожиданный звук. Потом хочется его повторить. Эссе о звуке, для которого ещё нет названия." data-palette="1"><div class="_3Akee_0"><a class="_3u9_N_0" href="/auf-media/read/build-an-instrument/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white" theme="light"><div class="MFHcI_0"></div> <div class="_3gxOF_0 _1Z0uD_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRngAAABXRUJQVlA4IGwAAAAwBQCdASoeABQAPt1kq08opaQiKAqpEBuJYgCdMt7BSEDsnXnQWGyrfL77jrtCIUIYAAD+jKpw0if8+fJbOpF+IWDkWYNnAWnLkoWk9QKCb976XdUCp3GtheUe0wXFTFy2em9JTlyZf5gUAAA=);"><img alt="Иллюстрация: невозможный инструмент из трубы, клавиш, велосипедного колеса со струнами и чайника; руки с паяльником и отвёрткой, рядом его чертёж." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/21.webp" srcset="/auf-media/assets/editorial/covers/21-900.webp 900w, /auf-media/assets/editorial/covers/21.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">ТЕХНОЛОГИИ</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="xj7Lm_0"><div class="_3GUWQ_0"><span class="_1TiTf_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Собрать инструмент, которого ещё не существует</span></span></div></div> <div class="_2hVQi_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a></div> <!-- --></section><section class="hx2cQ_0 _3IPux_0" data-content-state="sample" data-editorial-slot="22" data-excerpt="Полка как чьё-то мнение, магазин как место для паузы. Об ощущении, которое не сводится к ассортименту." data-palette="2"><div class="_3Akee_0"><a class="_3u9_N_0" href="/auf-media/read/bookshop-after-closing/" showarticlesubtitle="true" showtextarticleimage="true" textarticletype="white" theme="light"><div class="MFHcI_0"></div> <div class="_3gxOF_0 _1Z0uD_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRpgAAABXRUJQVlA4IIwAAAAwBQCdASoeABQAPs1WoUynpKMiN/qoAPAZiUATplvgaFZMV5/3Yh+o4+93PvmU7S9N8AD+wbcn1r3McszUkV6A25SZXacB3xs8rrbJTU1GT5vjxK+slHsSnPKPwlhPhuKuEHlzVyWakKID5KGnU/IFkf+k1RdSCKOMiueowk0v/pCq2xIRHg3HXWAAAA==);"><img alt="Иллюстрация: девушка спит в огромной раскрытой книге, укрывшись страницей, рядом горит лампа; за дверью магазина с пустой табличкой сидит кот." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 80vw, 340px" src="/auf-media/assets/editorial/covers/22.webp" srcset="/auf-media/assets/editorial/covers/22-900.webp 900w, /auf-media/assets/editorial/covers/22.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 C5807_0"><span class="_2b0aj_0 _2h1iS_0">ГОРОД</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="xj7Lm_0"><div class="_3GUWQ_0"><span class="_1TiTf_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Книжный, в котором хочется остаться после закрытия</span></span></div></div> <div class="_2hVQi_0"><!-- --> <div class="_3gmEZ_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a></div> <!-- --></section></div> <!-- --></div><div class="_3gVfa_0"><!-- --> <div class="_2fO7I_0 _3ndnT_0"><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="23" data-excerpt="Если фильм не получается пересказать, просмотр ещё не провалился. В защиту непонятного впечатления." data-palette="3"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/watching-strange-films/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRrYAAABXRUJQVlA4IKoAAAAQBQCdASoeABQAPt1iqU+opSOiKAqpEBuJagC7AGYQoW9rAKQYpfTuxF3LoCO1EokAAP78DZAQP+79AiY91uD25dc6BmrPe42kko8sUmkF/cleE2X43IE92LJVqfezOqRKbJ1IRyOfUMB+oodrva7jg4PHsvBPzhNS/GPIKiQSc+vifXRlXAy1NwlJjkvNQehXmRzHPV873ZWDk1QCRdtQAISonyIm0zuAAA==);"><img alt="Иллюстрация: зритель смотрит на экран, где конь в деловом костюме стоит с зонтом в затопленной гостиной, а мимо плывёт рыба; в попкорне вместо зёрен глаза." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/23.webp" srcset="/auf-media/assets/editorial/covers/23-900.webp 900w, /auf-media/assets/editorial/covers/23.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">КИНО</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Красиво, странно, ничего не понятно. Мне понравилось</span></span></div> <div class="_2nNh8_0 vkdUc_0"><span class="Nl1Bp_0" style="background-color:#fdfd38;color:#0C24fb;">Если фильм не получается пересказать, просмотр ещё не провалился. В защиту непонятного впечатления.</span></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section><section class="hx2cQ_0" data-content-state="sample" data-editorial-slot="24" data-excerpt="Три песни и момент, в который каждую нужно включить. Игра для своего круга вместо подборки знаменитостей." data-palette="0"><div class="_3Akee_0"><div class="_3bxRl_0" showtextarticleimage="true" textarticletype="white" theme="light"><a class="_3Npu7_0" href="/auf-media/read/pass-the-aux/"><div class="_109to_0"></div> <div class="ViudC_0 _3gxOF_0 uaf-ph" style="background-image:url(data:image/webp;base64,UklGRo4AAABXRUJQVlA4IIIAAABwBQCdASoeABQAPt1epk0opSOiMAgBEBuJbACdMoR1ANgCLDVkJSCicDpVqn88078M/WAAAPuVAITwrI750wbQRyaJFj/kJ+YJlYqi4wIvwRgWrD0rgmF4xo5mrvnZg/3vMdBZnU63S6uw1BkbT5Ih2GIG47vl4gk6cj6g5kMoAAAA);"><img alt="Иллюстрация: две руки тянутся друг к другу, как на фреске Микеланджело, между пальцами — штекер розового аудиокабеля; ниже автомагнитола и кассета." class="_2MYQZ_0 rJQsp_0" decoding="async" loading="lazy" sizes="(max-width: 600px) 100vw, 1024px" src="/auf-media/assets/editorial/covers/24.webp" srcset="/auf-media/assets/editorial/covers/24-900.webp 900w, /auf-media/assets/editorial/covers/24.webp 1600w"/> <div class="_2MYQZ_0 _2qaAI_0"></div></div> <div class="T8Oks_0 _3FIp-_0"><span class="_2b0aj_0 _2h1iS_0">НА РЕПИТЕ</span>
-   
-  <div aria-hidden="true" class="c4hD8_0 _1g9p4_0 _2h1iS_0 fKK0__0" style="visibility:hidden">     </div></div> <div class="Y7Gva_0"><div class="_2nNh8_0"><span class="Wpu2b_0" style="color:#0C24fb;background-color:#FFFFFF;"><span>Передай AUX: что слушают люди с интересным вкусом</span></span></div> <div class="_2nNh8_0 vkdUc_0"><!-- --></div></div> <div class="cQZVQ_0"><!-- --> <div class="_3gmEZ_0 OTSgs_0"><div class="t-icon-root"><div class="t-icon-svg-wrapper" style="transform:rotate(0deg);width:23px;height:23px;"><svg viewbox="0 0 16 9"><path d="M11.1111 0L9.77778 1.24138L12.3333 3.62069C12.3333 3.62069 3.88889 2.7931 0 6.41379L1.33333 7.65517C4.44444 4.75862 12.3333 5.37931 12.3333 5.37931L9.77778 7.75862L11.1111 9L16 4.44828L11.1111 0Z" stroke="currentColor"></path></svg></div><div aria-hidden="true" class="t-icon-right" style="visibility:hidden"> </div></div> <!-- --></div></div></a> <!-- --></div></div> <!-- --></section></div> <!-- --></div> <button class="uaf-more" type="button"><div class="_1Y108_0"><div class="_1vMlS_0 kBfws_0 _1JT3u_0"><span class="_11eZp_0 _2Shje_0">I need mooore content</span></div></div></button></div></div></div> <div class="_1jXRG_0"><div class="_3bZcl_0"><div class="EPDO7_0"><h3 class="_1pKyE_0">ЕСТЬ НА КОГО ПОСМОТРЕТЬ. ЕСТЬ ЧТО ПОСЛУШАТЬ.</h3> <!-- -->
+</style>
+</head>
+<body>
+<p class="tagline">Культурный журнал о людях, явлениях и событиях в США</p>
+<div class="brand"><img src="assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span class="brand-name">AUF MEDIA</span></div>
 
-<p class="uaf-subscribe-text">Новые материалы и видео AUF MEDIA — письмом на почту.</p>
-<form class="uaf-subscribe" data-endpoint="" novalidate=""><label for="uaf-subscribe-email">Твоя почта</label>
-<div class="uaf-subscribe-row"><input aria-describedby="uaf-subscribe-status" autocomplete="email" id="uaf-subscribe-email" inputmode="email" name="email" placeholder="name@example.com" required="" type="email"/><button type="submit">Подписаться</button></div>
-<p aria-live="polite" class="uaf-subscribe-status" id="uaf-subscribe-status" role="status"></p></form></div> <div class="uaf-footer"><nav aria-label="Навигация в подвале"><button data-scroll-slot="4" type="button">Читать</button><button data-scroll-slot="15" type="button">Смотреть</button><button aria-haspopup="dialog" data-dialog="uaf-about" type="button">О нас</button><a href="/auf-media/authors/dima-dart/">Автор</a><a href="catalog.html">Архив</a></nav>
-<div class="uaf-footer-bottom"><span>© AUF MEDIA</span><span>Культурный журнал о людях, явлениях и событиях в США</span><span>18+</span></div></div></div></div></div></div></div>
-<nav aria-label="Навигация" class="archive-navigation"><a href="index.html">Главная</a><a href="catalog.html">Все материалы / Поиск</a></nav><header aria-label="Основная навигация" id="uaf-header">
-<a aria-label="AUF MEDIA — главная" href="index.html" id="uaf-wolf-link"><img alt="" src="assets/uaf-logo-combined-white.svg"/></a>
-<p class="uaf-tagline">Культурный журнал о людях, явлениях и событиях в США</p>
-<a aria-label="AUF MEDIA — главная" class="_1kl11_0" href="index.html" id="logo" title="AUF MEDIA"><span aria-hidden="true" class="uaf-wordmark">AUF</span><span aria-hidden="true" class="uaf-wordmark">MEDIA</span></a>
-<div class="uaf-header-right">
-<nav aria-label="Разделы" class="uaf-nav"><button data-scroll-slot="4" type="button">Читать</button><button data-scroll-slot="15" type="button">Смотреть</button><button aria-haspopup="dialog" data-dialog="uaf-about" type="button">О нас</button></nav>
-<button aria-haspopup="dialog" aria-label="Открыть меню" class="uaf-icon-button" data-dialog="uaf-menu" type="button"><svg aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" viewbox="0 0 24 24"><path d="M3 6h18M3 12h18M3 18h18"></path></svg></button>
-</div>
-</header>
-<dialog aria-labelledby="uaf-menu-title" class="uaf-dialog" id="uaf-menu">
-<div class="uaf-dialog-top"><h2 id="uaf-menu-title">AUF MEDIA</h2><button aria-label="Закрыть меню" data-close="" type="button">×</button></div>
-<p class="uaf-dialog-note">Культурный журнал о людях, явлениях и событиях в США</p>
-<nav aria-label="Разделы сайта"><a href="index.html">Главная</a><button data-scroll-slot="4" type="button">Читать</button><button data-scroll-slot="15" type="button">Смотреть</button><button aria-haspopup="dialog" data-dialog="uaf-about" type="button">О нас</button><button aria-haspopup="dialog" data-dialog="uaf-search" type="button">Поиск</button><a href="catalog.html">Архив</a></nav>
-</dialog><dialog aria-labelledby="uaf-search-title" class="uaf-dialog" id="uaf-search">
-<div class="uaf-dialog-top"><h2 id="uaf-search-title">Поиск материалов</h2><button aria-label="Закрыть поиск" data-close="" type="button">×</button></div>
-<label for="uaf-search-input">Заголовок или рубрика</label>
-<input autocomplete="off" id="uaf-search-input" placeholder="Что ищем?" type="search"/>
-<p id="uaf-search-status" role="status"></p>
-<div id="uaf-search-results"></div>
-</dialog><dialog aria-labelledby="uaf-about-title" class="uaf-dialog" id="uaf-about">
-<div class="uaf-dialog-top"><h2 id="uaf-about-title">О нас</h2><button aria-label="Закрыть" data-close="" type="button">×</button></div>
-<p class="uaf-about-text">AUF MEDIA — независимый культурный журнал о людях, явлениях и событиях в США. Музыка, кино, искусство, мода, технологии и город.</p>
-<nav aria-label="Ссылки"><a href="/auf-media/authors/dima-dart/">Автор — Dima Dart</a><a href="catalog.html">Архив</a></nav>
-</dialog><script defer="True" src="assets/uaf-header.js"></script></body>
+<picture class="bg" aria-hidden="true"><source id="room-m" media="(max-width: 860px)" srcset="assets/soon/room-m-still.webp" data-loop="assets/soon/room-m-loop.webp"><img class="room-top" src="assets/soon/room-top.webp" width="1600" height="309" alt=""><img id="room" src="assets/soon/room-still.webp" data-loop="assets/soon/room-loop.webp" width="1600" height="893" alt=""></picture>
+<main>
+  <div class="copy">
+    <h1><span>Скоро</span><span>открываемся</span></h1>
+    <p class="lede">Независимый журнал из&nbsp;Нью‑Йорка о&nbsp;людях, <br class="wide">культуре и&nbsp;времени, в&nbsp;котором мы&nbsp;живём.</p>
+    <p class="more">Мы&nbsp;рассказываем о&nbsp;тех, кто создаёт культуру сегодня: о&nbsp;музыке, кино, моде, искусстве <br class="wide">и&nbsp;жизни больших городов. В&nbsp;эпоху разногласий мы&nbsp;ищем&nbsp;то, что нас объединяет.</p>
+    <div class="cta"><button type="button" class="cta-main" id="launch-open">Узнай о&nbsp;запуске первым</button><button type="button" class="cta-alt" id="authors-open">Стать автором</button></div>
+  </div>
+  <div class="art"><span class="tap" aria-hidden="true">Тыкай куда<br>угодно</span></div>
+</main>
+
+<dialog id="launch" class="dark" aria-label="Узнай о запуске первым">
+  <div class="sheet">
+    <form id="call" novalidate data-endpoint="">
+      <fieldset class="ways">
+        <legend>Узнай о&nbsp;запуске первым</legend>
+        <label><input type="radio" name="way" value="email" checked><span>Почта</span></label>
+        <label><input type="radio" name="way" value="telegram"><span>Telegram</span></label>
+        <label><input type="radio" name="way" value="sms"><span>SMS</span></label>
+      </fieldset>
+      <div class="row">
+        <input id="contact" name="contact" type="email" inputmode="email" autocomplete="email" placeholder="you@example.com" aria-label="Почта" required aria-describedby="note">
+        <button type="submit">Держите в курсе</button>
+      </div>
+      <p class="note" id="note" role="status">Одно сообщение в&nbsp;день запуска. Без спама.</p>
+    </form>
+  
+    <div class="done" id="done" role="status" tabindex="-1" hidden>
+      <p class="done-title"><span>Ты в списке.</span></p>
+      <p class="done-text">Как только AUF появится на&nbsp;свет, ты узнаешь первым. До&nbsp;встречи!</p>
+    </div>
+  </div>
+  <button type="button" class="x" aria-label="Закрыть">×</button>
+</dialog>
+
+<dialog id="authors" class="dark" aria-labelledby="authors-title">
+  <div class="sheet">
+    <p class="eyebrow">Стать автором</p>
+    <h2 id="authors-title"><span>Давайте знакомиться</span></h2>
+    <p class="txt">AUF открыт для новых авторов, журналистов, фотографов и&nbsp;людей, которым есть что рассказать.</p>
+    <form id="pitch" novalidate data-endpoint="">
+      <label for="pitch-contact">Как с тобой связаться</label>
+      <input id="pitch-contact" name="contact" type="text" autocomplete="off" placeholder="Email, Telegram или телефон" required>
+      <label for="pitch-idea">Расскажи о себе</label>
+      <textarea id="pitch-idea" name="idea" rows="4" placeholder="Кто ты, чем занимаешься, о чём тебе интересно писать. Можешь оставить ссылку на свои работы." required></textarea>
+      <label for="pitch-city">Из какого города</label>
+      <input id="pitch-city" name="city" type="text" autocomplete="address-level2" required>
+      <fieldset class="terms">
+        <legend>На каких условиях готов работать</legend>
+        <label><input type="checkbox" name="terms" value="paid"><span>За гонорар</span></label>
+        <label><input type="checkbox" name="terms" value="volunteer"><span>Для души и&nbsp;культуры<small>Без гонорара: за&nbsp;проходки в&nbsp;классные места, мерч и&nbsp;классный нетворкинг</small></span></label>
+        <p class="hint">Можно отметить оба варианта.</p>
+      </fieldset>
+      <button type="submit">Отправить заявку</button>
+      <p class="note" id="pitch-note" role="status"></p>
+    </form>
+  </div>
+  <button type="button" class="x" aria-label="Закрыть">×</button>
+  <img class="deco" src="assets/soon/pigeon.webp" alt="" width="104" height="104">
+</dialog>
+
+<div class="found" id="found" aria-live="polite"><b>Стикеры 0 / 25</b><i></i></div>
+<div class="ribbon" aria-hidden="true"><div id="ribbon"></div></div>
+<div id="fly" aria-hidden="true"></div>
+
+<script>
+(function () {
+  var NAMES = ['pigeon', 'empire', 'dollars', 'grocerybag', 'pizza', 'taxi', 'bodegacat', 'coffeecup', 'bagel', 'rat', 'hotdog', 'hydrant', 'watertower', 'liberty', 'farecard', 'subway', 'trash', 'steam', 'sneakers', 'halal', 'ac', 'pretzel', 'signal', 'icedcoffee', 'cart'];
+  var BASE = 'assets/soon/';
+  var layer = document.getElementById('fly');
+  var reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var parts = [], last = 0, running = false, MAX = 90;
+
+  // ribbon: repeat the phrase so the loop is seamless
+  var phrase = 'COMING SOON · ';
+  document.getElementById('ribbon').textContent = new Array(61).join(phrase);
+
+  // collection counter
+  var found = document.getElementById('found'), foundText = found.firstElementChild, foundNote = found.lastElementChild;
+  var seen = {};
+  try { (JSON.parse(localStorage.getItem('auf-soon-seen')) || []).forEach(function (n) { if (NAMES.indexOf(n) > -1) seen[n] = 1; }); } catch (e) {}
+  var NOTES = { 5: 'Неплохо для туриста', 12: 'Ты точно здесь живёшь', 20: 'Бодега-кот тебя запомнил', 25: 'Полный набор. Ты местный' };
+  var noteTimer;
+  function count() { return Object.keys(seen).length; }
+  function renderFound(announce) {
+    var n = count();
+    foundText.textContent = 'Стикеры ' + n + ' / ' + NAMES.length;
+    if (announce) {
+      found.classList.remove('pop'); void found.offsetWidth; found.classList.add('pop');
+      if (NOTES[n]) {
+        foundNote.textContent = NOTES[n]; foundNote.classList.add('on');
+        clearTimeout(noteTimer);
+        if (n < NAMES.length) noteTimer = setTimeout(function () { foundNote.classList.remove('on'); }, 3200);
+      }
+    }
+  }
+  renderFound(false);
+  if (count() === NAMES.length) { foundNote.textContent = NOTES[25]; foundNote.classList.add('on'); }
+
+  function pick() {
+    // half of the time hand out something not seen yet, so the set can be completed
+    var fresh = NAMES.filter(function (n) { return !seen[n]; });
+    var name = fresh.length && Math.random() < .5 ? fresh[Math.random() * fresh.length | 0] : NAMES[Math.random() * NAMES.length | 0];
+    if (!seen[name]) {
+      seen[name] = 1;
+      try { localStorage.setItem('auf-soon-seen', JSON.stringify(Object.keys(seen))); } catch (e) {}
+      renderFound(true);
+    }
+    return name;
+  }
+
+  function burst(x, y, amount) {
+    var small = innerWidth < 600;
+    for (var i = 0; i < amount; i++) {
+      if (parts.length >= MAX) { var old = parts.shift(); old.el.remove(); }
+      var size = (small ? 25 : 31) + Math.random() * (small ? 17 : 25);
+      var angle = -Math.PI / 2 + (Math.random() - .5) * Math.PI * 1.5;
+      var speed = (small ? 380 : 480) + Math.random() * 520;
+      var el = new Image();
+      el.src = BASE + pick() + '.webp';
+      el.alt = '';
+      el.width = el.height = Math.round(size);
+      el.style.margin = -size / 2 + 'px 0 0 ' + -size / 2 + 'px';
+      el.style.opacity = '0';
+      layer.appendChild(el);
+      parts.push({ el: el, x: x, y: y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed - 160, r: (Math.random() - .5) * 50, vr: (Math.random() - .5) * 420, age: 0, ttl: 1.5 + Math.random() * .9 });
+    }
+    if (!running) { running = true; last = performance.now(); requestAnimationFrame(tick); }
+  }
+
+  function tick(now) {
+    var dt = Math.min(.034, (now - last) / 1000); last = now;
+    var floor = innerHeight + 120;
+    for (var i = parts.length - 1; i >= 0; i--) {
+      var p = parts[i];
+      p.age += dt;
+      if (!reduce) {
+        p.vy += 1700 * dt; p.vx *= 1 - .5 * dt;
+        p.x += p.vx * dt; p.y += p.vy * dt; p.r += p.vr * dt;
+      }
+      if (p.age > p.ttl || p.y > floor) { p.el.remove(); parts.splice(i, 1); continue; }
+      var grow = p.age < .14 ? .35 + .8 * (p.age / .14) : p.age < .24 ? 1.15 - .15 * ((p.age - .14) / .1) : 1;
+      var left = p.ttl - p.age;
+      p.el.style.opacity = left < .3 ? left / .3 : 1;
+      p.el.style.transform = 'translate3d(' + p.x.toFixed(1) + 'px,' + p.y.toFixed(1) + 'px,0) rotate(' + p.r.toFixed(1) + 'deg) scale(' + grow.toFixed(3) + ')';
+    }
+    if (parts.length) requestAnimationFrame(tick); else running = false;
+  }
+
+  function spread(x, y, amount) {
+    // reduced motion: stickers appear around the point and fade, without flying
+    if (!reduce) return burst(x, y, amount);
+    var before = parts.length;
+    burst(x, y, Math.min(amount, 4));
+    for (var i = before; i < parts.length; i++) { parts[i].x += (Math.random() - .5) * 180; parts[i].y += (Math.random() - .5) * 140; parts[i].r = (Math.random() - .5) * 24; }
+  }
+
+  document.addEventListener('pointerdown', function (event) {
+    var target = event.target && event.target.nodeType === 1 ? event.target : event.target && event.target.parentElement;
+    var under = document.elementFromPoint(event.clientX, event.clientY);
+    var ui = 'form, fieldset, label, input, textarea, a, button, dialog, .copy, .foot, .brand';
+    if (event.button > 0 || (target && target.closest(ui)) || (under && under.closest(ui))) return;
+    spread(event.clientX, event.clientY, 5 + (Math.random() * 3 | 0));
+  });
+  document.addEventListener('keydown', function (event) {
+    if ((event.key === ' ' || event.key === 'Enter') && !(event.target.closest && event.target.closest('form, a, button, dialog'))) {
+      event.preventDefault();
+      spread(innerWidth * (.2 + Math.random() * .6), innerHeight * (.3 + Math.random() * .4), 6);
+    }
+  });
+
+  // warm the cache, then show once how it works: the kiosk coughs up a few stickers
+  addEventListener('load', function () {
+    NAMES.forEach(function (n) { new Image().src = BASE + n + '.webp'; });
+    setTimeout(function () {
+      if (parts.length) return;
+      var box = document.querySelector('.bg').getBoundingClientRect();
+      var y = Math.max(box.top, 0) + (Math.min(box.bottom, innerHeight) - Math.max(box.top, 0)) * .5;
+      if (box.bottom > 80 && box.top < innerHeight - 80) spread(innerWidth < 861 ? innerWidth * .5 : innerWidth * .68, y, 6);
+    }, 900);
+  });
+
+
+  // backdrop: show the still first, swap to the loop once it has loaded
+  (function () {
+    var img = document.getElementById('room'), source = document.getElementById('room-m');
+    if (!img || reduce) return;
+    var mobile = !matchMedia('(min-width: 861px)').matches;
+    var loop = new Image();
+    loop.onload = function () { if (mobile) source.srcset = loop.src; else img.src = loop.src; };
+    loop.src = mobile ? source.dataset.loop : img.dataset.loop;
+  })();
+  // launch notice form: e-mail by default, Telegram or SMS on request
+  var form = document.getElementById('call'), input = form.contact, note = document.getElementById('note'), button = form.querySelector('button');
+  var HINT = 'Одно сообщение в день запуска. Без спама.';
+  var WAYS = {
+    email: { type: 'email', mode: 'email', auto: 'email', hint: 'you@example.com', label: 'Почта' },
+    telegram: { type: 'text', mode: 'text', auto: 'off', hint: '@username', label: 'Telegram' },
+    sms: { type: 'tel', mode: 'tel', auto: 'tel', hint: '+1 (917) 000-00-00', label: 'Номер телефона' }
+  };
+  function say(text, state) { note.textContent = text; if (state) note.dataset.state = state; else delete note.dataset.state; }
+  function way() { return form.way.value || 'email'; }
+  function applyWay() {
+    var w = WAYS[way()];
+    input.type = w.type; input.inputMode = w.mode; input.autocomplete = w.auto; input.placeholder = w.hint; input.setAttribute('aria-label', w.label);
+    input.value = ''; say(HINT);
+  }
+  Array.prototype.forEach.call(form.way, function (radio) { radio.addEventListener('change', function () { applyWay(); input.focus(); }); });
+  input.addEventListener('input', function () { if (note.dataset.state === 'error') say(HINT); });
+  form.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var kind = way(), value = input.value.trim();
+    if (kind === 'email') {
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(value)) { say('Проверь адрес почты.', 'error'); input.focus(); return; }
+    } else if (kind === 'telegram') {
+      value = value.replace(/^(https?:\/\/)?t\.me\//i, '').replace(/^@/, '');
+      if (!/^[A-Za-z][A-Za-z0-9_]{4,31}$/.test(value)) { say('Проверь ник в Telegram: латиница, цифры и подчёркивание, от 5 символов.', 'error'); input.focus(); return; }
+      value = '@' + value;
+    } else {
+      var digits = value.replace(/\D/g, '');
+      if (digits.length < 10 || digits.length > 15) { say('Проверь номер: нужен код страны и не меньше 10 цифр.', 'error'); input.focus(); return; }
+      value = '+' + digits;
+    }
+    var endpoint = form.dataset.endpoint;
+    if (!endpoint) { say('Запись пока не подключена — контакт никуда не отправлен.', 'error'); return; }
+    button.disabled = true; say('Записываем…');
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ channel: kind, contact: value, source: 'auf-soon' }) })
+      .then(function (response) {
+        if (!response.ok) throw new Error(response.status);
+        var box = button.getBoundingClientRect();
+        var done = document.getElementById('done');
+        form.hidden = true; done.hidden = false; done.focus();
+        spread(box.left + box.width / 2, box.top, 12);
+      })
+      .catch(function () { say('Не получилось отправить. Попробуй ещё раз чуть позже.', 'error'); })
+      .then(function () { button.disabled = false; });
+  });
+
+  // launch popup
+  var launch = document.getElementById('launch');
+  document.getElementById('launch-open').addEventListener('click', function () { if (launch.showModal) launch.showModal(); else launch.setAttribute('open', ''); });
+  launch.querySelector('.x').addEventListener('click', function () { launch.close ? launch.close() : launch.removeAttribute('open'); });
+  launch.addEventListener('click', function (event) { if (event.target === launch) launch.close(); });
+  // authors popup
+  var dialog = document.getElementById('authors'), pitch = document.getElementById('pitch'), pitchNote = document.getElementById('pitch-note'), pitchButton = pitch.querySelector('button');
+  function tell(text, state) { pitchNote.textContent = text; if (state) pitchNote.dataset.state = state; else delete pitchNote.dataset.state; }
+  document.getElementById('authors-open').addEventListener('click', function () { if (dialog.showModal) dialog.showModal(); else dialog.setAttribute('open', ''); });
+  dialog.querySelector('.x').addEventListener('click', function () { dialog.close ? dialog.close() : dialog.removeAttribute('open'); });
+  dialog.addEventListener('click', function (event) { if (event.target === dialog) dialog.close(); });
+  pitch.addEventListener('submit', function (event) {
+    event.preventDefault();
+    var contact = pitch.contact.value.trim(), idea = pitch.idea.value.trim();
+    if (contact.length < 3) { tell('Оставь контакт, иначе мы не сможем ответить.', 'error'); pitch.contact.focus(); return; }
+    if (idea.length < 10) { tell('Напиши хотя бы пару слов о себе.', 'error'); pitch.idea.focus(); return; }
+    var city = pitch.city.value.trim();
+    if (city.length < 2) { tell('Укажи, из какого ты города.', 'error'); pitch.city.focus(); return; }
+    var terms = Array.prototype.filter.call(pitch.terms, function (box) { return box.checked; }).map(function (box) { return box.value; });
+    if (!terms.length) { tell('Отметь, на каких условиях готов работать.', 'error'); pitch.terms[0].focus(); return; }
+    var endpoint = pitch.dataset.endpoint;
+    if (!endpoint) { tell('Приём заявок пока не подключён — заявка никуда не отправлена.', 'error'); return; }
+    pitchButton.disabled = true; tell('Отправляем…');
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ contact: contact, about: idea, city: city, terms: terms, source: 'auf-soon-authors' }) })
+      .then(function (response) { if (!response.ok) throw new Error(response.status); tell('Получили. Ответим по этому контакту.', 'ok'); pitch.reset(); })
+      .catch(function () { tell('Не получилось отправить. Попробуй ещё раз чуть позже.', 'error'); })
+      .then(function () { pitchButton.disabled = false; });
+  });
+})();
+</script>
+</body>
 </html>
