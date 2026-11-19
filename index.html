@@ -353,16 +353,15 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
   .done-title span { animation: none; }
   .art-in, .tap, .ribbon div, dialog[open] { animation: none; }
 }
-/* v18: phone — the whole wall above the window is visible, the logo sits on it: wolf centred, name under it */
+/* v19: phone — first screen shows a strip of wall above the window, the whole scene, and the headline at the bottom */
 @media (max-width: 860px) {
-  .bg { height: 216vw !important; }
+  .bg { height: max(calc(100svh - 156px + 22vw), calc(173.6vw + 44px)) !important; }
   .bg img { bottom: 0 !important; }
-  .bg::after { height: 10%; }
-  .brand { left: 0; right: 0; flex-direction: column; justify-content: center !important; align-items: center; gap: 10px !important; padding: 5vw 20px 0 !important; text-align: center; }
-  .brand img { width: 72px; }
-  .brand-name { font-size: 24px; letter-spacing: .12em; margin-right: -.12em; }
-  /* the text starts over the picture, about halfway down the box on the floor */
-  main { margin-top: -17vw !important; padding-top: 3vw !important; background: linear-gradient(180deg, rgb(9 28 34 / 0) 0, rgb(9 28 34 / .78) 15vw, #091c22 30vw); }
+  .bg::after { height: 8%; }
+  .brand { left: 0; right: 0; flex-direction: column; justify-content: center !important; align-items: center; gap: 6px !important; padding: 10px 20px 0 !important; text-align: center; }
+  .brand img { width: 44px; }
+  .brand-name { font-size: 15px; letter-spacing: .14em; margin-right: -.14em; }
+  main { margin-top: -22vw !important; padding-top: 2vw !important; background: linear-gradient(180deg, rgb(9 28 34 / 0) 0, rgb(9 28 34 / .8) 13vw, #091c22 34vw); }
   .lede { text-shadow: 0 1px 14px rgb(4 12 14 / .9); }
 }
 </style>
