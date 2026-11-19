@@ -1204,7 +1204,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { toast('Проверьте имя и адрес почты'); return; }
     if (state.team.some(function (m) { return m.email === email; })) { toast('Этот адрес уже в команде'); return; }
     if (f.role.value === 'chief' && clevels() >= CLEVEL_MAX) { toast('C-Level уже ' + CLEVEL_MAX + ' из ' + CLEVEL_MAX + '. Сначала освободите место'); return; }
-    if (cloudOn) { f.reset(); return cloudInvite(name, email, f.role.value); }
+    if (cloudOn) { var asRole = f.role.value; f.reset(); return cloudInvite(name, email, asRole); }
     state.team.push({ id: uid(), name: name, email: email, role: f.role.value, status: 'invited' });
     lastInvite = { name: name, email: email, role: ROLES.filter(function (r) { return r.id === f.role.value; })[0].name };
     save(); render(); toast(cloudOn ? 'Приглашение создано. Отправьте человеку ссылку на вход' : 'Добавлено в команду. Письмо в прототипе не отправляется');
