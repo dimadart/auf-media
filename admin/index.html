@@ -535,20 +535,81 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   #tabbar button i { position: absolute; top: 10px; right: 13px; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 2px var(--chip); }
   main { padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important; }
 }
+
+/* ---------- Desktop sidebar: icons, folding groups, icon rail, account block ---------- */
+@media (min-width: 861px) {
+  .app { grid-template-columns: 248px minmax(0, 1fr); transition: grid-template-columns .18s ease; }
+  .app.rail { grid-template-columns: 68px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) { .app { transition: none; } }
+aside { padding: 14px 12px 12px; gap: 0; overflow: hidden; }
+.sb-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 40px; margin: 2px 0 16px; padding: 0 2px 0 8px; }
+.sb-head .logo { margin: 0; gap: 10px; font-size: 12px; white-space: nowrap; }
+.sb-head .logo img { width: 38px; }
+.sb-col { display: grid; place-items: center; flex: none; width: 32px; height: 32px; padding: 0; border: 0; border-radius: 8px; background: none; color: var(--mute); cursor: pointer; }
+.sb-col:hover { background: var(--hover); color: var(--text); }
+.sb-col:focus-visible, .sb-acct:focus-visible, #nav button:focus-visible { outline: 2px solid var(--focus); outline-offset: -2px; }
+.sb-col svg { width: 18px; height: 18px; }
+#nav { flex: 1; min-height: 0; gap: 1px; overflow-y: auto; scrollbar-width: none; }
+#nav .nav-g { justify-content: space-between; margin-top: 16px; padding: 6px 10px 6px 12px; font: 600 11px/1.2 Arial, Helvetica, sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--dim); }
+#nav .nav-g:first-child { margin-top: 0; }
+#nav .nav-g:hover { background: none; color: var(--text); }
+#nav .nav-g svg { width: 14px; height: 14px; opacity: .7; transition: transform .15s ease; }
+#nav .nav-g[aria-expanded=false] svg { transform: rotate(-90deg); }
+.nav-l { display: flex; flex-direction: column; gap: 1px; }
+.nav-l.shut > button:not([aria-current=page]) { display: none; }
+#nav button[data-go] { position: relative; justify-content: flex-start; gap: 11px; min-height: 38px; padding: 8px 10px 8px 12px; box-shadow: none; }
+#nav button[data-go] svg { flex: none; width: 19px; height: 19px; }
+#nav button[data-go] .nl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+#nav button[data-go][aria-current=page]::before { content: ''; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 3px; background: var(--yellow); }
+#nav button[data-go] i { min-width: 20px; padding: 2px 6px; border-radius: 999px; font: 600 11.5px/1.3 Arial, Helvetica, sans-serif; text-align: center; color: var(--mute); opacity: 1; }
+#nav button[data-go] i.hot { background: var(--yellow); color: #000; }
+.sb-acct { display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 12px; background: none; color: var(--text); text-align: left; cursor: pointer; }
+.sb-acct:hover, .sb-acct[aria-expanded=true] { background: var(--hover); }
+.sb-acct .av { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 9px; background: var(--chip); font: 700 13px/1 Arial, Helvetica, sans-serif; }
+.sb-acct .nl { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.sb-acct strong { font: 600 13.5px/1.2 Arial, Helvetica, sans-serif; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-acct small { font-size: 12px; color: var(--mute); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sb-acct > svg { flex: none; width: 16px; height: 16px; color: var(--mute); }
+.acct-menu { position: fixed; z-index: 30; left: 12px; bottom: 72px; width: 224px; display: flex; flex-direction: column; gap: 2px; padding: 6px; border: 1px solid var(--dlgline); border-radius: 12px; background: var(--dlg); box-shadow: 0 14px 40px rgb(0 0 0 / .35); }
+.acct-menu[hidden], .acct-menu [hidden] { display: none; }
+.acct-menu .tgl { width: 100%; padding: 9px 10px; border: 0; border-radius: 8px; font: 500 14px/1.2 Arial, Helvetica, sans-serif; text-align: left; }
+.acct-menu .tgl:hover { background: var(--hover); }
+.acct-menu #asrole:not([hidden]) { display: flex; flex-direction: column; gap: 6px; margin-bottom: 4px; padding: 6px 10px 12px; border-bottom: 1px solid var(--line); font-size: 12px; color: var(--mute); }
+#sbtip { position: fixed; z-index: 40; padding: 6px 9px; border-radius: 7px; background: var(--inv); color: var(--inv-text); font: 600 12.5px/1.2 Arial, Helvetica, sans-serif; white-space: nowrap; pointer-events: none; transform: translateY(-50%); }
+#sbtip[hidden] { display: none; }
+.app.rail aside { padding: 14px 10px 12px; }
+.app.rail .sb-head { flex-direction: column; gap: 8px; padding: 0; }
+.app.rail .logo .u, .app.rail aside .nl, .app.rail .sb-acct > svg, .app.rail .nav-g span, .app.rail .nav-g svg { display: none; }
+.app.rail #nav .nav-g { width: auto; height: 1px; min-height: 0; margin: 10px 10px; padding: 0; background: var(--line); pointer-events: none; }
+.app.rail #nav .nav-g:first-child { display: none; }
+.app.rail .nav-l.shut > button { display: flex; }
+.app.rail #nav button[data-go] { justify-content: center; height: 42px; padding: 0; }
+.app.rail #nav button[data-go] i { display: none; }
+.app.rail #nav button[data-go] i.hot { display: block; position: absolute; top: 8px; right: 9px; width: 8px; height: 8px; min-width: 0; padding: 0; font-size: 0; box-shadow: 0 0 0 2px var(--side); }
+.app.rail .sb-acct { justify-content: center; padding: 6px; border-color: transparent; }
+.app.rail .acct-menu { left: 76px; bottom: 12px; }
 </style>
 </head>
 <body>
 <div class="app" id="app">
   <aside>
-    <div class="logo"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span class="u">Редакция</span></div>
+    <div class="sb-head"><div class="logo"><img src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><span class="u">Редакция</span></div><button type="button" class="sb-col" data-sbcol aria-label="Свернуть меню" data-tip="Развернуть меню"></button></div>
     <nav id="nav" aria-label="Разделы"></nav>
-    <p class="foot">AUF MEDIA · прототип админки</p>
+    <button type="button" class="sb-acct" id="acct" data-acct aria-haspopup="true" aria-expanded="false" aria-controls="acctmenu"></button>
+    <p class="foot" hidden>AUF MEDIA · прототип админки</p>
   </aside>
+  <div class="acct-menu" id="acctmenu" hidden>
+    <span id="asrole"><label for="viewas">Смотреть как</label><select id="viewas"></select></span>
+    <button type="button" class="tgl" data-go="settings">Настройки</button>
+    <button type="button" class="tgl" data-theme-toggle></button>
+    <button type="button" class="tgl" id="logout" data-logout hidden>Выйти</button>
+  </div>
+  <div id="sbtip" role="tooltip" hidden></div>
   <main>
     <p class="proto" id="proto">Прототип: всё, что вы меняете, хранится только в этом браузере. Входа по паролю нет, письма-приглашения не отправляются, совместная работа видна между окнами этого браузера.</p>
     <div class="top">
       <h1 id="title"></h1>
-      <div class="as"><span id="asrole"><span>Смотреть как:</span><select id="viewas" aria-label="Смотреть как роль"></select></span><button type="button" class="tgl" data-theme-toggle></button><button type="button" class="tgl" id="logout" data-logout hidden>Выйти</button></div>
     </div>
     <div id="view"></div>
   </main>
@@ -734,14 +795,50 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   function renderNav() {
     var counts = { board: state.cards.filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length, tasks: state.tasks.filter(function (t) { return t.stage !== 'done'; }).length, people: state.contacts.length, mail: mail ? mailUnread('') : 0 };
     if (mail && cloudOn && sb && synced && !mail.at && !mail.busy && allowed('mail')) mailLoad();
+    var ss = sideState(), me = member(state.me), mrole = me && ROLES.filter(function (r) { return r.id === me.role; })[0];
+    document.getElementById('app').classList.toggle('rail', ss.rail);
     nav.innerHTML = GROUPS.map(function (g) {
       var items = VIEWS.filter(function (v) { return v[2] === g[0] && allowed(v[0]); });
-      return items.length ? '<span class="nav-h">' + gname(g) + '</span>' + items.map(function (v) {
-        return '<button type="button" data-go="' + v[0] + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '>' + v[1] + (counts[v[0]] ? '<i>' + counts[v[0]] + '</i>' : '') + '</button>';
-      }).join('') : '';
+      if (!items.length) return '';
+      var shut = ss.closed.indexOf(g[0]) >= 0;
+      return '<button type="button" class="nav-g" data-navg="' + g[0] + '" aria-expanded="' + !shut + '"><span>' + gname(g) + '</span>' + icon('chev') + '</button><div class="nav-l' + (shut ? ' shut' : '') + '">' + items.map(function (v) {
+        var n = counts[v[0]], hot = v[0] === 'mail' || v[0] === 'inbox';
+        return '<button type="button" data-go="' + v[0] + '" data-tip="' + esc(v[1]) + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '>' + icon(v[0]) + '<span class="nl">' + v[1] + '</span>' + (n ? '<i' + (hot ? ' class="hot"' : '') + '>' + n + '</i>' : '') + '</button>';
+      }).join('') + '</div>';
     }).join('');
+    var acct = document.getElementById('acct'), col = document.querySelector('[data-sbcol]');
+    acct.innerHTML = '<b class="av">' + esc(((me && me.name) || 'A').trim().charAt(0).toUpperCase()) + '</b><span class="nl"><strong>' + esc(me ? me.name : 'AUF MEDIA') + '</strong><small>' + (mrole ? mrole.name : 'Редакция') + '</small></span>' + icon('updown');
+    acct.dataset.tip = me ? me.name : 'Аккаунт';
+    col.innerHTML = icon('side'); col.setAttribute('aria-label', ss.rail ? 'Развернуть меню' : 'Свернуть меню');
     renderTabs();
   }
+  // Desktop sidebar: it folds into an icon rail, groups fold too. Both are kept on this device.
+  var SIDEKEY = 'auf-admin-side', sideMem = null;
+  function sideState() {
+    if (!sideMem) { var v = null; try { v = JSON.parse(localStorage.getItem(SIDEKEY)); } catch (e) {} v = v && typeof v === 'object' ? v : {}; sideMem = { rail: !!v.rail, closed: Array.isArray(v.closed) ? v.closed : [] }; }
+    return sideMem;
+  }
+  var acctMenu = document.getElementById('acctmenu'), sbtip = document.getElementById('sbtip');
+  function acctShow(on) { acctMenu.hidden = !on; document.getElementById('acct').setAttribute('aria-expanded', on); }
+  document.addEventListener('click', function (e) {
+    if (!e.target.closest) return;
+    var t = e.target.closest('[data-sbcol],[data-navg],[data-acct]');
+    if (!t) { if (!acctMenu.hidden && (!e.target.closest('#acctmenu') || e.target.closest('[data-go],[data-logout]'))) acctShow(false); return; }
+    sbtip.hidden = true;
+    if ('acct' in t.dataset) return acctShow(acctMenu.hidden);
+    var st = sideState();
+    if ('sbcol' in t.dataset) st.rail = !st.rail; else { var at = st.closed.indexOf(t.dataset.navg); if (at >= 0) st.closed.splice(at, 1); else st.closed.push(t.dataset.navg); }
+    try { localStorage.setItem(SIDEKEY, JSON.stringify(st)); } catch (x) {}
+    acctShow(false); renderNav();
+  });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !acctMenu.hidden) { acctShow(false); document.getElementById('acct').focus(); } });
+  function tipFor(e) {
+    var t = e.target.closest && e.target.closest('.rail aside [data-tip]');
+    if (!t || !acctMenu.hidden) { sbtip.hidden = true; return; }
+    var r = t.getBoundingClientRect();
+    sbtip.textContent = t.dataset.tip; sbtip.style.left = (r.right + 10) + 'px'; sbtip.style.top = (r.top + r.height / 2) + 'px'; sbtip.hidden = false;
+  }
+  document.addEventListener('mouseover', tipFor); document.addEventListener('focusin', tipFor);
   // Phone: a floating dock with up to four sections of the person's choice and a menu button. The choice is kept on this device.
   var ICONS = {
     home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z', board: 'M4 4h4v14H4zM10 4h4v9h-4zM16 4h4v11h-4z', calendar: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
@@ -749,7 +846,8 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     tasks: 'M4 4h16v16H4zM8 12l3 3 5-6', people: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.2a3.5 3.5 0 0 1 0 6.6M21.5 20a6.5 6.5 0 0 0-4-6',
     stats: 'M4 20V10M10 20V4M16 20v-7M22 20H2', shop: 'M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2', money: 'M12 3v18M16 7.5h-5.5a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 1 0 5H8',
     team: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0', log: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2', settings: 'M4 7h10M18 7h2M4 17h2M10 17h10M16 4.5v5M8 14.5v5',
-    plan: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01', menu: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z'
+    plan: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01', menu: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',
+    chev: 'M6 9l6 6 6-6', side: 'M4 5h16v14H4zM9.5 5v14', updown: 'M8 9.5 12 5.5l4 4M8 14.5l4 4 4-4'
   };
   var icon = function (k) { return '<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="' + (ICONS[k] || ICONS.menu) + '"/></svg>'; };
   var DOCKMAX = 4, DOCKKEY = 'auf-admin-dock', dockEdit = false, tabbar = document.getElementById('tabbar');
