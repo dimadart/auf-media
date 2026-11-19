@@ -432,6 +432,67 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   dialog { border-radius: 14px; }
 }
 
+/* ---------- Mail: three panes ---------- */
+.mx { display: grid; grid-template-columns: 216px minmax(250px, 340px) minmax(0, 1fr); height: calc(100vh - 140px); min-height: 440px; border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); overflow: hidden; }
+.mx.adm { grid-template-columns: 216px minmax(0, 1fr); }
+.mx-side { display: flex; flex-direction: column; gap: 2px; padding: 12px 10px; border-right: 1px solid var(--line); overflow-y: auto; background: var(--side); }
+.mx-side .btn { margin-bottom: 10px; }
+.mx-side .nav-h { margin: 14px 8px 4px; color: var(--mute); }
+.mx-f { display: flex; align-items: center; justify-content: space-between; gap: 8px; width: 100%; padding: 8px 10px; border: 0; border-radius: 8px; background: none; color: var(--mute); font: 500 14px/1.25 Arial, Helvetica, sans-serif; text-align: left; cursor: pointer; }
+.mx-f span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.mx-f:hover { background: var(--hover); }
+.mx-f[aria-current=true] { background: var(--hover); color: var(--text); font-weight: 700; }
+.mx-f i { font-style: normal; font-size: 12px; font-weight: 700; color: var(--text); background: var(--chip); border-radius: 999px; padding: 2px 7px; }
+.mx-side .mx-set { margin-top: auto; padding-top: 12px; }
+.mx-top { display: none; }
+.mx-list { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); }
+.mx-q { padding: 10px; border-bottom: 1px solid var(--line); }
+.mx-q input { width: 100%; }
+.mx-rows { flex: 1; overflow-y: auto; padding: 4px 6px 12px; }
+.mx-m { margin: 10px 8px 4px; font-size: 12px; font-weight: 600; color: var(--mute); }
+.ml { display: grid; grid-template-columns: 10px minmax(0, 1fr) auto; gap: 2px 6px; width: 100%; padding: 9px 10px 10px 6px; border: 0; border-radius: 8px; background: none; color: var(--mute); font: 400 13.5px/1.35 Arial, Helvetica, sans-serif; text-align: left; cursor: pointer; }
+.ml:hover { background: var(--hover); }
+.ml.sel { background: var(--hover); box-shadow: inset 3px 0 0 var(--yellow); }
+.ml > * { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ml .dot { grid-row: 1; grid-column: 1; align-self: center; width: 7px; height: 7px; border-radius: 50%; }
+.ml.unread .dot { background: var(--b-ink); }
+.ml .w { grid-column: 2; color: var(--text); font-size: 14px; }
+.ml .d { grid-column: 3; font-size: 12px; }
+.ml .s, .ml .p, .ml .b { grid-column: 2 / -1; }
+.ml .s { color: var(--text); }
+.ml.unread .w, .ml.unread .s { font-weight: 700; }
+.ml .b { font-size: 11.5px; }
+.mx-read { min-width: 0; overflow-y: auto; padding: 14px 22px 26px; }
+.mx-bar { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px; margin-bottom: 14px; }
+.mx-bar .back { display: none; margin-right: auto; }
+.mx-read h2 { margin: 0 0 8px; font-size: 21px; line-height: 1.25; overflow-wrap: anywhere; }
+.mx-read .mailhead { margin: 0 0 16px; }
+.mx-none { display: grid; place-items: center; height: 100%; color: var(--mute); text-align: center; }
+.mx-adm { overflow-y: auto; padding: 16px 22px 26px; }
+.mx-adm h2 { margin: 0 0 4px; }
+.bxnew { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1.2fr) auto; gap: 8px; align-items: center; margin: 14px 0 6px; }
+.bx { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; padding: 14px 0; border-top: 1px solid var(--line); }
+.bx b { font-size: 15px; overflow-wrap: anywhere; }
+.bx small { display: block; color: var(--mute); font-size: 12.5px; margin-top: 2px; }
+.bx .bxw { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px; }
+.bx .bxw button { padding: 6px 11px; border: 1px solid var(--cline); border-radius: 999px; background: none; color: var(--mute); font: 500 13px/1.2 Arial, Helvetica, sans-serif; cursor: pointer; }
+.bx .bxw button[aria-pressed=true] { background: var(--g-soft); border-color: transparent; color: var(--g-ink); font-weight: 700; }
+.bx .acts { display: flex; gap: 6px; align-items: start; }
+.bx .acts button { border: 0; background: none; color: var(--mute); font-size: 13px; cursor: pointer; padding: 4px 6px; text-decoration: underline; text-decoration-color: var(--ghost); text-underline-offset: 3px; }
+@media (max-width: 1180px) { .mx { grid-template-columns: 190px minmax(220px, 290px) minmax(0, 1fr); } }
+@media (max-width: 860px) {
+  .mx, .mx.adm { display: block; height: auto; min-height: 0; border: 0; background: none; overflow: visible; }
+  .mx-side { display: none; }
+  .mx-top { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px; margin-bottom: 10px; }
+  .mx-top .tabs { grid-column: 1 / -1; margin: 0; flex-wrap: wrap; }
+  .mx-list, .mx-read, .mx-adm { border: 1px solid var(--line); border-radius: var(--r); background: var(--panel); }
+  .mx-rows { overflow: visible; }
+  .mx-read { display: none; overflow: visible; padding: 12px 14px 20px; }
+  .mx.open .mx-read { display: block; } .mx.open .mx-list, .mx-top.open { display: none; }
+  .mx-bar .back { display: inline-flex; }
+  .mx-adm { padding: 14px; }
+  .bxnew { grid-template-columns: minmax(0, 1fr) auto; } .bxnew input[name=label], .bxnew .btn { grid-column: 1 / -1; }
+}
 /* ---------- Beta: ideas terminal ---------- */
 .bbar { display: grid; grid-template-columns: minmax(0, 1fr) auto auto auto auto; gap: 8px; align-items: center; margin-bottom: 12px; }
 .bbar input[type=search] { width: 100%; }
@@ -618,8 +679,10 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   var mname = function (id) { var m = member(id); return m ? m.name : '—'; };
   var stageIx = function (id) { return STAGES.map(function (s) { return s.id; }).indexOf(id); };
   var isMine = function (c) { return c.author === state.me; };
-  var myBoxes = function () { return (state.boxes || []).filter(function (b) { return role() === 'owner' || b.owner === state.me; }); };
-  var allowed = function (v) { if (v === 'mail') return cloudOn && myBoxes().length > 0; return (v !== 'log' || cloudOn) && (!NEED[v] || atLeast(NEED[v])); };
+  var mailDemo = function () { return !cloudOn && window.AUF_MAIL_TEST; };
+  // My mailboxes are the ones connected to me. MAIN may open any, but sees in the list only those he connected to himself.
+  var myBoxes = function () { return (state.boxes || []).filter(function (b) { return (b.members || []).indexOf(state.me) >= 0; }); };
+  var allowed = function (v) { if (v === 'mail') return !!mailDemo() || cloudOn && (role() === 'owner' || myBoxes().length > 0); return (v !== 'log' || cloudOn) && (!NEED[v] || atLeast(NEED[v])); };
   var clevels = function () { return state.team.filter(function (m) { return m.role === 'chief'; }).length; };
   function canEdit(c) { return atLeast('editor') || isMine(c); }
   function canMove(c, to) { if (atLeast('editor')) return true; return isMine(c) && stageIx(to) <= 2 && stageIx(c.stage) <= 2; }
@@ -654,7 +717,8 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
 
   function gname(g) { return g[0] === 'adm' && !atLeast('owner') ? 'Аккаунт' : g[1]; }
   function renderNav() {
-    var counts = { board: state.cards.filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length, tasks: state.tasks.filter(function (t) { return t.stage !== 'done'; }).length, people: state.contacts.length };
+    var counts = { board: state.cards.filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length, tasks: state.tasks.filter(function (t) { return t.stage !== 'done'; }).length, people: state.contacts.length, mail: mail ? mailUnread('') : 0 };
+    if (mail && cloudOn && sb && synced && !mail.at && !mail.busy && allowed('mail')) mailLoad();
     nav.innerHTML = GROUPS.map(function (g) {
       var items = VIEWS.filter(function (v) { return v[2] === g[0] && allowed(v[0]); });
       return items.length ? '<span class="nav-h">' + gname(g) + '</span>' + items.map(function (v) {
@@ -758,7 +822,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
         var locked = m.role === 'owner' || !manage || (role() === 'chief' && RANK[m.role] >= RANK.chief && m.id !== state.me);
         return '<tr><td class="t1"><b>' + esc(m.name) + '</b>' + (m.id === state.me ? ' <span class="tag o">это вы</span>' : '') + '</td><td>' + esc(m.email || '—') + '</td><td>'
           + (locked ? esc(ROLES.filter(function (r) { return r.id === m.role; })[0].name) : '<select data-role="' + m.id + '" aria-label="Роль">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (m.role === r.id ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select>')
-          + '</td><td>' + (m.status !== 'active' ? '<span class="tag p">приглашение</span>' : cloudOn && !m.first ? '<span class="tag o">письмо отправлено, ещё не входил</span>' : '<span class="tag g">активен</span>') + '</td>' + (cloudOn ? '<td data-l="Был в админке">' + (m.seen ? esc(when(m.seen)) : '—') + '</td>' : '') + (cloudOn && manage ? '<td>' + (m.status !== 'active' ? '—' : (function () { var bx = state.boxes.filter(function (b) { return b.owner === m.id; }); return bx.map(function (b) { return '<span class="boxrow">' + esc(b.address) + ' <button type="button" class="tagadd" data-boxtake="' + esc(b.address) + '" title="Забрать ящик" aria-label="Забрать ящик ' + esc(b.address) + '">×</button></span>'; }).join('') + '<button type="button" class="tgl" data-boxgive="' + m.id + '">' + (bx.length ? '+ ещё адрес' : 'Выдать почту') + '</button>'; })()) + '</td>' : '')
+          + '</td><td>' + (m.status !== 'active' ? '<span class="tag p">приглашение</span>' : cloudOn && !m.first ? '<span class="tag o">письмо отправлено, ещё не входил</span>' : '<span class="tag g">активен</span>') + '</td>' + (cloudOn ? '<td data-l="Был в админке">' + (m.seen ? esc(when(m.seen)) : '—') + '</td>' : '') + (cloudOn && manage ? '<td>' + (m.status !== 'active' ? '—' : (state.boxes.filter(function (b) { return b.address !== CATCH && b.members.indexOf(m.id) >= 0; }).map(function (b) { return '<span class="boxrow">' + esc(b.address) + '</span>'; }).join('') || '—')) + '</td>' : '')
           + '<td>' + (locked ? '' : (cloudOn ? '<button type="button" class="btn ghost" data-resend="' + esc(m.email) + '" title="Письмо со ссылкой: человек войдёт по ней и задаст новый пароль">' + (m.first ? 'Сбросить пароль' : 'Письмо ещё раз') + '</button> ' : '') + '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
       }).join('');
       var head = '<tr><th>Что можно</th>' + ROLES.map(function (r) { return '<th>' + r.name + '</th>'; }).join('') + '</tr>';
@@ -783,24 +847,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     stats: function () { return '<div class="panel plan" style="margin-top:0"><h2>Аналитика</h2><p>Здесь будут посещаемость сайта, самые читаемые материалы, источники переходов и рост подписчиков.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Выбрать сервис статистики для сайта и поставить его счётчик.</li><li>Дать админке доступ к этим данным.</li><li>Подключить формы со страницы «Скоро», чтобы считать подписчиков.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
     shop: function () { return '<div class="panel plan" style="margin-top:0"><h2>Шоп</h2><p>Здесь будут товары, заказы, остатки и выручка магазина.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Решить, что продаём и через какой сервис принимаем оплату.</li><li>Подключить этот сервис к админке.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
     money: function () { return '<div class="panel plan" style="margin-top:0"><h2>Финансы</h2><p>Здесь будут доходы и расходы, гонорары авторам и то, что уже выплачено.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Общая база (Supabase), чтобы записи видели все C-Level.</li><li>Решить, какие статьи доходов и расходов вести и в какой валюте.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
-    mail: function () {
-      var boxes = myBoxes();
-      if (!boxes.some(function (b) { return b.address === mailBox; })) { mailBox = (boxes.filter(function (b) { return b.owner === state.me; })[0] || boxes[0] || {}).address || ''; mailAt = 0; }
-      if (!mailAt) mailLoad();
-      var boxName = function (b) { return b.address === CATCH ? 'Без ящика (адрес никому не выдан)' : b.address + (b.owner === state.me ? '' : b.owner ? ' — ' + mname(b.owner) : ' — общий'); };
-      var canSend = mailBox && mailBox !== CATCH;
-      var bar = '<div class="bar">' + (boxes.length > 1 ? '<select id="mailboxsel" class="grow" aria-label="Ящик">' + boxes.map(function (b) { return '<option value="' + esc(b.address) + '"' + (b.address === mailBox ? ' selected' : '') + '>' + esc(boxName(b)) + '</option>'; }).join('') + '</select>' : '<b class="grow mailme">' + esc(mailBox) + '</b>')
-        + '<button type="button" class="btn ghost" data-mailrefresh>Обновить</button>' + (role() === 'owner' ? '<button type="button" class="btn ghost" data-boxnew>+ Общий адрес</button>' : '') + (canSend ? '<button type="button" class="btn" data-mailnew>Написать</button>' : '') + '</div>'
-        + '<div class="tabs" role="tablist"><button type="button" role="tab" data-mailtab="in" aria-selected="' + (mailTab === 'in') + '">Входящие' + (mailUnread ? ' · ' + mailUnread : '') + '</button><button type="button" role="tab" data-mailtab="out" aria-selected="' + (mailTab === 'out') + '">Отправленные</button></div>';
-      var list = mailRows.filter(function (m) { return m.dir === mailTab; });
-      var body = mailErr ? '<p class="empty">' + esc(mailErr) + '</p>' : !mailAt ? '<p class="empty">Загружаем…</p>'
-        : !list.length ? '<p class="empty">' + (mailTab === 'in' ? 'Писем пока нет.' : 'Вы ещё ничего не отправляли с этого адреса.') + '</p>'
-        : '<div class="tw"><table class="stack mailtable"><thead><tr><th>' + (mailTab === 'in' ? 'От кого' : 'Кому') + '</th><th>Тема</th><th>Когда</th></tr></thead><tbody>' + list.map(function (m) {
-          var who = mailTab === 'in' ? (m.from_name || m.from_addr) : m.to_addr, snip = String(m.body_text || '').replace(/\s+/g, ' ').slice(0, 110);
-          return '<tr class="click' + (m.dir === 'in' && !m.read ? ' unread' : '') + '" data-mail="' + m.id + '"><td class="t1 mwho">' + esc(who) + '</td><td class="msub"><b>' + esc(m.subject || '(без темы)') + '</b>' + (snip ? ' <span>' + esc(snip) + '</span>' : '') + (m.attachments && m.attachments.length ? ' <span class="tag o">вложений: ' + m.attachments.length + '</span>' : '') + '</td><td class="nw">' + esc(when(m.at)) + '</td></tr>';
-        }).join('') + '</tbody></table></div>';
-      return bar + '<div class="panel" style="margin-top:0">' + body + '</div><p class="note">Показаны последние ' + MAILMAX + ' писем ящика. Вложения пока только перечисляются по именам: открыть их из админки нельзя.' + (role() === 'owner' ? ' Письма на адрес, который никому не выдан, попадают в «Без ящика» — его видит только MAIN.' : '') + '</p>';
-    },
+    mail: function () { return mailView(); },
     log: function () {
       if (!auditAt || Date.now() - auditAt > 15000) auditLoad();
       var names = { cards: 'Материал', tasks: 'Задача проекта', contacts: 'Контакт', contact_notes: 'Заметка в анкете', invites: 'Приглашение', profiles: 'Команда', session: 'Вход', mailboxes: 'Почтовый ящик', mail: 'Письмо' };
@@ -821,7 +868,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     beta: function () { return betaView(); },
     settings: function () {
       if (!atLeast('owner')) {
-        var me = member(state.me) || {}, mine = (state.boxes || []).filter(function (b) { return b.owner === state.me; });
+        var me = member(state.me) || {}, mine = myBoxes().filter(function (b) { return b.address !== CATCH; });
         return '<div class="panel" style="margin-top:0"><h2>Почта</h2><ul class="list">'
           + (me.email ? '<li><b>Для входа</b><span>' + esc(me.email) + '</span></li>' : '')
           + '<li><b>Рабочая</b><span>' + (mine.length ? mine.map(function (b) { return esc(b.address); }).join(', ') : 'адрес не выдан') + '</span></li></ul>'
@@ -835,7 +882,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     },
     plan: function () {
       if (cloudOn) return '<div class="panel plan" style="margin-top:0">'
-        + '<h2>Что работает</h2><ul><li><b>Вход по почте и паролю.</b> Войти может только тот, кого пригласил MAIN.</li><li><b>Общие данные.</b> Материалы, обе доски, календарь, контакты и команда лежат в общей базе. Изменения других людей появляются сами, без перезагрузки.</li><li><b>Уровни.</b> Права из таблицы «Кто что может» проверяет сама база: журналист не сможет изменить чужой материал, а редактор не увидит блок «Проект», даже если попробует обойти интерфейс.</li><li><b>Заметки в анкетах</b> подписаны тем, кто вошёл.</li><li><b>Заявки со страницы «Скоро»</b> падают в раздел «Заявки».</li><li><b>Рабочая почта.</b> MAIN выдаёт адреса на auf.media в «Команде». Письма читаются и пишутся только здесь, в разделе «Почта»; человек видит свой ящик, MAIN может открыть любой.</li><li><b>Совместная правка текста:</b> видно, кто открыт в материале и где чужой курсор, правки появляются на лету.</li></ul>'
+        + '<h2>Что работает</h2><ul><li><b>Вход по почте и паролю.</b> Войти может только тот, кого пригласил MAIN.</li><li><b>Общие данные.</b> Материалы, обе доски, календарь, контакты и команда лежат в общей базе. Изменения других людей появляются сами, без перезагрузки.</li><li><b>Уровни.</b> Права из таблицы «Кто что может» проверяет сама база: журналист не сможет изменить чужой материал, а редактор не увидит блок «Проект», даже если попробует обойти интерфейс.</li><li><b>Заметки в анкетах</b> подписаны тем, кто вошёл.</li><li><b>Заявки со страницы «Скоро»</b> падают в раздел «Заявки».</li><li><b>Рабочая почта.</b> MAIN создаёт адреса на auf.media и раздаёт доступ в «Почте» → «Ящики и доступы». Один ящик может быть у нескольких человек. Письма читаются и пишутся только здесь, в разделе «Почта».</li><li><b>Совместная правка текста:</b> видно, кто открыт в материале и где чужой курсор, правки появляются на лету.</li></ul>'
         + '<h2>Как позвать человека</h2><ol><li>В «Команде» MAIN вводит имя, почту и уровень. Приглашать может только MAIN.</li><li>Человеку приходит письмо со ссылкой.</li><li>Он открывает ссылку, видит приветствие, придумывает пароль — и он внутри. Дальше входит по почте и паролю.</li></ol><p>Забыл пароль или письмо потерялось: на экране входа есть «Первый вход или забыли пароль?». Письмо можно отправить ещё раз и из «Команды».</p>'
         + '<h2>Ограничения</h2><ul><li>Если двое одновременно печатают в одном абзаце, побеждает последняя правка. В разных абзацах правки не мешают друг другу.</li><li>Если двое одновременно меняют одну карточку (не текст), сохранится вариант того, кто сохранил позже.</li><li>«Смотреть как» есть только у MAIN и меняет лишь вид страницы: это способ посмотреть, что видит другой уровень.</li><li>Аналитика, Шоп и Финансы не подключены: цифр там нет.</li><li>Публикации на сайт кнопкой нет. Этап «Опубликовано» на доске — отметка, а не выпуск.</li></ul>'
         + '</div>';
@@ -1726,7 +1773,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   // The rest of the page keeps working on `state` and calling save(). Here save() becomes "push what changed",
   // and changes made by other people are pulled back in. Access rules live in the database, not in this file.
   var sb = null, cloudUser = null, cloudRole = null, synced = null, raw = {}, pushT = 0, pushing = false, dirty = false, pullT = 0, pullWant = false, pullSet = {}, rtDb = null, rtLive = null, liveOk = false;
-  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/, TABLES = ['profiles', 'invites', 'mailboxes', 'cards', 'tasks', 'contacts', 'contact_notes', 'settings', 'subs', 'apps'];
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/, TABLES = ['profiles', 'invites', 'mailboxes', 'mailbox_access', 'cards', 'tasks', 'contacts', 'contact_notes', 'settings', 'subs', 'apps'];
   var gate = document.getElementById('gate');
   function canon(v) {
     if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']';
@@ -1837,7 +1884,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
       cards: raw.cards.map(function (r) { return Object.assign({}, r.data, { id: r.id, stage: r.stage, author: r.author || r.data.author || '' }); }).sort(by('_at', -1)),
       tasks: raw.tasks.map(function (r) { return Object.assign({}, r.data, { id: r.id }); }).sort(by('_at', -1)),
       contacts: raw.contacts.map(function (r) { return Object.assign({}, r.data, { id: r.id, log: (notes[r.id] || []).sort(by('at', 1)) }); }).sort(by('_at', 1)),
-      boxes: raw.mailboxes.map(function (b) { return { address: b.address, owner: b.owner || '', label: b.label || '' }; }).sort(function (a, b) { return a.address === CATCH ? 1 : b.address === CATCH ? -1 : a.address < b.address ? -1 : 1; }),
+      boxes: raw.mailboxes.map(function (b) { return { address: b.address, label: b.label || '', members: (raw.mailbox_access || []).filter(function (a) { return a.address === b.address; }).map(function (a) { return a.member; }) }; }).sort(function (a, b) { return a.address === CATCH ? 1 : b.address === CATCH ? -1 : a.address < b.address ? -1 : 1; }),
       pcols: ((raw.settings.filter(function (s) { return s.key === 'pcols'; })[0] || {}).data || {}).list || [],
       subs: raw.subs.map(function (s) { return { id: s.id, channel: s.way, contact: s.contact, date: String(s.created_at).slice(0, 10), at: s.created_at }; }).sort(function (a, b) { return a.at < b.at ? 1 : -1; }),
       apps: raw.apps.map(function (s) { return { id: s.id, contact: s.contact, about: s.idea, city: s.city || '', terms: s.terms || '', date: String(s.created_at).slice(0, 10), at: s.created_at }; }).sort(function (a, b) { return a.at < b.at ? 1 : -1; })
@@ -1868,7 +1915,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
 
   function cloudCast(m) { if (rtLive && liveOk) rtLive.send({ type: 'broadcast', event: 'peer', payload: m }).catch(function () {}); }
   function cloudListen() {
-    rtDb = sb.channel('auf-db').on('postgres_changes', { event: '*', schema: 'public' }, function (p) { if (p.table === 'mail') return mailStale(); pullSet[p.table] = 1; if (p.table === 'contacts') pullSet.contact_notes = 1; clearTimeout(pullT); pullT = setTimeout(function () { pullWant = true; cloudPull(); }, 500); });
+    rtDb = sb.channel('auf-db').on('postgres_changes', { event: '*', schema: 'public' }, function (p) { if (p.table === 'mail') return mailStale(); if (p.table === 'mailbox_access') { pullSet.mailboxes = 1; mailStale(); } pullSet[p.table] = 1; if (p.table === 'contacts') pullSet.contact_notes = 1; clearTimeout(pullT); pullT = setTimeout(function () { pullWant = true; cloudPull(); }, 500); });
     rtDb.subscribe(function (st) { if (st === 'SUBSCRIBED' && synced) { TABLES.forEach(function (t) { pullSet[t] = 1; }); cloudPull(); } });
     // Editor traffic goes through a private channel: only signed-in team members may join it.
     rtLive = sb.channel('auf-live', { config: { private: true, broadcast: { self: false } } }).on('broadcast', { event: 'peer' }, function (p) { onPeer({ data: p.payload }); });
@@ -1945,44 +1992,116 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     var o = await mailLink(email);
     toast(o.error ? mailWhy(String(o.error.message || '')) : 'Письмо отправлено на ' + email);
   }
-  var CATCH = 'catchall@auf.media', MAILMAX = 150, mailRows = [], mailBox = '', mailTab = 'in', mailAt = 0, mailErr = '', mailBusy = false, mailUnread = 0, mailT = 0;
-  function mailStale() { clearTimeout(mailT); mailT = setTimeout(function () { mailAt = 0; if (state.view === 'mail' && !busy()) mailLoad(); }, 600); }
+  var CATCH = 'catchall@auf.media', MAILMAX = 400;
+  var mail = { rows: [], at: 0, err: '', busy: false, folder: 'in', box: '', q: '', open: null, html: false, admin: false, t: 0 };
+  function mailStale() { clearTimeout(mail.t); mail.t = setTimeout(function () { mail.at = 0; if (!busy()) mailLoad(); }, 600); }
+  var mailAddrs = function () { return myBoxes().map(function (b) { return b.address; }); };
+  function mailUnread(box) { var mine = mailAddrs(); return mail.rows.filter(function (m) { return m.dir === 'in' && !m.read && mine.indexOf(m.mailbox) >= 0 && (!box || m.mailbox === box); }).length; }
+  function mailShown() { if (state.view === 'mail') { if (!busy()) render(); } else renderNav(); }
   async function mailLoad() {
-    if (mailBusy || !sb || !mailBox) return; mailBusy = true;
-    var box = mailBox, r = await sb.from('mail').select('id,mailbox,dir,from_addr,from_name,to_addr,subject,body_text,attachments,at,read').eq('mailbox', box).order('at', { ascending: false }).limit(MAILMAX);
-    mailBusy = false; if (box !== mailBox) return mailLoad();
-    mailAt = Date.now();
-    if (r.error) mailErr = 'Не получилось загрузить почту: ' + cloudWhy(r.error); else { mailErr = ''; mailRows = r.data || []; mailUnread = mailRows.filter(function (m) { return m.dir === 'in' && !m.read; }).length; }
-    if (state.view === 'mail' && !busy()) render();
+    if (mailDemo()) { mail.rows = window.AUF_MAIL_TEST.rows; state.boxes = window.AUF_MAIL_TEST.boxes.map(function (b) { return { address: b.address, label: b.label, members: [state.me] }; }); mail.at = Date.now(); return; }
+    if (mail.busy || !sb) return;
+    var addrs = mailAddrs(), key = addrs.join();
+    if (!addrs.length) { mail.rows = []; mail.at = Date.now(); mail.err = ''; return mailShown(); }
+    mail.busy = true;
+    var r = await sb.from('mail').select('id,mailbox,dir,from_addr,from_name,to_addr,subject,snip,attachments,at,read').in('mailbox', addrs).order('at', { ascending: false }).limit(MAILMAX);
+    mail.busy = false; mail.at = Date.now();
+    if (key !== mailAddrs().join()) { mail.at = 0; return mailLoad(); }
+    if (r.error) mail.err = 'Не получилось загрузить почту: ' + cloudWhy(r.error); else { mail.err = ''; mail.rows = r.data || []; }
+    mailShown();
+  }
+  function mailFiltered() {
+    var q = mail.q.trim().toLowerCase(), mine = mailAddrs();
+    return mail.rows.filter(function (m) {
+      if (mine.indexOf(m.mailbox) < 0 || mail.box && m.mailbox !== mail.box) return false;
+      if (mail.folder !== 'all' && m.dir !== mail.folder) return false;
+      return !q || [m.from_name, m.from_addr, m.to_addr, m.subject, m.snip].join(' ').toLowerCase().indexOf(q) >= 0;
+    });
+  }
+  function mailDay(v) { var d = new Date(v); return isNaN(d) ? '' : iso(d) === TODAY ? d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }) : d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }); }
+  function mailListHtml() {
+    var rows = mailFiltered(), month = '';
+    if (mail.err) return '<p class="empty">' + esc(mail.err) + '</p>';
+    if (!mail.at) return '<p class="empty">Загружаем…</p>';
+    if (!mailAddrs().length) return '<p class="empty">Вам пока не подключён ни один ящик.' + (role() === 'owner' ? ' Откройте «Ящики и доступы».' : '') + '</p>';
+    if (!rows.length) return '<p class="empty">' + (mail.q ? 'Ничего не нашлось.' : mail.folder === 'out' ? 'Отправленных писем нет.' : 'Писем пока нет.') + '</p>';
+    return rows.map(function (m) {
+      var d = new Date(m.at), mo = isNaN(d) ? '' : d.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }), head = mo !== month ? '<p class="mx-m">' + esc(mo.charAt(0).toUpperCase() + mo.slice(1)) + '</p>' : '';
+      month = mo;
+      var out = m.dir === 'out', who = out ? 'Кому: ' + m.to_addr : (m.from_name || m.from_addr);
+      return head + '<button type="button" class="ml' + (!out && !m.read ? ' unread' : '') + (mail.open && mail.open.id === m.id ? ' sel' : '') + '" data-mail="' + esc(m.id) + '"><span class="dot"></span><span class="w">' + esc(who) + '</span><span class="d">' + esc(mailDay(m.at)) + '</span>'
+        + '<span class="s">' + esc(m.subject || '(без темы)') + (m.attachments && m.attachments.length ? ' · вложений: ' + m.attachments.length : '') + '</span>' + (m.snip ? '<span class="p">' + esc(m.snip) + '</span>' : '')
+        + (!mail.box && mailAddrs().length > 1 ? '<span class="b">' + esc(m.mailbox === CATCH ? 'без ящика' : m.mailbox) + '</span>' : '') + '</button>';
+    }).join('');
+  }
+  function mailReadHtml() {
+    var m = mail.open;
+    if (!m) return '<div class="mx-none"><p>Выберите письмо слева.</p></div>';
+    var inb = m.dir === 'in', canSend = m.mailbox !== CATCH;
+    return '<div class="mx-bar"><button type="button" class="btn ghost back" data-mailback>← К списку</button>'
+      + (m.body_html && !mail.html ? '<button type="button" class="btn ghost" data-mailhtml>Показать оформление</button>' : '')
+      + (inb ? '<button type="button" class="btn ghost" data-mailunread>Не прочитано</button>' : '') + '<button type="button" class="btn ghost" data-maildel>Удалить</button>'
+      + (inb && canSend ? '<button type="button" class="btn" data-mailreply>Ответить</button>' : '') + '</div>'
+      + '<h2>' + esc(m.subject || '(без темы)') + '</h2><p class="mailhead"><b>' + esc(inb && m.from_name ? m.from_name + ' <' + m.from_addr + '>' : m.from_addr) + '</b><br>Кому: ' + esc(m.to_addr) + (m.cc ? '<br>Копия: ' + esc(m.cc) : '') + '<br>' + esc(when(m.at)) + ' · ящик ' + esc(m.mailbox === CATCH ? '«без ящика»' : m.mailbox) + '</p>'
+      + (m.attachments && m.attachments.length ? '<p class="note" style="margin:0 0 12px">Вложения (открыть из админки пока нельзя): ' + m.attachments.map(function (a) { return esc(a.name || 'файл'); }).join(', ') + '</p>' : '')
+      // The letter's own HTML goes into a sandboxed frame: scripts and forms in it cannot run.
+      + (mail.html && m.body_html ? '<iframe class="mailframe" sandbox="" referrerpolicy="no-referrer" title="Письмо" srcdoc="' + esc('<base target="_blank">' + m.body_html) + '"></iframe>'
+        : '<div class="pre mailtext">' + esc(m.body_text || (m.body_html ? 'В письме нет текстовой версии. Нажмите «Показать оформление».' : '(пустое письмо)')) + '</div>');
+  }
+  function mailAdminHtml() {
+    var people = state.team.filter(function (m) { return m.status === 'active'; }).sort(function (a, b) { return (b.id === state.me) - (a.id === state.me) || RANK[b.role] - RANK[a.role]; });
+    return '<div class="mx-adm"><div class="mx-bar"><button type="button" class="btn ghost" data-mailadmin>Закрыть</button></div><h2>Ящики и доступы</h2>'
+      + '<p class="note" style="margin:0">Создайте адрес и отметьте, кто его видит. Один ящик может быть у нескольких человек. Отметьте себя, чтобы ящик появился в вашем списке слева. Раздел видит только MAIN.</p>'
+      + '<form class="bxnew" id="boxform"><input name="local" type="text" required maxlength="40" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="ads" aria-label="Адрес до @"><span>@auf.media</span><input name="label" type="text" maxlength="60" placeholder="Имя отправителя, например AUF MEDIA" aria-label="Имя отправителя"><button type="submit" class="btn">Создать ящик</button></form>'
+      + '<p class="note" style="margin:0 0 6px">Если имя отправителя пустое, письма уходят от имени того, кто пишет.</p>'
+      + state.boxes.map(function (b) {
+        var sys = b.address === CATCH;
+        return '<div class="bx"><div><b>' + (sys ? 'Письма без ящика' : esc(b.address)) + '</b><small>' + (sys ? 'Сюда падает всё, что пришло на адрес, которого нет. Отвечать отсюда нельзя.' : b.label ? 'Отправитель: ' + esc(b.label) : 'Отправитель: имя того, кто пишет') + '</small></div>'
+          + '<div class="acts">' + (sys ? '' : '<button type="button" data-boxlabel="' + esc(b.address) + '">Имя отправителя</button><button type="button" data-boxdel="' + esc(b.address) + '">Удалить</button>') + '</div>'
+          + '<div class="bxw">' + people.filter(function (m) { return !sys || m.role === 'owner'; }).map(function (m) { return '<button type="button" data-boxwho="' + esc(b.address) + '" data-m="' + esc(m.id) + '" aria-pressed="' + (b.members.indexOf(m.id) >= 0) + '">' + esc(m.id === state.me ? 'Я' : m.name) + '</button>'; }).join('') + '</div></div>';
+      }).join('') + '</div>';
+  }
+  function mailView() {
+    if (!mail.at) mailLoad();
+    var boxes = myBoxes(), owner = role() === 'owner' && (cloudOn ? cloudRole === 'owner' : true);
+    if (mail.box && !boxes.some(function (b) { return b.address === mail.box; })) mail.box = '';
+    if (!owner) mail.admin = false;
+    var folders = [['in', 'Входящие'], ['out', 'Отправленные'], ['all', 'Все письма']], bname = function (b) { return b.address === CATCH ? 'Без ящика' : b.address; };
+    var canWrite = boxes.some(function (b) { return b.address !== CATCH; });
+    var side = '<aside class="mx-side">' + (canWrite ? '<button type="button" class="btn" data-mailnew>Написать</button>' : '')
+      + folders.map(function (f) { var n = f[0] === 'in' ? mailUnread(mail.box) : 0; return '<button type="button" class="mx-f" data-mailfolder="' + f[0] + '" aria-current="' + (!mail.admin && mail.folder === f[0]) + '"><span>' + f[1] + '</span>' + (n ? '<i>' + n + '</i>' : '') + '</button>'; }).join('')
+      + '<p class="nav-h">Ящики</p>' + (boxes.length > 1 ? '<button type="button" class="mx-f" data-mailboxpick="" aria-current="' + (!mail.admin && !mail.box) + '"><span>Все ящики</span></button>' : '')
+      + boxes.map(function (b) { var n = mailUnread(b.address); return '<button type="button" class="mx-f" data-mailboxpick="' + esc(b.address) + '" aria-current="' + (!mail.admin && (mail.box === b.address || boxes.length === 1)) + '" title="' + esc(bname(b)) + '"><span>' + esc(bname(b)) + '</span>' + (n ? '<i>' + n + '</i>' : '') + '</button>'; }).join('')
+      + (boxes.length ? '' : '<p class="note" style="margin:4px 8px">Ящиков нет.</p>')
+      + '<div class="mx-set"><button type="button" class="mx-f" data-mailrefresh><span>Обновить</span></button>' + (owner ? '<button type="button" class="mx-f" data-mailadmin aria-current="' + mail.admin + '"><span>Ящики и доступы</span></button>' : '') + '</div></aside>';
+    var top = '<div class="mx-top' + (mail.open ? ' open' : '') + '"><select id="mailboxsel" aria-label="Ящик">' + (boxes.length > 1 ? '<option value="">Все ящики</option>' : '') + boxes.map(function (b) { return '<option value="' + esc(b.address) + '"' + (mail.box === b.address ? ' selected' : '') + '>' + esc(bname(b)) + '</option>'; }).join('') + '</select>'
+      + (canWrite ? '<button type="button" class="btn" data-mailnew>Написать</button>' : '<span></span>')
+      + '<div class="tabs" role="tablist">' + folders.map(function (f) { return '<button type="button" role="tab" data-mailfolder="' + f[0] + '" aria-selected="' + (mail.folder === f[0]) + '">' + f[1] + (f[0] === 'in' && mailUnread(mail.box) ? ' · ' + mailUnread(mail.box) : '') + '</button>'; }).join('')
+      + (owner ? '<button type="button" data-mailadmin>Ящики и доступы</button>' : '') + '</div></div>';
+    if (mail.admin) return '<div class="mx adm">' + side + mailAdminHtml() + '</div>';
+    return top + '<div class="mx' + (mail.open ? ' open' : '') + '">' + side
+      + '<section class="mx-list"><div class="mx-q"><input type="search" id="mailq" data-f="mailq" placeholder="Поиск по письмам" aria-label="Поиск по письмам" value="' + esc(mail.q) + '"></div><div class="mx-rows" id="mailrows">' + mailListHtml() + '</div></section>'
+      + '<section class="mx-read">' + mailReadHtml() + '</section></div>';
   }
   async function openMail(id) {
-    var row = mailRows.filter(function (m) { return m.id === id; })[0]; if (!row) return;
-    var r = await sb.from('mail').select('*').eq('id', id).maybeSingle();
-    if (r.error || !r.data) return toast('Не получилось открыть письмо');
-    var m = r.data, inb = m.dir === 'in', canSend = m.mailbox !== CATCH;
-    dlgbody.innerHTML = '<h2>' + esc(m.subject || '(без темы)') + '</h2><p class="mailhead"><b>' + esc(inb ? (m.from_name ? m.from_name + ' <' + m.from_addr + '>' : m.from_addr) : m.from_addr) + '</b><br>Кому: ' + esc(m.to_addr) + (m.cc ? '<br>Копия: ' + esc(m.cc) : '') + '<br>' + esc(when(m.at)) + '</p>'
-      + (m.attachments && m.attachments.length ? '<p class="note" style="margin:0 0 12px">Вложения: ' + m.attachments.map(function (a) { return esc(a.name || 'файл'); }).join(', ') + '</p>' : '')
-      + '<div id="mailbody"><div class="pre mailtext">' + esc(m.body_text || (m.body_html ? 'В письме нет текстовой версии. Нажмите «Показать оформление».' : '(пустое письмо)')) + '</div></div>'
-      + '<div class="actions"><span><button type="button" class="btn danger" id="maildel">Удалить</button></span><span>' + (m.body_html ? '<button type="button" class="btn ghost" id="mailhtml">Показать оформление</button>' : '') + (inb && canSend ? '<button type="button" class="btn" id="mailreply">Ответить</button>' : '<button type="button" class="btn ghost" id="mailclose">Закрыть</button>') + '</span></div>';
-    dlg.showModal();
-    var h = document.getElementById('mailhtml');
-    // The letter's own HTML is shown in a sandboxed frame: scripts and forms in it cannot run.
-    if (h) h.onclick = function () { var f = document.createElement('iframe'); f.setAttribute('sandbox', ''); f.setAttribute('referrerpolicy', 'no-referrer'); f.className = 'mailframe'; f.srcdoc = '<base target="_blank">' + m.body_html; var b = document.getElementById('mailbody'); b.innerHTML = ''; b.appendChild(f); h.remove(); };
-    var c = document.getElementById('mailclose'); if (c) c.onclick = function () { dlg.close(); };
-    var rp = document.getElementById('mailreply');
-    if (rp) rp.onclick = function () { mailCompose({ to: m.from_addr, subject: /^re:/i.test(m.subject) ? m.subject : 'Re: ' + m.subject, reply_to: m.message_id, quote: m.body_text, who: m.from_name || m.from_addr, at: m.at }); };
-    document.getElementById('maildel').onclick = async function () {
-      if (!confirm('Удалить письмо? Вернуть его будет нельзя.')) return;
-      var d = await sb.from('mail').delete().eq('id', m.id); if (d.error) return toast('Не удалилось: ' + cloudWhy(d.error));
-      dlg.close(); mailRows = mailRows.filter(function (x) { return x.id !== m.id; }); render(); toast('Письмо удалено');
-    };
-    if (inb && !m.read) { row.read = true; mailUnread = Math.max(0, mailUnread - 1); sb.from('mail').update({ read: true }).eq('id', m.id).then(function () {}); }
+    var row = mail.rows.filter(function (m) { return m.id === id; })[0]; if (!row) return;
+    var m;
+    if (mailDemo()) m = Object.assign({ body_text: row.snip, body_html: '', cc: '', message_id: '' }, row);
+    else { var r = await sb.from('mail').select('*').eq('id', id).maybeSingle(); if (r.error || !r.data) return toast('Не получилось открыть письмо'); m = r.data; }
+    mail.open = m; mail.html = false;
+    if (m.dir === 'in' && !row.read) { row.read = true; if (sb) sb.from('mail').update({ read: true }).eq('id', m.id).then(function () {}); }
+    render(); var pane = view.querySelector('.mx-read'); if (pane) pane.scrollTop = 0;
+    if (innerWidth <= 860) scrollTo(0, 0);
   }
   function mailCompose(p) {
     p = p || {};
+    var from = myBoxes().filter(function (b) { return b.address !== CATCH; });
+    if (!from.length) return toast('Нет ящика, с которого можно писать');
+    var def = p.from || (mail.box && mail.box !== CATCH ? mail.box : from[0].address);
     var quote = p.quote ? '\n\n\n' + when(p.at) + ', ' + p.who + ':\n' + String(p.quote).slice(0, 4000).split('\n').map(function (l) { return '> ' + l; }).join('\n') : '';
-    dlgbody.innerHTML = '<h2>' + (p.to ? 'Ответ' : 'Новое письмо') + '</h2><form id="mailform"><p class="note" style="margin:0 0 12px">От: <b>' + esc(mailBox) + '</b></p>'
-      + '<label for="mto">Кому</label><input id="mto" name="to" type="text" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" required placeholder="name@example.com" value="' + esc(p.to || '') + '">'
+    dlgbody.innerHTML = '<h2>' + (p.to ? 'Ответ' : 'Новое письмо') + '</h2><form id="mailform">'
+      + '<label for="mfr">От</label><select id="mfr" name="from">' + from.map(function (b) { return '<option value="' + esc(b.address) + '"' + (b.address === def ? ' selected' : '') + '>' + esc(b.address + (b.label ? ' — ' + b.label : '')) + '</option>'; }).join('') + '</select>'
+      + '<label for="mto" style="margin-top:12px">Кому</label><input id="mto" name="to" type="text" inputmode="email" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" required placeholder="name@example.com" value="' + esc(p.to || '') + '">'
       + '<label for="msu" style="margin-top:12px">Тема</label><input id="msu" name="subject" type="text" required autocomplete="off" value="' + esc(p.subject || '') + '">'
       + '<label for="mtx" style="margin-top:12px">Текст</label><textarea id="mtx" name="text" rows="10" required>' + esc(quote) + '</textarea>'
       + '<div class="actions"><span></span><span><button type="button" class="btn ghost" id="mailcancel">Отмена</button><button type="submit" class="btn">Отправить</button></span></div></form>';
@@ -1992,36 +2111,82 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     (p.to ? ta : f.to).focus(); if (p.to) try { ta.setSelectionRange(0, 0); } catch (e) {}
     f.onsubmit = async function (e) {
       e.preventDefault();
+      if (!sb) return toast('Письма отправляются на auf.media');
       var btn = f.querySelector('button[type=submit]'); btn.disabled = true; btn.textContent = 'Отправляем…';
-      var r = await sb.functions.invoke('mail-send', { body: { mailbox: mailBox, to: f.to.value, subject: f.subject.value, text: f.text.value, reply_to: p.reply_to || '' } });
+      var r = await sb.functions.invoke('mail-send', { body: { mailbox: f.from.value, to: f.to.value, subject: f.subject.value, text: f.text.value, reply_to: p.reply_to || '' } });
       btn.disabled = false; btn.textContent = 'Отправить';
       if (r.error) { var why = ''; try { why = (await r.error.context.json()).error; } catch (x) {} return toast('Не отправлено: ' + (why || cloudWhy(r.error))); }
-      dlgDirty = false; dlg.close(); mailTab = 'out'; mailAt = 0; render(); toast('Письмо отправлено');
+      dlgDirty = false; dlg.close(); mail.folder = 'out'; mail.open = null; mail.at = 0; render(); toast('Письмо отправлено');
     };
   }
-  async function boxGive(memberId, shared) {
-    var m = memberId ? member(memberId) : null;
-    var guess = m ? String(m.email).split('@')[0].toLowerCase().replace(/[^a-z0-9._-]/g, '') : 'hello';
-    var local = prompt(shared ? 'Общий адрес (часть до @auf.media), например hello или pr:' : 'Адрес для ' + m.name + ' (часть до @auf.media):', guess);
-    if (local === null) return;
-    local = local.trim().toLowerCase().replace(/@.*$/, '');
+  function boxSync() { pullSet.mailboxes = pullSet.mailbox_access = 1; pullWant = true; mail.at = 0; cloudPull(); }
+  async function boxCreate(f) {
+    var local = f.local.value.trim().toLowerCase().replace(/@.*$/, ''), label = f.label.value.trim().slice(0, 60);
     if (!/^[a-z0-9][a-z0-9._-]{0,40}$/.test(local) || local === 'catchall') return toast('Не подходит: только латиница, цифры, точка и дефис');
-    var address = local + '@auf.media', had = state.boxes.filter(function (b) { return b.address === address; })[0];
-    if (had && had.owner && had.owner !== memberId) return toast('Этот адрес уже выдан: ' + mname(had.owner));
-    var label = shared ? (prompt('Имя отправителя для этого адреса:', 'AUF MEDIA') || 'AUF MEDIA').slice(0, 60) : '';
-    var r = await sb.from('mailboxes').upsert({ address: address, owner: memberId || null, label: label });
+    var address = local + '@auf.media';
+    if (state.boxes.some(function (b) { return b.address === address; })) return toast('Такой ящик уже есть');
+    var r = await sb.from('mailboxes').insert({ address: address, label: label });
     if (r.error) return toast('Не получилось: ' + cloudWhy(r.error));
-    toast(shared ? 'Адрес ' + address + ' создан' : 'Выдали ' + address);
-    if (shared) { mailBox = address; mailAt = 0; }
-    pullSet.mailboxes = 1; pullWant = true; cloudPull();
+    var a = await sb.from('mailbox_access').insert({ address: address, member: state.me });
+    state.boxes.push({ address: address, label: label, members: a.error ? [] : [state.me] });
+    f.reset(); render(); toast('Ящик ' + address + ' создан и подключён вам'); boxSync();
   }
-  async function boxTake(address) {
-    if (!confirm('Забрать ящик ' + address + '? Человек перестанет видеть его письма. Сами письма останутся и будут видны вам.')) return;
-    var r = await sb.from('mailboxes').update({ owner: null }).eq('address', address);
+  async function boxWho(address, memberId) {
+    var b = state.boxes.filter(function (x) { return x.address === address; })[0]; if (!b) return;
+    var has = b.members.indexOf(memberId) >= 0, m = member(memberId);
+    var r = has ? await sb.from('mailbox_access').delete().eq('address', address).eq('member', memberId) : await sb.from('mailbox_access').insert({ address: address, member: memberId });
     if (r.error) return toast('Не получилось: ' + cloudWhy(r.error));
-    toast('Ящик ' + address + ' забрали'); pullSet.mailboxes = 1; pullWant = true; cloudPull();
+    b.members = has ? b.members.filter(function (x) { return x !== memberId; }) : b.members.concat([memberId]);
+    render(); toast((memberId === state.me ? 'Вы' : m ? m.name : 'Человек') + (has ? ': ящик отключён' : ': ящик подключён')); boxSync();
   }
-  document.addEventListener('change', function (e) { if (e.target.id === 'mailboxsel') { mailBox = e.target.value; mailAt = 0; mailRows = []; render(); } });
+  async function boxLabel(address) {
+    var b = state.boxes.filter(function (x) { return x.address === address; })[0]; if (!b) return;
+    var label = prompt('Имя отправителя для ' + address + '. Оставьте пустым, чтобы письма уходили от имени того, кто пишет.', b.label); if (label === null) return;
+    var r = await sb.from('mailboxes').update({ label: label.trim().slice(0, 60) }).eq('address', address);
+    if (r.error) return toast('Не получилось: ' + cloudWhy(r.error));
+    b.label = label.trim().slice(0, 60); render(); boxSync();
+  }
+  async function boxDel(address) {
+    if (!confirm('Удалить ящик ' + address + ' вместе со всеми его письмами? Вернуть их будет нельзя.')) return;
+    var r = await sb.from('mailboxes').delete().eq('address', address);
+    if (r.error) return toast('Не получилось: ' + cloudWhy(r.error));
+    state.boxes = state.boxes.filter(function (b) { return b.address !== address; }); mail.rows = mail.rows.filter(function (m) { return m.mailbox !== address; });
+    if (mail.open && mail.open.mailbox === address) mail.open = null;
+    render(); toast('Ящик ' + address + ' удалён'); boxSync();
+  }
+  document.addEventListener('click', function (e) {
+    if (state.view !== 'mail' || !e.target.closest) return;
+    var q = function (k) { return e.target.closest('[' + k + ']'); }, x, m = mail.open;
+    if (q('data-mailrefresh')) { mail.at = 0; if (sb) { mailLoad(); toast('Обновляем'); } return; }
+    if ((x = q('data-mailfolder'))) { mail.folder = x.dataset.mailfolder; mail.admin = false; mail.open = null; return render(); }
+    if ((x = q('data-mailboxpick'))) { mail.box = x.dataset.mailboxpick; mail.admin = false; mail.open = null; return render(); }
+    if (q('data-mailadmin')) { mail.admin = !mail.admin; mail.open = null; return render(); }
+    if (q('data-mailnew')) return mailCompose();
+    if ((x = q('data-mail'))) return openMail(x.dataset.mail);
+    if (q('data-mailback')) { mail.open = null; return render(); }
+    if (q('data-mailhtml')) { mail.html = true; return render(); }
+    if (m && q('data-mailreply')) return mailCompose({ from: m.mailbox, to: m.from_addr, subject: /^re:/i.test(m.subject) ? m.subject : 'Re: ' + m.subject, reply_to: m.message_id, quote: m.body_text, who: m.from_name || m.from_addr, at: m.at });
+    if (m && q('data-mailunread')) {
+      var row = mail.rows.filter(function (r) { return r.id === m.id; })[0]; if (row) row.read = false;
+      if (sb) sb.from('mail').update({ read: false }).eq('id', m.id).then(function () {});
+      mail.open = null; return render();
+    }
+    if (m && q('data-maildel')) {
+      if (!confirm('Удалить письмо? Вернуть его будет нельзя.')) return;
+      if (!sb) return;
+      return sb.from('mail').delete().eq('id', m.id).then(function (d) {
+        if (d.error) return toast('Не удалилось: ' + cloudWhy(d.error));
+        mail.rows = mail.rows.filter(function (r) { return r.id !== m.id; }); mail.open = null; render(); toast('Письмо удалено');
+      });
+    }
+    if (!sb || cloudRole !== 'owner') return;
+    if ((x = q('data-boxwho'))) return boxWho(x.dataset.boxwho, x.dataset.m);
+    if ((x = q('data-boxlabel'))) return boxLabel(x.dataset.boxlabel);
+    if ((x = q('data-boxdel'))) return boxDel(x.dataset.boxdel);
+  });
+  document.addEventListener('submit', function (e) { if (e.target.id !== 'boxform') return; e.preventDefault(); if (sb && cloudRole === 'owner') boxCreate(e.target); else toast('Ящики создаются на auf.media'); });
+  document.addEventListener('input', function (e) { if (e.target.id !== 'mailq') return; mail.q = e.target.value; var el = document.getElementById('mailrows'); if (el) el.innerHTML = mailListHtml(); });
+  document.addEventListener('change', function (e) { if (e.target.id === 'mailboxsel') { mail.box = e.target.value; mail.open = null; render(); } });
 
   // ---------- Beta: ideas terminal (MAIN only). Headlines are fetched by the beta-pull function and kept for two weeks. ----------
   var beta = { items: [], sources: [], at: 0, err: '', busy: false, prog: '', q: '', sec: 'all', tag: '', days: 3, lim: 150, auto: false };
@@ -2266,15 +2431,6 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
     if (!cloudOn || !e.target.closest) return;
     if (e.target.closest('[data-logrefresh]')) { auditAt = 0; return auditLoad(); }
     var q = function (k) { return e.target.closest('[' + k + ']'); }, x;
-    if (q('data-mailrefresh')) { mailAt = 0; return mailLoad(); }
-    if ((x = q('data-mailtab'))) { mailTab = x.dataset.mailtab; return render(); }
-    if (q('data-mailnew')) return mailCompose();
-    if ((x = q('data-mail'))) return openMail(x.dataset.mail);
-    if (cloudRole === 'owner') {
-      if (q('data-boxnew')) return boxGive(null, true);
-      if ((x = q('data-boxgive'))) return boxGive(x.dataset.boxgive, false);
-      if ((x = q('data-boxtake'))) return boxTake(x.dataset.boxtake);
-    }
     var rs = e.target.closest('[data-resend]'); if (rs && cloudRole === 'owner') return cloudResend(rs.dataset.resend);
     if (e.target.closest('[data-logout]')) { if (gate.hidden && !confirm('Выйти из редакции на этом устройстве?')) return; return cloudLogout(); }
     if (e.target.closest('[data-importcopy]') && cloudRole === 'owner') importCopy();
