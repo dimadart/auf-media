@@ -1825,7 +1825,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
       : /Error sending/i.test(m) ? 'Письмо не ушло: почтовый сервис отклонил отправку. Это настройка почты, а не ваша ошибка.'
       : 'Не получилось отправить письмо: ' + m.slice(0, 140);
   }
-  function mailLink(email) { return sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + location.pathname } }); }
+  function mailLink(email, name) { var o = { emailRedirectTo: location.origin + location.pathname }; if (name) o.data = { name: name }; return sb.auth.signInWithOtp({ email: email, options: o }); }
   gate.addEventListener('click', function (e) {
     var b = e.target.closest('[data-gate]'); if (!b) return;
     if (b.dataset.gate === 'login' || b.dataset.gate === 'link') gateShow(b.dataset.gate);
@@ -1865,7 +1865,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 14px; box-shadow: 0 24
   async function cloudInvite(name, email, roleId) {
     var ins = await sb.from('invites').insert({ email: email, role: roleId, name: name, invited_by: state.me });
     if (ins.error) return toast('Не получилось пригласить: ' + cloudWhy(ins.error));
-    var o = await mailLink(email);
+    var o = await mailLink(email, name.split(/\s+/)[0]);
     toast(o.error ? 'В команду добавили, но письмо не ушло. ' + mailWhy(String(o.error.message || '')) : 'Приглашение отправлено на ' + email);
     pullSet.profiles = pullSet.invites = 1; pullWant = true; cloudPull();
   }
