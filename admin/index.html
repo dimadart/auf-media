@@ -43,14 +43,23 @@ select:focus-visible, input:focus-visible, textarea:focus-visible { border-color
 #asrole:not([hidden]) { display: contents; }
 #gate { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px; background: var(--bg); overflow: auto; }
 #gate[hidden] { display: none; }
-.gatebox { width: min(420px, 100%); padding: 26px; background: var(--panel); border: 1px solid var(--line); box-shadow: 6px 6px 0 var(--pink); }
-.gatebox h1 { margin: 0 0 18px; font: 800 26px/1.1 Unbounded, Arial, sans-serif; }
-.gatelogo { margin: 0 0 6px; font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .14em; color: var(--mute); }
-.gatebox label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--mute); }
-.gatebox input { width: 100%; margin-bottom: 12px; }
-.gatebox .btn { margin-top: 4px; }
-.gatenote { margin: 14px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--mute); overflow-wrap: anywhere; }
-.gatenote b { color: var(--text); }
+.gatebox { width: min(380px, 100%); padding: 36px 32px 30px; background: var(--panel); border: 1px solid var(--line); border-radius: 14px; text-align: center; }
+.gatelogo { display: block; width: 54px; height: auto; margin: 0 auto 18px; }
+:root[data-theme=light] .gatelogo { filter: invert(1); }
+.gatebox h1 { margin: 0 0 6px; font: 800 19px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .02em; text-transform: none; }
+.gatesub { margin: 0 0 24px; font-size: 14px; line-height: 1.45; color: var(--mute); }
+.gatebox form { text-align: left; }
+.gatebox label { margin-bottom: 7px; font: 400 13px/1.3 Arial, sans-serif; letter-spacing: 0; text-transform: none; color: var(--mute); }
+.gatebox input { width: 100%; min-height: 44px; margin-bottom: 12px; padding: 0 12px; border-radius: 8px; font-size: 15px; }
+.gatebox .btn { min-height: 44px; border: 0; border-radius: 8px; box-shadow: none; font-size: 11.5px; }
+.gatebox .btn:active { transform: none; box-shadow: none; opacity: .85; }
+.gatebox form .btn, .gatebox .wide { width: 100%; }
+.gatebox .btn.ghost { border: 1px solid var(--ghost); }
+.gatebox .btn + .btn { margin-top: 8px; }
+.gatenote { margin: 14px 0 0; font-size: 13px; line-height: 1.5; color: var(--mute); overflow-wrap: anywhere; }
+.gatenote.bad { color: var(--warn); }
+.gatetext { margin: 0 0 18px; font-size: 14.5px; line-height: 1.55; color: var(--mute); overflow-wrap: anywhere; }
+.gatetext b { color: var(--text); }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 2px solid #000; background: var(--yellow); color: #000; font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0 var(--pink); white-space: nowrap; }
 .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pink); }
 .btn.ghost { background: none; color: var(--text); border-color: var(--ghost); box-shadow: none; }
@@ -1595,12 +1604,12 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 
   function gateShow(mode, info) {
     if (!mode) { gate.hidden = true; gate.innerHTML = ''; return; }
-    var h = '<div class="gatebox"><p class="gatelogo">AUF MEDIA</p><h1>Редакция</h1>';
-    if (mode === 'wait') h += '<p class="gatenote">Загружаем…</p>';
-    if (mode === 'login') h += '<form id="gateform" novalidate><label for="gatemail">Почта, на которую вас пригласили</label><input id="gatemail" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com"><button type="submit" class="btn">Получить ссылку для входа</button><p class="gatenote" id="gatemsg" role="status">' + esc(info || 'Пароля нет: на почту придёт письмо со ссылкой.') + '</p></form>';
-    if (mode === 'sent') h += '<p class="gatenote">Письмо со ссылкой отправлено на <b>' + esc(info) + '</b>. Откройте ссылку из письма — и вы внутри. Если письма нет пару минут, проверьте «Спам».</p><button type="button" class="btn ghost" data-gate="login">Указать другую почту</button>';
-    if (mode === 'noaccess') h += '<p class="gatenote">Почты <b>' + esc(info) + '</b> нет в команде. Попросите MAIN добавить вас в разделе «Команда».</p><button type="button" class="btn ghost" data-logout>Выйти</button>';
-    if (mode === 'error') h += '<p class="gatenote">Не получилось загрузить данные: ' + esc(info) + '.</p><button type="button" class="btn" data-gate="retry">Повторить</button> <button type="button" class="btn ghost" data-logout>Выйти</button>';
+    var h = '<div class="gatebox"><img class="gatelogo" src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><h1>AUF MEDIA</h1><p class="gatesub">Вход в редакцию</p>';
+    if (mode === 'wait') h += '<p class="gatetext">Загружаем…</p>';
+    if (mode === 'login') h += '<form id="gateform" novalidate><label for="gatemail">Почта</label><input id="gatemail" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com"><button type="submit" class="btn">Получить ссылку</button><p class="gatenote' + (info ? ' bad' : '') + '" id="gatemsg" role="status">' + esc(info || 'Пароля нет: на почту придёт письмо со ссылкой для входа.') + '</p></form>';
+    if (mode === 'sent') h += '<p class="gatetext">Письмо со ссылкой отправлено на <b>' + esc(info) + '</b>. Откройте ссылку из письма — и вы внутри. Если письма нет пару минут, проверьте «Спам».</p><button type="button" class="btn ghost wide" data-gate="login">Указать другую почту</button>';
+    if (mode === 'noaccess') h += '<p class="gatetext">Почты <b>' + esc(info) + '</b> нет в команде. Попросите MAIN добавить вас в разделе «Команда».</p><button type="button" class="btn ghost wide" data-logout>Выйти</button>';
+    if (mode === 'error') h += '<p class="gatetext">Не получилось загрузить данные: ' + esc(info) + '.</p><button type="button" class="btn wide" data-gate="retry">Повторить</button><button type="button" class="btn ghost wide" data-logout>Выйти</button>';
     gate.innerHTML = h + '</div>'; gate.hidden = false;
     var f = document.getElementById('gatemail'); if (f) f.focus();
   }
@@ -1612,14 +1621,16 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   gate.addEventListener('submit', async function (e) {
     e.preventDefault();
     var email = e.target.email.value.trim().toLowerCase(), msg = document.getElementById('gatemsg'), btn = e.target.querySelector('button');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = 'Проверьте адрес почты.'; return; }
-    btn.disabled = true; msg.textContent = 'Отправляем…';
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.className = 'gatenote bad'; msg.textContent = 'Проверьте адрес почты.'; return; }
+    btn.disabled = true; msg.className = 'gatenote'; msg.textContent = 'Отправляем…';
     var r = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + location.pathname } });
     btn.disabled = false;
     if (!r.error) return gateShow('sent', email);
     var m = String(r.error.message || '');
+    msg.className = 'gatenote bad';
     msg.textContent = /Database error|not invited/i.test(m) ? 'Эта почта не приглашена. Попросите MAIN добавить вас в разделе «Команда».'
       : /rate limit|security purposes|too many/i.test(m) ? 'Слишком часто. Подождите минуту и попробуйте снова.'
+      : /Error sending/i.test(m) ? 'Письмо не ушло: почтовый сервис отклонил отправку. Это настройка почты, а не ваша ошибка.'
       : 'Не получилось отправить письмо: ' + m.slice(0, 140);
   });
   function cloudLogout() { cloudStop(); synced = null; cloudUser = null; sb.auth.signOut().catch(function () {}); gateShow('login'); }
