@@ -2,7 +2,7 @@
 <html lang="ru">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0b0b0b" id="themecolor">
 <script>try { if (localStorage.getItem('auf-admin-theme') === 'light') document.documentElement.dataset.theme = 'light'; } catch (e) {}</script>
@@ -11,9 +11,9 @@
 @font-face { font-family: Unbounded; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
 @font-face { font-family: Unbounded; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+2000-206F, U+2191, U+2193; }
 :root { --bg: #0b0b0b; --panel: #151515; --line: #2c2c2c; --text: #f2f0ec; --mute: #9b9792; --yellow: #fdfd38; --pink: #ff3d8b; --blue: #4d63ff; --green: #5ed29a;
-  --side: #000; --field: #000; --fline: #444; --card: #000; --cline: #333; --hover: #1c1c1c; --chip: #2a2a2a; --ghost: #555; --dim: #555; --out: #0e0e0e; --link: #fdfd38; --focus: #fdfd38; --warn: #ff7aa9; --warnline: #6b2a44; --part: #fdfd38; --ok: #5ed29a; --dlg: #101010; --dlgline: #666; --inv: #fff; --inv-text: #000; --mark: #fdfd38; color-scheme: dark; }
+  --side: #000; --field: #000; --fline: #6a6a6a; --card: #000; --cline: #333; --hover: #1c1c1c; --chip: #2a2a2a; --ghost: #555; --dim: #7a7a7a; --out: #0e0e0e; --link: #fdfd38; --focus: #fdfd38; --warn: #ff7aa9; --warnline: #6b2a44; --part: #fdfd38; --ok: #5ed29a; --dlg: #101010; --dlgline: #666; --inv: #fff; --inv-text: #000; --mark: #fdfd38; color-scheme: dark; }
 :root[data-theme=light] { --bg: #f4f2ee; --panel: #fff; --line: #dedad3; --text: #141414; --mute: #6b6762;
-  --side: #fff; --field: #fff; --fline: #b9b4ac; --card: #fff; --cline: #d5d0c8; --hover: #f0ede7; --chip: #e9e5de; --ghost: #8d8881; --dim: #b0aba3; --out: #ebe8e2; --link: #1d2fd6; --focus: #141414; --warn: #c2114f; --warnline: #e7a5bf; --part: #7a6200; --ok: #12804a; --dlg: #fff; --dlgline: #141414; --inv: #141414; --inv-text: #fff; --mark: #141414; color-scheme: light; }
+  --side: #fff; --field: #fff; --fline: #8d8881; --card: #fff; --cline: #d5d0c8; --hover: #f0ede7; --chip: #e9e5de; --ghost: #8d8881; --dim: #8d8881; --out: #ebe8e2; --link: #1d2fd6; --focus: #141414; --warn: #c2114f; --warnline: #e7a5bf; --part: #7a6200; --ok: #12804a; --dlg: #fff; --dlgline: #141414; --inv: #141414; --inv-text: #fff; --mark: #141414; color-scheme: light; }
 :root[data-theme=light] .logo img { filter: invert(1); }
 * { box-sizing: border-box; }
 html, body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.45 Arial, Helvetica, sans-serif; -webkit-font-smoothing: antialiased; }
@@ -24,21 +24,23 @@ h2 { font-size: 13px; font-weight: 800; }
 h3 { font-size: 11px; font-weight: 700; color: var(--mute); }
 a { color: var(--link); }
 .app { display: grid; grid-template-columns: 220px minmax(0, 1fr); min-height: 100vh; }
-aside { position: sticky; top: 0; height: 100vh; padding: 20px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; background: var(--side); }
+aside { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 20px 14px; border-right: 1px solid var(--line); display: flex; flex-direction: column; gap: 4px; background: var(--side); }
 .logo { display: flex; align-items: center; gap: 10px; margin: 0 6px 18px; font-size: 13px; font-weight: 800; }
 .logo img { width: 34px; height: auto; }
 nav { display: flex; flex-direction: column; gap: 2px; }
-nav button { display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 10px 12px; border: 0; background: none; text-align: left; font: 700 11px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); cursor: pointer; }
+nav button { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; white-space: nowrap; border: 0; background: none; text-align: left; font: 700 11px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); cursor: pointer; }
 nav button:hover { color: var(--text); }
 nav button[aria-current=page] { background: var(--yellow); color: #000; }
 nav button i { font-style: normal; font-size: 10px; opacity: .8; }
 aside .foot { margin-top: auto; font-size: 12px; color: var(--mute); padding: 0 6px; }
 main { min-width: 0; padding: 0 26px 60px; }
-.proto { margin: 0 -26px; padding: 8px 26px; background: var(--pink); color: #fff; font-size: 12.5px; font-weight: 700; }
+.proto { margin: 0 -26px; padding: 8px 26px; background: var(--pink); color: #000; font-size: 12.5px; font-weight: 700; }
 .top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px 20px; padding: 20px 0 18px; }
 .as { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--mute); }
 select, input[type=text], input[type=email], input[type=date], input[type=search], textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--fline); border-radius: 0; background: var(--field); color: var(--text); outline: 0; }
-select:focus-visible, input:focus-visible, textarea:focus-visible { border-color: var(--focus); }
+select:focus-visible, input:focus-visible, textarea:focus-visible { border-color: var(--focus); outline: 2px solid var(--focus); outline-offset: 1px; }
+select:disabled, input:disabled, textarea:disabled { background: none; border-color: var(--line); color: var(--mute); cursor: not-allowed; opacity: 1; }
+td select { width: auto; min-width: 130px; }
 .as select { width: auto; }
 #asrole:not([hidden]) { display: contents; }
 #gate { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px; background: var(--bg); overflow: auto; }
@@ -81,14 +83,14 @@ select:focus-visible, input:focus-visible, textarea:focus-visible { border-color
 .list li:first-child { border-top: 0; }
 .empty { padding: 26px 0; color: var(--mute); text-align: center; }
 .tag { display: inline-block; padding: 3px 7px 4px; font: 700 9.5px/1 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; background: var(--chip); color: var(--text); white-space: nowrap; }
-.tag.y { background: var(--yellow); color: #000; } .tag.p { background: var(--pink); color: #fff; } .tag.b { background: var(--blue); color: #fff; } .tag.g { background: var(--green); color: #000; } .tag.o { background: none; border: 1px solid var(--ghost); color: var(--mute); }
+.tag.y { background: var(--yellow); color: #000; } .tag.p { background: var(--pink); color: #000; } .tag.b { background: var(--blue); color: #fff; } .tag.g { background: var(--green); color: #000; } .tag.o { background: none; border: 1px solid var(--ghost); color: var(--mute); }
 /* board */
-.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(230px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 10px; align-items: start; }
+.board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 10px; align-items: start; }
 .col { background: var(--panel); border: 1px solid var(--line); min-height: 220px; }
 .col header { display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; border-bottom: 1px solid var(--line); }
 .col header b { font: 800 10.5px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; }
 .col header i { font-style: normal; font-size: 12px; color: var(--mute); }
-.col .drop { display: flex; flex-direction: column; gap: 8px; padding: 10px; min-height: 160px; }
+.col .drop { display: flex; flex-direction: column; gap: 8px; padding: 10px; min-height: 160px; max-height: calc(100vh - 250px); overflow-y: auto; }
 .col.over { outline: 2px dashed var(--focus); outline-offset: -4px; }
 .card { padding: 11px 11px 10px; background: var(--card); border: 1px solid var(--cline); border-left: 4px solid var(--yellow); cursor: pointer; text-align: left; width: 100%; }
 .card[draggable=true] { cursor: grab; }
@@ -118,10 +120,10 @@ select:focus-visible, input:focus-visible, textarea:focus-visible { border-color
 table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
 th { text-align: left; padding: 9px 10px; font: 700 9.5px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); border-bottom: 1px solid var(--line); white-space: nowrap; }
 td { padding: 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
-tr.click { cursor: pointer; } tr.click:hover td { background: var(--hover); }
+tr.click { cursor: pointer; } @media (hover: hover) { tr.click:hover td { background: var(--hover); } }
 td .tag { margin: 1px 0; }
 .perm td, .perm th { text-align: center; } .perm td:first-child, .perm th:first-child { text-align: left; }
-.yes { color: var(--ok); font-weight: 700; } .no { color: var(--dim); } .part { color: var(--part); font-size: 12px; }
+.yes { color: var(--ok); font-weight: 700; } .no { color: var(--mute); } .part { color: var(--part); font-size: 12px; }
 .invite { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1.4fr) minmax(0, 1fr) auto; gap: 10px; align-items: end; }
 label { display: block; font: 700 9.5px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); margin-bottom: 6px; }
 .mail { margin-top: 14px; padding: 14px; border: 1px dashed var(--ghost); font-size: 13.5px; white-space: pre-wrap; background: var(--field); }
@@ -135,9 +137,18 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
 .dlg h2 { font-size: 15px; margin-bottom: 16px; }
 .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .grid2 .full { grid-column: 1 / -1; }
-.dlg .actions { display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; margin-top: 18px; }
+.dlg .actions { position: sticky; bottom: 0; z-index: 2; display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; margin: 18px -22px -22px; padding: 12px 22px; background: var(--dlg); border-top: 1px solid var(--line); }
+.dlg .actions > span { display: flex; flex-wrap: wrap; gap: 8px; }
+.dlg h2 { padding-right: 34px; }
+.dlgx { position: absolute; z-index: 3; top: 4px; right: 4px; width: 44px; height: 44px; border: 0; border-radius: 50%; background: var(--dlg); color: var(--mute); font-size: 26px; line-height: 1; cursor: pointer; }
+.dlgx:hover, .dlgx:focus-visible { color: var(--text); outline: 0; }
+dialog { overflow: hidden; }
 .note { font-size: 12.5px; color: var(--mute); margin-top: 10px; }
-.toast { position: fixed; z-index: 20; left: 50%; bottom: 22px; transform: translateX(-50%); padding: 11px 16px; background: var(--inv); color: var(--inv-text); font-weight: 700; font-size: 13.5px; box-shadow: 4px 4px 0 var(--pink); max-width: calc(100vw - 24px); }
+.toast { position: fixed; z-index: 70; left: 12px; right: 12px; bottom: 22px; width: fit-content; margin: 0 auto; padding: 11px 16px; cursor: pointer; background: var(--inv); color: var(--inv-text); font-weight: 700; font-size: 13.5px; box-shadow: 4px 4px 0 var(--pink); max-width: calc(100vw - 24px); }
+.toast.bad { background: var(--pink); color: #000; box-shadow: 4px 4px 0 var(--inv); }
+#ed:not([hidden]) ~ .toast { bottom: 64px; }
+#edstatus.bad { color: var(--warn); font-weight: 700; }
+#tabbar { display: none; }
 @media (max-width: 860px) {
   .app { grid-template-columns: 1fr; }
   aside { position: static; height: auto; flex-direction: row; align-items: center; gap: 10px; padding: 10px 12px; border-right: 0; border-bottom: 1px solid var(--line); overflow-x: auto; }
@@ -148,7 +159,7 @@ dialog::backdrop { background: rgb(0 0 0 / .75); }
   .invite, .grid2 { grid-template-columns: 1fr; }
   .day { min-height: 70px; padding: 3px; } .chip { font-size: 10px; padding: 3px; } .cal .dow { padding: 6px 3px; font-size: 8.5px; }
 }
-.nav-h { padding: 6px 12px; font: 700 9px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); opacity: .75; }
+.nav-h { padding: 6px 12px; font: 700 9px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .12em; text-transform: uppercase; color: var(--mute); }
 .nav-h:not(:first-child) { margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--line); }
 .people { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
 .pcard { display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--panel); border: 1px solid var(--line); text-align: left; cursor: pointer; min-width: 0; }
@@ -166,10 +177,14 @@ img.ava { object-fit: cover; background: var(--chip); }
 .ptable td.pa { width: 56px; padding-right: 2px; }
 .ptable td.pn b { display: block; white-space: nowrap; }
 .ptable td.pn small { display: block; color: var(--mute); font-size: 12px; white-space: nowrap; }
-.ptable td.w { min-width: 280px; max-width: 420px; color: var(--mute); font-size: 13px; }
+.ptable td.w { min-width: 240px; max-width: 380px; color: var(--mute); font-size: 13px; }
+.ptable td.w div { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; }
+.ptable .ava { width: 34px; height: 34px; font-size: 11px; }
+.ptable td.pa { width: 46px; }
+.only-m { display: none; }
 .ptable td.nw { white-space: nowrap; }
 .ptable .tags { flex-wrap: nowrap; }
-.sort { padding: 0; border: 0; background: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
+.sort { display: block; width: 100%; margin: -9px -10px; padding: 9px 10px; box-sizing: content-box; text-align: left; border: 0; background: none; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; cursor: pointer; white-space: nowrap; }
 .sort:hover, th[aria-sort] .sort { color: var(--text); }
 .sort:focus-visible { outline: 2px solid var(--text); outline-offset: 3px; }
 input.cellin { min-width: 140px; padding: 6px 8px; border-color: transparent; background: none; }
@@ -183,7 +198,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 .notes .nh { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 10px; margin: 0 0 6px; font-size: 13px; }
 .notes .nh span:not(.tag) { color: var(--mute); }
 .notes .nh .tagadd { margin-left: auto; }
-.tagadd { padding: 1px 6px 2px; border: 1px dashed var(--ghost); background: none; color: var(--mute); font-size: 12px; line-height: 1.2; cursor: pointer; }
+.tagadd { min-width: 28px; min-height: 26px; padding: 1px 6px 2px; border: 1px dashed var(--ghost); background: none; color: var(--mute); font-size: 12px; line-height: 1.2; cursor: pointer; }
 .tagadd:hover, .tagadd:focus-visible { color: var(--text); border-color: var(--text); outline: 0; }
 .vh { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
 .phead { display: flex; flex-wrap: wrap; align-items: center; gap: 16px; }
@@ -263,6 +278,76 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 .card .dots i { width: 9px; height: 9px; border-radius: 50%; }
 .dlg .list li { align-items: center; }
 [hidden] { display: none !important; }
+.late { color: var(--warn); }
+.more { display: flex; flex-direction: column; }
+.more > button[data-go] { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; border: 0; border-top: 1px solid var(--line); background: none; text-align: left; font: 700 12px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; color: var(--text); cursor: pointer; }
+.more > button[aria-current=page] { background: var(--yellow); color: #000; }
+.more > button i { font-style: normal; font-size: 11px; opacity: .75; }
+.more .nav-h { margin: 16px 0 6px; padding: 0; border: 0; }
+.more .nav-h:first-child { margin-top: 0; }
+.morewho { margin: 0 0 12px; font-size: 14px; }
+.morebtns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.morebtns .tgl { flex: 1; min-height: 44px; }
+@media (max-width: 860px) {
+  select, input[type=text], input[type=email], input[type=date], input[type=search], input[type=tel], input[type=url], input[type=password], textarea, .gatebox input, .ed-ask input, input.cellin { font-size: 16px; }
+  select, input[type=text], input[type=email], input[type=date], input[type=search], input[type=tel], .btn, .tgl, .tabs button { min-height: 44px; }
+  .btn { white-space: normal; max-width: 100%; padding: 8px 14px; line-height: 1.25; text-align: center; }
+  aside, .as { display: none; }
+  .app { grid-template-rows: auto; }
+  main { padding: 0 14px calc(92px + env(safe-area-inset-bottom)); }
+  .top { padding: 14px 0 12px; }
+  h1 { font-size: 18px; }
+  .proto { font-size: 12px; font-weight: 400; }
+  #tabbar { position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); padding-bottom: env(safe-area-inset-bottom); background: var(--side); border-top: 1px solid var(--line); }
+  #tabbar button { min-height: 56px; padding: 0 2px; border: 0; background: none; font: 700 9px/1.2 Unbounded, Arial, sans-serif; letter-spacing: 0; text-transform: uppercase; color: var(--mute); cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
+  #tabbar button[aria-current=page] { background: var(--yellow); color: #000; }
+  .toast { bottom: calc(72px + env(safe-area-inset-bottom)); }
+  dialog .toast, #gate:not([hidden]) ~ .toast { bottom: 18px; }
+  .bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .bar > * { min-width: 0; } .bar .grow, .bar .btn:not(.ghost) { grid-column: 1 / -1; }
+  .bar [data-pcolsbtn] { display: none; }
+  .only-m { display: block; }
+  .panel { padding: 14px; }
+  .list li a { padding: 6px 0; }
+  .board { grid-auto-columns: 84%; scroll-snap-type: x mandatory; scroll-padding-left: 0; }
+  .col { scroll-snap-align: start; } .col .drop { max-height: none; }
+  .cal-head { flex-wrap: wrap; } .cal-head h2 { min-width: 0; flex: 1; text-align: center; font-size: 13px; order: -1; flex-basis: 100%; }
+  .cal-head .btn { flex: 1; }
+  .dlg { padding: 16px; } .dlg .actions { margin: 16px -16px -16px; padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); }
+  .dlg .actions > span { flex: 1 1 100%; } .dlg .actions > span:empty { display: none; } .dlg .actions .btn { flex: 1; }
+  .dlg .actions > span:first-child .btn { flex: none; min-height: 36px; border: 0; padding: 0; text-decoration: underline; }
+  label.chk { flex: 1; min-height: 44px; }
+  .tagadd { min-width: 40px; min-height: 36px; font-size: 16px; }
+  .acc { grid-template-columns: minmax(0, 1fr) 44px; } .acc > :nth-child(2) { grid-column: 1 / -1; grid-row: 2; } .acc { margin-bottom: 12px; }
+  .gatelink { min-height: 44px; }
+  .perm th, .perm td { padding: 8px 4px; font-size: 12.5px; } .perm th { font-size: 7.5px; white-space: normal; }
+  /* tables become stacked cards */
+  table.stack thead, .ptable thead { display: none; }
+  table.stack, table.stack tbody, .ptable table, .ptable tbody { display: block; }
+  table.stack tr { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 10px; padding: 12px 0; border-bottom: 1px solid var(--line); }
+  table.stack td { display: block; padding: 0; border: 0; font-size: 13px; color: var(--mute); min-width: 0; overflow-wrap: anywhere; }
+  table.stack td:empty { display: none; }
+  table.stack td.t1 { flex: 1 1 100%; font-size: 15px; color: var(--text); }
+  table.stack td[data-l]::before { content: attr(data-l) ': '; }
+  table.stack td select { min-width: 150px; }
+  .ptable tr { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 3px 12px; align-items: center; padding: 12px 14px; border-bottom: 1px solid var(--line); }
+  .ptable td { display: none; padding: 0; border: 0; min-width: 0; }
+  .ptable td.pa { display: block; grid-row: 1 / span 3; align-self: start; width: auto; }
+  .ptable td.pn, .ptable td.pc, .ptable td.w, .ptable td.k-city { display: block; grid-column: 2; }
+  .ptable td.pn b, .ptable td.pn small { white-space: normal; }
+  .ptable td.pc:empty, .ptable td.k-city:empty { display: none; }
+  .ptable td.w { min-width: 0; max-width: none; }
+  .ptable .ava { width: 44px; height: 44px; font-size: 13px; }
+  .ptable .tw { overflow: visible; }
+  /* editor */
+  .ed-top [data-theme-toggle] { display: none; }
+  .ed-top .tgl { min-height: 44px; }
+  .ed-top .who { flex-wrap: nowrap; overflow: hidden; }
+  .ed-tools { padding-bottom: env(safe-area-inset-bottom); }
+  #edtools button { flex: 1 1 0; min-width: 0; padding: 0 1px; font-size: 11px; overflow: hidden; }
+  #edtools { overflow: hidden; }
+  .ed-tools i { margin: 8px 0; }
+}
 @media (max-width: 860px) {
   .ed-top { padding: 8px 12px; gap: 6px; flex-wrap: wrap; } .ed-top .cnt, .ed-top .sp { display: none; } .ed-top #edstatus { flex: 1 1 100%; order: 9; } .ed-top .who { flex: 1; }
   .ed-page { width: calc(100% - 32px); padding-top: 26px; }
@@ -291,6 +376,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     </div>
     <div id="view"></div>
   </main>
+  <nav id="tabbar" aria-label="Быстрые разделы"></nav>
 </div>
 <section class="ed" id="ed" hidden>
   <header class="ed-top">
@@ -335,7 +421,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   <input type="file" id="edfile" accept="image/*" hidden>
   <div id="edpeers" aria-hidden="true"></div>
 </section>
-<dialog id="dlg"><div class="dlg" id="dlgbody"></div></dialog>
+<dialog id="dlg"><button type="button" class="dlgx" id="dlgx" aria-label="Закрыть">×</button><div class="dlg" id="dlgbody"></div></dialog>
 <div id="gate" hidden></div>
 
 <script src="../assets/vendor/supabase.js"></script>
@@ -377,7 +463,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   ];
   var RUBRICS = ['Музыка', 'Мода', 'Кино', 'Технологии', 'Арт', 'Город', 'Изнутри', 'Наш радар', 'Фотография', 'Секс и наука', 'Культура', 'На репите', 'Видео'];
   var FORMATS = ['Текст', 'Интервью', 'Репортаж', 'Видео', 'Фото', 'Подборка'];
-  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска материалов', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['log', 'Журнал', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Как запустить', 'adm']];
+  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['log', 'Журнал', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Справка', 'adm']];
   var GROUPS = [['ed', 'Редакция'], ['biz', 'Проект'], ['adm', 'Управление']];
   var NEED = { inbox: 'editor', tasks: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', log: 'owner', settings: 'owner' };
 
@@ -439,10 +525,21 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   var filters = { q: '', rubric: '', stage: '', author: '', mine: false, tkind: '', twho: '', pq: '', pcat: '', pchk: '', lwho: '', lkind: '' }, inboxTab = 'apps', lastInvite = null;
 
   function toast(text) {
-    var t = document.createElement('div'); t.className = 'toast'; t.setAttribute('role', 'status'); t.textContent = text;
-    document.body.appendChild(t); setTimeout(function () { t.remove(); }, 2600);
+    [].forEach.call(document.querySelectorAll('.toast'), function (x) { x.remove(); });
+    var bad = /^(Не |В команду добавили, но|Письмо не ушло|Слишком часто|Эта почта)/.test(text);
+    var t = document.createElement('div'); t.className = 'toast' + (bad ? ' bad' : ''); t.setAttribute('role', bad ? 'alert' : 'status'); t.textContent = text;
+    t.onclick = function () { t.remove(); };
+    (dlg.open ? dlg : document.body).appendChild(t); setTimeout(function () { t.remove(); }, bad ? 9000 : Math.max(2600, text.length * 70));
   }
-  function go(v) { state.view = v; if (v === 'people') state.person = null; save(); render(); scrollTo(0, 0); }
+  // Every dialog opens from the top, and a filled form is not thrown away by a stray tap outside it.
+  var dlgDirty = false, dlgOpen = dlg.showModal.bind(dlg);
+  dlg.showModal = function () { dlgOpen(); dlgbody.scrollTop = 0; dlgDirty = false; };
+  dlgbody.addEventListener('input', function () { if (dlgbody.querySelector('form')) dlgDirty = true; });
+  function dlgLeave() { if (!dlgDirty || confirm('Закрыть без сохранения? Изменения в этой форме пропадут.')) { dlgDirty = false; dlg.close(); } }
+  dlg.addEventListener('cancel', function (event) { if (dlgDirty) { event.preventDefault(); dlgLeave(); } });
+  dlg.addEventListener('close', function () { dlgDirty = false; });
+  document.getElementById('dlgx').onclick = dlgLeave;
+  function go(v) { if (dlg.open) dlg.close(); state.view = v; if (v === 'people') state.person = null; save(); render(); scrollTo(0, 0); }
   function cardById(id) { return state.cards.filter(function (x) { return x.id === id; })[0]; }
   function countWords(html) { var d = document.createElement('div'); d.innerHTML = html || ''; return (d.textContent.match(/[\p{L}\p{N}]+/gu) || []).length; }
   function nfmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0'); }
@@ -460,7 +557,28 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
         return '<button type="button" data-go="' + v[0] + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '>' + v[1] + (counts[v[0]] ? '<i>' + counts[v[0]] + '</i>' : '') + '</button>';
       }).join('') : '';
     }).join('');
+    renderTabs();
   }
+  var TABS = ['home', 'board', 'calendar', 'items'], tabbar = document.getElementById('tabbar');
+  function renderTabs() {
+    var short = { home: 'Обзор', board: 'Доска', calendar: 'Календарь', items: 'Материалы' };
+    tabbar.innerHTML = TABS.map(function (v) { return '<button type="button" data-go="' + v + '"' + (state.view === v ? ' aria-current="page"' : '') + '>' + short[v] + '</button>'; }).join('')
+      + '<button type="button" data-more' + (TABS.indexOf(state.view) < 0 ? ' aria-current="page"' : '') + '>Ещё</button>';
+  }
+  function openMore() {
+    var counts = { inbox: state.apps.length + state.subs.length, tasks: state.tasks.filter(function (t) { return t.stage !== 'done'; }).length, people: state.contacts.length, team: state.team.length };
+    var me = member(state.me), canAs = !document.getElementById('asrole').hidden;
+    dlgbody.innerHTML = '<h2>Разделы</h2><div class="more">' + GROUPS.map(function (g) {
+      var items = VIEWS.filter(function (v) { return v[2] === g[0] && allowed(v[0]); });
+      return items.length ? '<p class="nav-h">' + g[1] + '</p>' + items.map(function (v) { return '<button type="button" data-go="' + v[0] + '"' + (state.view === v[0] ? ' aria-current="page"' : '') + '><span>' + v[1] + '</span>' + (counts[v[0]] ? '<i>' + counts[v[0]] + '</i>' : '') + '</button>'; }).join('') : '';
+    }).join('') + '<p class="nav-h">Аккаунт</p>' + (me ? '<p class="morewho">' + esc(me.name) + ' · ' + ROLES.filter(function (r) { return r.id === me.role; })[0].name + '</p>' : '')
+      + (canAs ? '<label for="viewas2">Смотреть как</label><select id="viewas2">' + sel.innerHTML + '</select>' : '')
+      + '<div class="morebtns"><button type="button" class="tgl" data-theme-toggle></button>' + (cloudOn ? '<button type="button" class="tgl" data-logout>Выйти</button>' : '') + '</div></div>';
+    var s2 = document.getElementById('viewas2'); if (s2) { s2.value = state.viewAs; s2.onchange = function () { sel.value = s2.value; sel.dispatchEvent(new Event('change')); dlg.close(); }; }
+    applyTheme(); dlg.showModal();
+  }
+  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('[data-more]')) openMore(); });
+  document.addEventListener('change', function (e) { if (e.target.id === 'psortsel') { var pv = pview(); pv.sort = e.target.value; pv.dir = 1; save(); render(); } });
   var sel = document.getElementById('viewas');
   sel.innerHTML = ROLES.map(function (r) { return '<option value="' + r.id + '">' + r.name + '</option>'; }).join('');
   sel.addEventListener('change', function () { state.viewAs = sel.value; if (!allowed(state.view)) state.view = 'home'; save(); render(); sendHere(); });
@@ -494,7 +612,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       var week = iso(new Date(Date.now() + 7 * 864e5));
       var soon = state.cards.filter(function (c) { return c.publish && c.publish >= TODAY && c.publish <= week; }).sort(function (a, b) { return a.publish < b.publish ? -1 : 1; });
       var mine = open.filter(isMine);
-      var li = function (c) { return '<li><a href="#" data-card="' + c.id + '">' + esc(c.title) + '</a><span><span class="tag">' + STAGES[stageIx(c.stage)].name + '</span> ' + (c.publish ? 'выход ' + human(c.publish) : c.deadline ? 'дедлайн ' + human(c.deadline) : '') + '</span></li>'; };
+      var li = function (c) { return '<li><a href="#" data-card="' + c.id + '">' + esc(c.title) + '</a><span><span class="tag">' + STAGES[stageIx(c.stage)].name + '</span> ' + (c.deadline && c.deadline < TODAY && c.stage !== 'published' ? '<b class="late">дедлайн был ' + human(c.deadline) + '</b>' : c.publish ? 'выход ' + human(c.publish) : c.deadline ? 'дедлайн ' + human(c.deadline) : '') + '</span></li>'; };
       return '<div class="cards3"><div class="stat"><b>' + open.length + '</b><span>материалов в работе</span></div><div class="stat"><b>' + late.length + '</b><span>просрочено по дедлайну</span></div><div class="stat"><b>' + soon.length + '</b><span>выходит в ближайшие 7 дней</span></div><div class="stat"><b>' + state.cards.filter(function (c) { return c.stage === 'published'; }).length + '</b><span>опубликовано</span></div></div>'
         + '<div class="panel"><h2>Мои материалы</h2>' + (mine.length ? '<ul class="list">' + mine.map(li).join('') + '</ul>' : '<p class="empty">У вас нет материалов в работе. Начните с идеи на доске.</p>') + '</div>'
         + '<div class="panel"><h2>Выходит на этой неделе</h2>' + (soon.length ? '<ul class="list">' + soon.map(li).join('') + '</ul>' : '<p class="empty">На ближайшие 7 дней дат публикации нет.</p>') + '</div>'
@@ -526,24 +644,24 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     },
     items: function () {
       var cards = filtered();
-      return filterBar(true) + '<div class="panel" style="margin-top:0"><div class="tw"><table><thead><tr><th>Заголовок</th><th>Рубрика</th><th>Этап</th><th>Автор</th><th>Редактор</th><th>Дедлайн</th><th>Выход</th></tr></thead><tbody>'
-        + (cards.length ? cards.map(function (c) { return '<tr class="click" data-card="' + c.id + '"><td>' + esc(c.title) + (c.demo ? ' <span class="tag o">демо</span>' : '') + '</td><td>' + esc(c.rubric) + '</td><td><span class="tag">' + STAGES[stageIx(c.stage)].name + '</span></td><td>' + esc(mname(c.author)) + '</td><td>' + esc(c.editor ? mname(c.editor) : '—') + '</td><td>' + (human(c.deadline) || '—') + '</td><td>' + (human(c.publish) || '—') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="empty">Ничего не найдено. Измените фильтры.</td></tr>')
+      return filterBar(true) + '<div class="panel" style="margin-top:0"><div class="tw"><table class="stack"><thead><tr><th>Заголовок</th><th>Рубрика</th><th>Этап</th><th>Автор</th><th>Редактор</th><th>Дедлайн</th><th>Выход</th></tr></thead><tbody>'
+        + (cards.length ? cards.map(function (c) { return '<tr class="click" data-card="' + c.id + '"><td class="t1">' + esc(c.title) + (c.demo ? ' <span class="tag o">демо</span>' : '') + '</td><td>' + esc(c.rubric) + '</td><td><span class="tag">' + STAGES[stageIx(c.stage)].name + '</span></td><td data-l="Автор">' + esc(mname(c.author)) + '</td><td data-l="Редактор">' + esc(c.editor ? mname(c.editor) : '—') + '</td><td data-l="Дедлайн">' + (human(c.deadline) || '—') + '</td><td data-l="Выход">' + (human(c.publish) || '—') + '</td></tr>'; }).join('') : '<tr><td colspan="7" class="empty">Ничего не найдено. Измените фильтры.</td></tr>')
         + '</tbody></table></div></div><p class="note">Всего: ' + cards.length + ' из ' + state.cards.length + '</p>';
     },
     team: function () {
       var manage = atLeast('owner');
       var rows = state.team.map(function (m) {
         var locked = m.role === 'owner' || !manage || (role() === 'chief' && RANK[m.role] >= RANK.chief && m.id !== state.me);
-        return '<tr><td><b>' + esc(m.name) + '</b>' + (m.id === state.me ? ' <span class="tag o">это вы</span>' : '') + '</td><td>' + esc(m.email || '—') + '</td><td>'
+        return '<tr><td class="t1"><b>' + esc(m.name) + '</b>' + (m.id === state.me ? ' <span class="tag o">это вы</span>' : '') + '</td><td>' + esc(m.email || '—') + '</td><td>'
           + (locked ? esc(ROLES.filter(function (r) { return r.id === m.role; })[0].name) : '<select data-role="' + m.id + '" aria-label="Роль">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (m.role === r.id ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select>')
-          + '</td><td>' + (m.status !== 'active' ? '<span class="tag p">приглашение</span>' : cloudOn && !m.first ? '<span class="tag o">письмо отправлено, ещё не входил</span>' : '<span class="tag g">активен</span>') + '</td>' + (cloudOn ? '<td>' + (m.seen ? esc(when(m.seen)) : '—') + '</td>' : '') + '<td>' + (locked ? '' : (cloudOn ? '<button type="button" class="btn ghost" data-resend="' + esc(m.email) + '" title="Письмо со ссылкой: человек войдёт по ней и задаст новый пароль">' + (m.first ? 'Сбросить пароль' : 'Письмо ещё раз') + '</button> ' : '') + '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
+          + '</td><td>' + (m.status !== 'active' ? '<span class="tag p">приглашение</span>' : cloudOn && !m.first ? '<span class="tag o">письмо отправлено, ещё не входил</span>' : '<span class="tag g">активен</span>') + '</td>' + (cloudOn ? '<td data-l="Был в админке">' + (m.seen ? esc(when(m.seen)) : '—') + '</td>' : '') + '<td>' + (locked ? '' : (cloudOn ? '<button type="button" class="btn ghost" data-resend="' + esc(m.email) + '" title="Письмо со ссылкой: человек войдёт по ней и задаст новый пароль">' + (m.first ? 'Сбросить пароль' : 'Письмо ещё раз') + '</button> ' : '') + '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
       }).join('');
       var head = '<tr><th>Что можно</th>' + ROLES.map(function (r) { return '<th>' + r.name + '</th>'; }).join('') + '</tr>';
       var perm = PERMS.map(function (p) { return '<tr><td>' + p[0] + '</td>' + p.slice(1).map(function (v) { return '<td>' + (v === 1 ? '<span class="yes">да</span>' : v === 2 ? '<span class="part">только редакторов и журналистов</span>' : '<span class="no">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('');
       return (manage ? '<div class="panel" style="margin-top:0"><h2>Пригласить по почте</h2><form class="invite" id="invite"><div><label for="in">Имя</label><input id="in" name="name" type="text" required autocomplete="off"></div><div><label for="ie">Почта</label><input id="ie" name="email" type="email" required autocomplete="off" placeholder="name@example.com"></div><div><label for="ir">Роль</label><select id="ir" name="role">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (r.id === 'reporter' ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select></div><button class="btn" type="submit">Пригласить</button></form>'
         + (lastInvite && cloudOn ? '<div class="mail"><b>' + esc(lastInvite.name) + ' в списке приглашённых.</b>\n\nПисьмо само не уходит. Отправьте человеку ссылку:\n' + location.origin + location.pathname + '\n\nТам он вводит почту ' + esc(lastInvite.email) + ' и получает письмо со ссылкой для входа. Уровень: «' + esc(lastInvite.role) + '».</div>' : lastInvite ? '<div class="mail"><b>Так будет выглядеть письмо (в прототипе оно не отправлено):</b>\n\nКому: ' + esc(lastInvite.email) + '\nТема: Приглашение в редакцию AUF MEDIA\n\n' + esc(lastInvite.name) + ', привет!\n\nТебя приглашают в редакцию AUF MEDIA с ролью «' + esc(lastInvite.role) + '».\nНажми на кнопку, придумай пароль — и ты внутри.\n\n[ Войти в редакцию ]\n\nСсылка действует 24 часа.</div>' : '')
         + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">Приглашать людей и менять уровни пока может только MAIN.</p></div>')
-        + '<div class="panel"><h2>Команда</h2><div class="tw"><table><thead><tr><th>Имя</th><th>Почта</th><th>Роль</th><th>Статус</th>' + (cloudOn ? '<th>Был в админке</th>' : '') + '<th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
+        + '<div class="panel"><h2>Команда</h2><div class="tw"><table class="stack"><thead><tr><th>Имя</th><th>Почта</th><th>Роль</th><th>Статус</th>' + (cloudOn ? '<th>Был в админке</th>' : '') + '<th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
         + '<div class="panel"><h2>Уровни</h2><p class="note" style="margin:0 0 6px">C-Level занято: ' + clevels() + ' из ' + CLEVEL_MAX + '.</p><ul class="list">' + ROLES.map(function (r) { return '<li><b>' + r.name + '</b><span style="flex:1 1 60%;color:var(--mute)">' + r.about + '</span></li>'; }).join('') + '</ul></div>'
         + '<div class="panel"><h2>Кто что может</h2><div class="tw"><table class="perm"><thead>' + head + '</thead><tbody>' + perm + '</tbody></table></div></div>'
         + '';
@@ -552,7 +670,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       var showSubs = atLeast('chief');
       if (inboxTab === 'subs' && !showSubs) inboxTab = 'apps';
       var body;
-      if (inboxTab === 'apps') body = state.apps.length ? '<div class="tw"><table><thead><tr><th>Контакт</th><th>О себе</th><th>Город</th><th>Условия</th><th>Дата</th></tr></thead><tbody>' + state.apps.map(function (a) { return '<tr><td>' + esc(a.contact) + '</td><td>' + esc(a.about) + '</td><td>' + esc(a.city) + '</td><td>' + esc(a.terms) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Заявок пока нет. Они появятся здесь, когда кто-то заполнит форму «Стать автором» на странице «Скоро».</p>';
+      if (inboxTab === 'apps') body = state.apps.length ? '<div class="tw"><table class="stack"><thead><tr><th>Контакт</th><th>О себе</th><th>Город</th><th>Условия</th><th>Дата</th></tr></thead><tbody>' + state.apps.map(function (a) { return '<tr><td class="t1">' + esc(a.contact) + '</td><td>' + esc(a.about) + '</td><td data-l="Город">' + esc(a.city) + '</td><td data-l="Условия">' + esc(a.terms) + '</td><td data-l="Дата">' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Заявок пока нет. Они появятся здесь, когда кто-то заполнит форму «Стать автором» на странице «Скоро».</p>';
       else body = state.subs.length ? '<div class="tw"><table><thead><tr><th>Канал</th><th>Контакт</th><th>Дата</th></tr></thead><tbody>' + state.subs.map(function (a) { return '<tr><td>' + esc(a.channel) + '</td><td>' + esc(a.contact) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Подписчиков пока нет. Они появятся здесь, когда кто-то оставит контакт в форме «Узнай о запуске первым».</p>';
       return '<div class="tabs" role="tablist"><button type="button" role="tab" data-tab="apps" aria-selected="' + (inboxTab === 'apps') + '">Заявки авторов · ' + state.apps.length + '</button>' + (showSubs ? '<button type="button" role="tab" data-tab="subs" aria-selected="' + (inboxTab === 'subs') + '">Подписчики на запуск · ' + state.subs.length + '</button>' : '') + '</div><div class="panel" style="margin-top:0">' + body + '</div>'
         + '<p class="note">Чтобы позвать автора из заявки в команду, добавьте его почту в разделе «Команда».</p>';
@@ -571,7 +689,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       var body = auditErr ? '<p class="empty">' + esc(auditErr) + '</p>'
         : !auditAt ? '<p class="empty">Загружаем…</p>'
         : !list.length ? '<p class="empty">Событий нет.</p>'
-        : '<div class="tw"><table><thead><tr><th>Когда</th><th>Кто</th><th>Что сделал</th><th>С чем</th></tr></thead><tbody>' + list.map(function (a) {
+        : '<div class="tw"><table class="stack"><thead><tr><th>Когда</th><th>Кто</th><th>Что сделал</th><th>С чем</th></tr></thead><tbody>' + list.map(function (a) {
           var det = a.action === 'stage' ? stage(a.kind, a.detail) : a.kind === 'profiles' || a.kind === 'invites' ? roleName(a.detail) : a.detail;
           return '<tr><td style="white-space:nowrap">' + esc(when(a.at)) + '</td><td>' + esc(a.actor_name || '—') + '</td><td>' + (acts[a.action] || esc(a.action)) + (det ? ': ' + esc(det) : '') + '</td><td>' + (a.kind === 'session' ? '' : '<span class="tag">' + (names[a.kind] || esc(a.kind)) + '</span> ' + esc(a.title)) + '</td></tr>';
         }).join('') + '</tbody></table></div>';
@@ -646,7 +764,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       var q = (filters.pq || '').trim().toLowerCase();
       var list = state.contacts.filter(function (c) { return (!q || (c.name + ' ' + (c.en || '') + ' ' + c.who + ' ' + c.city + ' ' + c.log.map(function (n) { return n.text; }).join(' ')).toLowerCase().indexOf(q) > -1) && (!filters.pcat || c.cat === filters.pcat) && (!filters.pchk || c.tags.indexOf(filters.pchk) > -1); })
         .sort(psortFn());
-      return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><select data-f="pchk" aria-label="Тег">' + selOpts(allTags(), filters.pchk, 'Все теги') + '</select><button type="button" class="btn ghost" data-pcolsbtn>Колонки</button><button type="button" class="btn ghost" data-importpeople>Загрузить список</button><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
+      return '<div class="bar"><input class="grow" type="search" data-f="pq" placeholder="Поиск по имени, описанию, городу" value="' + esc(filters.pq || '') + '" aria-label="Поиск"><select data-f="pcat" aria-label="Категория">' + selOpts(pcats(), filters.pcat, 'Все категории') + '</select><select data-f="pchk" aria-label="Тег">' + selOpts(allTags(), filters.pchk, 'Все теги') + '</select><select class="only-m" id="psortsel" aria-label="Сортировка">' + [['name', 'Имя']].concat(pcolAll()).map(function (c) { return '<option value="' + esc(c[0]) + '"' + ((pview().sort || 'name') === c[0] ? ' selected' : '') + '>По: ' + esc(c[1]) + '</option>'; }).join('') + '</select><button type="button" class="btn ghost" data-pcolsbtn>Колонки</button><button type="button" class="btn ghost" data-importpeople>Загрузить список</button><button type="button" class="btn" data-newperson>+ Контакт</button></div>'
         + (list.length ? peopleTable(list) : '<div class="panel" style="margin-top:0"><p class="empty">' + (state.contacts.length ? 'Никого не нашлось. Измените поиск или категорию.' : 'Контактов пока нет. Добавьте первого человека: имя, категорию и его аккаунты.') + '</p></div>')
         + '<p class="note">Всего: ' + list.length + ' из ' + state.contacts.length + '. Список видят только MAIN и C-Level. Пока он хранится в этом браузере.</p>';
     }
@@ -751,13 +869,13 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     var th = function (c) { var on = (v.sort || 'name') === c[0]; return '<th' + (on ? ' aria-sort="' + (v.dir > 0 ? 'ascending' : 'descending') + '"' : '') + '><button type="button" class="sort" data-psort="' + esc(c[0]) + '">' + esc(c[1]) + (on ? (v.dir > 0 ? ' ↑' : ' ↓') : '') + '</button></th>'; };
     var cell = function (p, k) {
       if (k.slice(0, 2) === 'x:') return '<td><input type="text" class="cellin" data-px="' + p.id + ':' + esc(k.slice(2)) + '" value="' + esc(pval(p, k)) + '" aria-label="' + esc(p.name) + '" autocomplete="off"></td>';
-      if (k === 'cat') return '<td>' + (p.cat ? '<span class="tag y">' + esc(p.cat) + '</span>' : '') + '</td>';
-      if (k === 'who') return '<td class="w">' + esc(p.who) + '</td>';
+      if (k === 'cat') return '<td class="pc">' + (p.cat ? '<span class="tag y">' + esc(p.cat) + '</span>' : '') + '</td>';
+      if (k === 'who') return '<td class="w"><div>' + esc(p.who) + '</div></td>';
       if (k === 'status') return '<td><span class="tag">' + esc(p.status || PSTAT[0]) + '</span></td>';
       if (k === 'accs') return '<td><span class="tags">' + p.accs.map(function (a) { return '<span class="tag o">' + esc(a.net) + '</span>'; }).join('') + '</span></td>';
       if (k === 'tags') return '<td><span class="tags">' + p.tags.map(tagHtml).join('') + '<button type="button" class="tagadd" data-ptags="' + p.id + '" aria-label="Изменить теги: ' + esc(p.name) + '" title="Изменить теги">+</button></span></td>';
       if (k === 'added') return '<td class="nw">' + human(p.added) + '</td>';
-      return '<td class="nw">' + esc(p[k] || '') + '</td>';
+      return '<td class="nw k-' + esc(k) + '">' + esc(p[k] || '') + '</td>';
     };
     return '<div class="panel ptable"><div class="tw"><table><thead><tr><th><span class="vh">Фото</span></th>' + th(['name', 'Имя']) + cols.map(th).join('') + '</tr></thead><tbody>'
       + list.map(function (p) { return '<tr class="click" data-person="' + p.id + '"><td class="pa">' + avaHtml(p) + '</td><td class="pn"><b>' + esc(p.name) + '</b>' + (p.en ? '<small>' + esc(p.en) + '</small>' : '') + '</td>' + cols.map(function (c) { return cell(p, c[0]); }).join('') + '</tr>'; }).join('')
@@ -855,10 +973,10 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       + '<div><label for="pg">Город</label><input id="pg" name="city" type="text" autocomplete="off" value="' + esc(p.city) + '"></div>'
       + '<div class="full"><label>Соцсети и другие аккаунты</label><div id="paccs">' + (p.accs.length ? p.accs : [{ net: NETS[0], val: '' }]).map(row).join('') + '</div><button type="button" class="tgl" id="accadd">+ Ещё аккаунт</button></div>'
       + '<div><label for="pe">Почта</label><input id="pe" name="email" type="email" autocomplete="off" value="' + esc(p.email) + '"></div>'
-      + '<div><label for="pp">Телефон</label><input id="pp" name="phone" type="text" autocomplete="off" value="' + esc(p.phone) + '"></div>'
+      + '<div><label for="pp">Телефон</label><input id="pp" name="phone" type="tel" inputmode="tel" autocomplete="off" value="' + esc(p.phone) + '"></div>'
       + '<div class="full"><label for="ps">Статус</label><select id="ps" name="status">' + selOpts(PSTAT, p.status || PSTAT[0]) + '</select></div>'
       + state.pcols.map(function (c) { return '<div><label for="px' + c.id + '">' + esc(c.name) + '</label><input id="px' + c.id + '" type="text" data-xf="' + c.id + '" autocomplete="off" value="' + esc(p.x && p.x[c.id] || '') + '"></div>'; }).join('')
-      + '<div class="actions"><span>' + (isNew ? '' : '<button type="button" class="btn danger" id="persondel">Удалить</button>') + '</span><span><button type="button" class="btn ghost" id="personclose">Отмена</button> <button type="submit" class="btn">Сохранить</button></span></div></form>';
+      + '</div><div class="actions"><span>' + (isNew ? '' : '<button type="button" class="btn danger" id="persondel">Удалить</button>') + '</span><span><button type="button" class="btn ghost" id="personclose">Отмена</button> <button type="submit" class="btn">Сохранить</button></span></div></form>';
     dlg.showModal();
     var form = document.getElementById('personform'), box = document.getElementById('paccs');
     document.getElementById('personclose').onclick = function () { dlg.close(); };
@@ -1013,7 +1131,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     save(); render(); toast('Перенесено: ' + STAGES[stageIx(to)].name);
   });
   document.addEventListener('dragend', function () { dragging = null; });
-  dlg.addEventListener('click', function (event) { if (event.target === dlg) dlg.close(); });
+  dlg.addEventListener('click', function (event) { if (event.target === dlg) dlgLeave(); });
 
   // ---------- text editor ----------
   var edEl = document.getElementById('ed'), edBody = document.getElementById('edbody'), edTitle = document.getElementById('edtitle'), edLede = document.getElementById('edlede');
@@ -1090,7 +1208,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     var ok = save();
     if (!ok) { state.cards.forEach(function (x) { if (x.hist) x.hist = x === edCard ? x.hist.slice(-1) : []; }); ok = save(); }
     if (!ok) { edCard.hist = []; ok = save(); }
-    edStatus.textContent = ok ? 'Все изменения сохранены' : 'Не сохранено: в браузере кончилось место';
+    edStatus.textContent = ok ? 'Все изменения сохранены' : 'Не сохранено: в браузере кончилось место'; edStatus.classList.toggle('bad', !ok);
     return ok;
   }
   function edDirty() { if (!edCan) return; edStatus.textContent = 'Сохраняю…'; clearTimeout(edTimer); edTimer = setTimeout(edFlush, 300); edStats(); syncOut(); }
