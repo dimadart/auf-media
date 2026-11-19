@@ -60,6 +60,9 @@ select:focus-visible, input:focus-visible, textarea:focus-visible { border-color
 .gatenote.bad { color: var(--warn); }
 .gatetext { margin: 0 0 18px; font-size: 14.5px; line-height: 1.55; color: var(--mute); overflow-wrap: anywhere; }
 .gatetext b { color: var(--text); }
+.gatelink { display: block; width: 100%; margin-top: 16px; padding: 4px; border: 0; background: none; color: var(--mute); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.gatelink:hover { color: var(--text); }
+.gatenote:empty { display: none; }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 2px solid #000; background: var(--yellow); color: #000; font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0 var(--pink); white-space: nowrap; }
 .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pink); }
 .btn.ghost { background: none; color: var(--text); border-color: var(--ghost); box-shadow: none; }
@@ -531,7 +534,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
         var locked = m.role === 'owner' || !manage || (role() === 'chief' && RANK[m.role] >= RANK.chief && m.id !== state.me);
         return '<tr><td><b>' + esc(m.name) + '</b>' + (m.id === state.me ? ' <span class="tag o">это вы</span>' : '') + '</td><td>' + esc(m.email || '—') + '</td><td>'
           + (locked ? esc(ROLES.filter(function (r) { return r.id === m.role; })[0].name) : '<select data-role="' + m.id + '" aria-label="Роль">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (m.role === r.id ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select>')
-          + '</td><td>' + (m.status === 'active' ? '<span class="tag g">активен</span>' : '<span class="tag p">приглашение</span>') + '</td><td>' + (locked ? '' : '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
+          + '</td><td>' + (m.status === 'active' ? '<span class="tag g">активен</span>' : '<span class="tag p">приглашение</span>') + '</td><td>' + (locked ? '' : (cloudOn ? '<button type="button" class="btn ghost" data-resend="' + esc(m.email) + '">Письмо ещё раз</button> ' : '') + '<button type="button" class="btn danger" data-kick="' + m.id + '">Убрать</button>') + '</td></tr>';
       }).join('');
       var head = '<tr><th>Что можно</th>' + ROLES.map(function (r) { return '<th>' + r.name + '</th>'; }).join('') + '</tr>';
       var perm = PERMS.map(function (p) { return '<tr><td>' + p[0] + '</td>' + p.slice(1).map(function (v) { return '<td>' + (v === 1 ? '<span class="yes">да</span>' : v === 2 ? '<span class="part">только редакторов и журналистов</span>' : '<span class="no">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('');
@@ -563,8 +566,8 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     },
     plan: function () {
       if (cloudOn) return '<div class="panel plan" style="margin-top:0">'
-        + '<h2>Что работает</h2><ul><li><b>Вход по почте.</b> Пароля нет: на почту приходит письмо со ссылкой. Войти может только тот, кого добавили в «Команде».</li><li><b>Общие данные.</b> Материалы, обе доски, календарь, контакты и команда лежат в общей базе. Изменения других людей появляются сами, без перезагрузки.</li><li><b>Уровни.</b> Права из таблицы «Кто что может» проверяет сама база: журналист не сможет изменить чужой материал, а редактор не увидит блок «Проект», даже если попробует обойти интерфейс.</li><li><b>Заметки в анкетах</b> подписаны тем, кто вошёл.</li><li><b>Заявки со страницы «Скоро»</b> падают в раздел «Заявки».</li><li><b>Совместная правка текста:</b> видно, кто открыт в материале и где чужой курсор, правки появляются на лету.</li></ul>'
-        + '<h2>Как позвать человека</h2><ol><li>В «Команде» введите имя, почту и уровень.</li><li>Отправьте человеку ссылку на эту страницу. Письмо-приглашение само не уходит.</li><li>Он вводит ту же почту и получает письмо со ссылкой для входа.</li></ol>'
+        + '<h2>Что работает</h2><ul><li><b>Вход по почте и паролю.</b> Войти может только тот, кого пригласил MAIN.</li><li><b>Общие данные.</b> Материалы, обе доски, календарь, контакты и команда лежат в общей базе. Изменения других людей появляются сами, без перезагрузки.</li><li><b>Уровни.</b> Права из таблицы «Кто что может» проверяет сама база: журналист не сможет изменить чужой материал, а редактор не увидит блок «Проект», даже если попробует обойти интерфейс.</li><li><b>Заметки в анкетах</b> подписаны тем, кто вошёл.</li><li><b>Заявки со страницы «Скоро»</b> падают в раздел «Заявки».</li><li><b>Совместная правка текста:</b> видно, кто открыт в материале и где чужой курсор, правки появляются на лету.</li></ul>'
+        + '<h2>Как позвать человека</h2><ol><li>В «Команде» MAIN вводит имя, почту и уровень. Приглашать может только MAIN.</li><li>Человеку приходит письмо со ссылкой.</li><li>Он открывает ссылку, видит приветствие, придумывает пароль — и он внутри. Дальше входит по почте и паролю.</li></ol><p>Забыл пароль или письмо потерялось: на экране входа есть «Первый вход или забыли пароль?». Письмо можно отправить ещё раз и из «Команды».</p>'
         + '<h2>Ограничения</h2><ul><li>Если двое одновременно печатают в одном абзаце, побеждает последняя правка. В разных абзацах правки не мешают друг другу.</li><li>Если двое одновременно меняют одну карточку (не текст), сохранится вариант того, кто сохранил позже.</li><li>«Смотреть как» есть только у MAIN и меняет лишь вид страницы: это способ посмотреть, что видит другой уровень.</li><li>Аналитика, Шоп и Финансы не подключены: цифр там нет.</li><li>Публикации на сайт кнопкой нет. Этап «Опубликовано» на доске — отметка, а не выпуск.</li></ul>'
         + '</div>';
       return '<div class="panel plan" style="margin-top:0">'
@@ -970,6 +973,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (!name || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { toast('Проверьте имя и адрес почты'); return; }
     if (state.team.some(function (m) { return m.email === email; })) { toast('Этот адрес уже в команде'); return; }
     if (f.role.value === 'chief' && clevels() >= CLEVEL_MAX) { toast('C-Level уже ' + CLEVEL_MAX + ' из ' + CLEVEL_MAX + '. Сначала освободите место'); return; }
+    if (cloudOn) { f.reset(); return cloudInvite(name, email, f.role.value); }
     state.team.push({ id: uid(), name: name, email: email, role: f.role.value, status: 'invited' });
     lastInvite = { name: name, email: email, role: ROLES.filter(function (r) { return r.id === f.role.value; })[0].name };
     save(); render(); toast(cloudOn ? 'Приглашение создано. Отправьте человеку ссылку на вход' : 'Добавлено в команду. Письмо в прототипе не отправляется');
@@ -1574,7 +1578,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (!allowed(state.view)) state.view = 'home';
     fixTags(); markSynced();
     document.getElementById('asrole').hidden = cloudRole !== 'owner';
-    if (first) { gateShow(null); save(); return render(); }
+    if (first) { save(); render(); return gateShow(needPw ? 'setpw' : null, needPw && cloudUser.user_metadata && cloudUser.user_metadata.pw ? 'again' : ''); }
     if (same) return;
     if (edCard) {
       var live = cardById(edCard.id);
@@ -1602,38 +1606,76 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   }
   function cloudStop() { [rtDb, rtLive].forEach(function (c) { if (c) sb.removeChannel(c); }); rtDb = rtLive = null; liveOk = false; }
 
+  var needPw = false, MAILRE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
   function gateShow(mode, info) {
     if (!mode) { gate.hidden = true; gate.innerHTML = ''; return; }
-    var h = '<div class="gatebox"><img class="gatelogo" src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><h1>AUF MEDIA</h1><p class="gatesub">Вход в редакцию</p>';
+    var hello = mode === 'setpw' && !info, me = hello && member(state.me);
+    var h = '<div class="gatebox"><img class="gatelogo" src="../assets/uaf-logo-combined-white.svg" alt="" width="119" height="100"><h1>' + (hello ? 'Добро пожаловать' + (me && me.name ? ', ' + esc(me.name) : '') : 'AUF MEDIA') + '</h1><p class="gatesub">' + (hello ? 'Вы в редакции AUF MEDIA' : mode === 'setpw' ? 'Новый пароль' : 'Вход в редакцию') + '</p>';
     if (mode === 'wait') h += '<p class="gatetext">Загружаем…</p>';
-    if (mode === 'login') h += '<form id="gateform" novalidate><label for="gatemail">Почта</label><input id="gatemail" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com"><button type="submit" class="btn">Получить ссылку</button><p class="gatenote' + (info ? ' bad' : '') + '" id="gatemsg" role="status">' + esc(info || 'Пароля нет: на почту придёт письмо со ссылкой для входа.') + '</p></form>';
-    if (mode === 'sent') h += '<p class="gatetext">Письмо со ссылкой отправлено на <b>' + esc(info) + '</b>. Откройте ссылку из письма — и вы внутри. Если письма нет пару минут, проверьте «Спам».</p><button type="button" class="btn ghost wide" data-gate="login">Указать другую почту</button>';
-    if (mode === 'noaccess') h += '<p class="gatetext">Почты <b>' + esc(info) + '</b> нет в команде. Попросите MAIN добавить вас в разделе «Команда».</p><button type="button" class="btn ghost wide" data-logout>Выйти</button>';
+    if (mode === 'login') h += '<form id="gateform" data-kind="login" novalidate><label for="gatemail">Почта</label><input id="gatemail" name="email" type="email" autocomplete="username" inputmode="email" required><label for="gatepw">Пароль</label><input id="gatepw" name="password" type="password" autocomplete="current-password" required><button type="submit" class="btn">Войти</button><p class="gatenote' + (info ? ' bad' : '') + '" id="gatemsg" role="status">' + esc(info || '') + '</p></form><button type="button" class="gatelink" data-gate="link">Первый вход или забыли пароль?</button>';
+    if (mode === 'link') h += '<form id="gateform" data-kind="link" novalidate><label for="gatemail">Почта, на которую вас пригласили</label><input id="gatemail" name="email" type="email" autocomplete="username" inputmode="email" required><button type="submit" class="btn">Получить письмо</button><p class="gatenote" id="gatemsg" role="status">Пришлём ссылку. По ней вы зайдёте и зададите пароль.</p></form><button type="button" class="gatelink" data-gate="login">Назад ко входу</button>';
+    if (mode === 'sent') h += '<p class="gatetext">Письмо отправлено на <b>' + esc(info) + '</b>. Откройте ссылку из него — и зададите пароль. Если письма нет пару минут, проверьте «Спам».</p><button type="button" class="btn ghost wide" data-gate="login">Назад ко входу</button>';
+    if (mode === 'setpw') h += '<form id="gateform" data-kind="setpw" novalidate><p class="gatetext" style="text-align:center">' + (hello ? 'Придумайте пароль. С ним вы будете входить в следующий раз.' : 'Задайте новый пароль для входа.') + '</p><label for="gatepw">Пароль, не короче 8 символов</label><input id="gatepw" name="password" type="password" autocomplete="new-password" minlength="8" required><label for="gatepw2">Ещё раз</label><input id="gatepw2" name="again" type="password" autocomplete="new-password" required><button type="submit" class="btn">Сохранить и войти</button><p class="gatenote" id="gatemsg" role="status"></p></form>' + (hello ? '' : '<button type="button" class="gatelink" data-gate="skip">Оставить прежний пароль</button>');
+    if (mode === 'noaccess') h += '<p class="gatetext">Почты <b>' + esc(info) + '</b> нет в команде. Попросите MAIN пригласить вас.</p><button type="button" class="btn ghost wide" data-logout>Выйти</button>';
     if (mode === 'error') h += '<p class="gatetext">Не получилось загрузить данные: ' + esc(info) + '.</p><button type="button" class="btn wide" data-gate="retry">Повторить</button><button type="button" class="btn ghost wide" data-logout>Выйти</button>';
     gate.innerHTML = h + '</div>'; gate.hidden = false;
-    var f = document.getElementById('gatemail'); if (f) f.focus();
+    var f = gate.querySelector('input'); if (f) f.focus();
   }
-  gate.addEventListener('click', function (e) {
-    var b = e.target.closest('[data-gate]'); if (!b) return;
-    if (b.dataset.gate === 'login') gateShow('login');
-    if (b.dataset.gate === 'retry') { gateShow('wait'); cloudPull(true); }
-  });
-  gate.addEventListener('submit', async function (e) {
-    e.preventDefault();
-    var email = e.target.email.value.trim().toLowerCase(), msg = document.getElementById('gatemsg'), btn = e.target.querySelector('button');
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.className = 'gatenote bad'; msg.textContent = 'Проверьте адрес почты.'; return; }
-    btn.disabled = true; msg.className = 'gatenote'; msg.textContent = 'Отправляем…';
-    var r = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + location.pathname } });
-    btn.disabled = false;
-    if (!r.error) return gateShow('sent', email);
-    var m = String(r.error.message || '');
-    msg.className = 'gatenote bad';
-    msg.textContent = /Database error|not invited/i.test(m) ? 'Эта почта не приглашена. Попросите MAIN добавить вас в разделе «Команда».'
+  function mailWhy(m) {
+    return /Database error|not invited/i.test(m) ? 'Эта почта не приглашена. Попросите MAIN пригласить вас.'
       : /rate limit|security purposes|too many/i.test(m) ? 'Слишком часто. Подождите минуту и попробуйте снова.'
       : /Error sending/i.test(m) ? 'Письмо не ушло: почтовый сервис отклонил отправку. Это настройка почты, а не ваша ошибка.'
       : 'Не получилось отправить письмо: ' + m.slice(0, 140);
+  }
+  function mailLink(email) { return sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + location.pathname } }); }
+  gate.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-gate]'); if (!b) return;
+    if (b.dataset.gate === 'login' || b.dataset.gate === 'link') gateShow(b.dataset.gate);
+    if (b.dataset.gate === 'retry') { gateShow('wait'); cloudPull(true); }
+    if (b.dataset.gate === 'skip') { needPw = false; gateShow(null); }
   });
-  function cloudLogout() { cloudStop(); synced = null; cloudUser = null; sb.auth.signOut().catch(function () {}); gateShow('login'); }
+  gate.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var f = e.target, kind = f.dataset.kind, msg = document.getElementById('gatemsg'), btn = f.querySelector('button[type=submit]');
+    var say = function (t, bad) { msg.className = 'gatenote' + (bad ? ' bad' : ''); msg.textContent = t; };
+    if (kind === 'setpw') {
+      if (f.password.value.length < 8) return say('Пароль короче 8 символов.', true);
+      if (f.password.value !== f.again.value) return say('Пароли не совпадают.', true);
+      btn.disabled = true; say('Сохраняем…');
+      var u = await sb.auth.updateUser({ password: f.password.value, data: { pw: true } });
+      btn.disabled = false;
+      if (u.error) return say(/different from the old/i.test(u.error.message) ? 'Это ваш прежний пароль. Он уже действует — нажмите «Оставить прежний пароль».' : /weak|at least|should/i.test(u.error.message) ? 'Пароль слишком простой. Придумайте длиннее.' : 'Не сохранилось: ' + String(u.error.message).slice(0, 140), true);
+      needPw = false; gateShow(null); return toast('Пароль сохранён');
+    }
+    var email = f.email.value.trim().toLowerCase();
+    if (!MAILRE.test(email)) return say('Проверьте адрес почты.', true);
+    if (kind === 'login') {
+      if (!f.password.value) return say('Введите пароль.', true);
+      btn.disabled = true; say('Входим…');
+      var r = await sb.auth.signInWithPassword({ email: email, password: f.password.value });
+      btn.disabled = false;
+      if (r.error) return say(/Invalid login/i.test(r.error.message) ? 'Неверная почта или пароль. Если пароля ещё нет, нажмите «Первый вход» ниже.' : /not confirmed/i.test(r.error.message) ? 'Почта ещё не подтверждена. Нажмите «Первый вход» ниже.' : 'Не получилось войти: ' + String(r.error.message).slice(0, 140), true);
+      return;
+    }
+    btn.disabled = true; say('Отправляем…');
+    var o = await mailLink(email);
+    btn.disabled = false;
+    if (!o.error) return gateShow('sent', email);
+    say(mailWhy(String(o.error.message || '')), true);
+  });
+  // Invitation: the row in `invites` is what lets the address in; the letter carries the link.
+  async function cloudInvite(name, email, roleId) {
+    var ins = await sb.from('invites').insert({ email: email, role: roleId, name: name, invited_by: state.me });
+    if (ins.error) return toast('Не получилось пригласить: ' + cloudWhy(ins.error));
+    var o = await mailLink(email);
+    toast(o.error ? 'В команду добавили, но письмо не ушло. ' + mailWhy(String(o.error.message || '')) : 'Приглашение отправлено на ' + email);
+    pullSet.profiles = pullSet.invites = 1; pullWant = true; cloudPull();
+  }
+  async function cloudResend(email) {
+    var o = await mailLink(email);
+    toast(o.error ? mailWhy(String(o.error.message || '')) : 'Письмо отправлено на ' + email);
+  }
+  function cloudLogout() { cloudStop(); synced = null; cloudUser = null; sb.auth.signOut({ scope: 'local' }).catch(function () {}); gateShow('login'); }
   function cloudBoot() {
     var bad = /error_description=([^&]+)/.exec(location.hash), hadLink = /access_token=|error=/.test(location.hash);
     sb = supabase.createClient(CLOUD.url, CLOUD.key);
@@ -1642,13 +1684,14 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       setTimeout(function () {
         if (!session) {
           if (cloudUser) { cloudStop(); cloudUser = null; synced = null; }
-          var why = bad ? 'Ссылка из письма уже использована или устарела. Запросите новую.' : '';
+          var why = bad ? 'Ссылка из письма уже использована или устарела. Запросите новую: «Первый вход» ниже.' : '';
           bad = null; if (hadLink) { hadLink = false; try { history.replaceState(null, '', location.pathname); } catch (e) {} }
           return gateShow('login', why);
         }
         sb.realtime.setAuth(session.access_token);
         if (cloudUser && cloudUser.id === session.user.id) return;
         cloudUser = session.user; claimed = false; synced = null;
+        needPw = hadLink || !(session.user.user_metadata && session.user.user_metadata.pw); hadLink = false;
         cloudPull(true).then(function () { if (synced && !rtDb) cloudListen(); });
       }, 0);
     });
@@ -1678,6 +1721,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 
   document.addEventListener('click', function (e) {
     if (!cloudOn || !e.target.closest) return;
+    var rs = e.target.closest('[data-resend]'); if (rs && cloudRole === 'owner') return cloudResend(rs.dataset.resend);
     if (e.target.closest('[data-logout]')) { if (gate.hidden && !confirm('Выйти из редакции на этом устройстве?')) return; return cloudLogout(); }
     if (e.target.closest('[data-importcopy]') && cloudRole === 'owner') importCopy();
   });
