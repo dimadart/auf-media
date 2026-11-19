@@ -1627,6 +1627,8 @@ td .nil { color: var(--dim); }
       if (!edit) { if (write) { state.editing = c.id; save(); dlg.close(); render(); scrollTo(0, 0); } return; }
       var t = form.title.value.trim(); if (!t) { form.title.focus(); return; }
       if (!isNew) { var live = cardById(c.id); if (!live) { dlg.close(); return render(); } c = live; }
+      // An editor may not send a material out of his own sight: the server would refuse the save.
+      if (!seen({ author: full ? form.author.value : c.author, editor: full ? form.editor.value : c.editor, rubric: form.rubric.value })) return toast('После этого материал уйдёт из ваших рубрик, и вы его больше не увидите. Передать его может MAIN или C-Level.');
       c.title = t; c.rubric = form.rubric.value; c.format = form.format.value; c.stage = form.stage.value; c.deadline = form.deadline.value; c.notes = form.notes.value.trim();
       if (full) { c.author = form.author.value; c.editor = form.editor.value; c.publish = form.publish.value; }
       if (isNew) state.cards.unshift(c);
