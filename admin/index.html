@@ -50,7 +50,8 @@ select:focus-visible, input:focus-visible, textarea:focus-visible { border-color
 .gatesub { margin: 0 0 24px; font-size: 14px; line-height: 1.45; color: var(--mute); }
 .gatebox form { text-align: left; }
 .gatebox label { margin-bottom: 7px; font: 400 13px/1.3 Arial, sans-serif; letter-spacing: 0; text-transform: none; color: var(--mute); }
-.gatebox input { width: 100%; min-height: 44px; margin-bottom: 12px; padding: 0 12px; border-radius: 8px; font-size: 15px; }
+.gatebox input { width: 100%; min-height: 44px; margin-bottom: 12px; padding: 0 12px; border: 1px solid var(--fline); border-radius: 8px; background: var(--field); color: var(--text); font-size: 15px; }
+.gatebox input:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
 .gatebox .btn { min-height: 44px; border: 0; border-radius: 8px; box-shadow: none; font-size: 11.5px; }
 .gatebox .btn:active { transform: none; box-shadow: none; opacity: .85; }
 .gatebox form .btn, .gatebox .wide { width: 100%; }
