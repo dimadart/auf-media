@@ -40,6 +40,17 @@ main { min-width: 0; padding: 0 26px 60px; }
 select, input[type=text], input[type=email], input[type=date], input[type=search], textarea { width: 100%; padding: 9px 10px; border: 1px solid var(--fline); border-radius: 0; background: var(--field); color: var(--text); outline: 0; }
 select:focus-visible, input:focus-visible, textarea:focus-visible { border-color: var(--focus); }
 .as select { width: auto; }
+#asrole:not([hidden]) { display: contents; }
+#gate { position: fixed; inset: 0; z-index: 60; display: grid; place-items: center; padding: 20px; background: var(--bg); overflow: auto; }
+#gate[hidden] { display: none; }
+.gatebox { width: min(420px, 100%); padding: 26px; background: var(--panel); border: 1px solid var(--line); box-shadow: 6px 6px 0 var(--pink); }
+.gatebox h1 { margin: 0 0 18px; font: 800 26px/1.1 Unbounded, Arial, sans-serif; }
+.gatelogo { margin: 0 0 6px; font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .14em; color: var(--mute); }
+.gatebox label { display: block; margin-bottom: 6px; font-size: 13px; color: var(--mute); }
+.gatebox input { width: 100%; margin-bottom: 12px; }
+.gatebox .btn { margin-top: 4px; }
+.gatenote { margin: 14px 0 0; font-size: 13.5px; line-height: 1.5; color: var(--mute); overflow-wrap: anywhere; }
+.gatenote b { color: var(--text); }
 .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 2px solid #000; background: var(--yellow); color: #000; font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0 var(--pink); white-space: nowrap; }
 .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pink); }
 .btn.ghost { background: none; color: var(--text); border-color: var(--ghost); box-shadow: none; }
@@ -260,10 +271,10 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     <p class="foot">AUF MEDIA · прототип админки</p>
   </aside>
   <main>
-    <p class="proto">Прототип: всё, что вы меняете, хранится только в этом браузере. Входа по паролю нет, письма-приглашения не отправляются, совместная работа видна между окнами этого браузера.</p>
+    <p class="proto" id="proto">Прототип: всё, что вы меняете, хранится только в этом браузере. Входа по паролю нет, письма-приглашения не отправляются, совместная работа видна между окнами этого браузера.</p>
     <div class="top">
       <h1 id="title"></h1>
-      <div class="as"><span>Смотреть как:</span><select id="viewas" aria-label="Смотреть как роль"></select><button type="button" class="tgl" data-theme-toggle></button></div>
+      <div class="as"><span id="asrole"><span>Смотреть как:</span><select id="viewas" aria-label="Смотреть как роль"></select></span><button type="button" class="tgl" data-theme-toggle></button><button type="button" class="tgl" id="logout" data-logout hidden>Выйти</button></div>
     </div>
     <div id="view"></div>
   </main>
@@ -312,7 +323,9 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   <div id="edpeers" aria-hidden="true"></div>
 </section>
 <dialog id="dlg"><div class="dlg" id="dlgbody"></div></dialog>
+<div id="gate" hidden></div>
 
+<script src="../assets/vendor/supabase.js"></script>
 <script>
 (function () {
   'use strict';
@@ -370,8 +383,13 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     };
   }
   var state;
-  try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
+  // Shared database. The key is the public one: what it may read or write is decided by the database rules.
+  var CLOUD = { url: 'https://osglfybsbugwmhadlpvm.supabase.co', key: 'sb_publishable_L_cFIJO80f2XDw8Vr70Xeg_JokEtun8' };
+  var LOCALHOST = /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
+  var cloudOn = !!window.supabase && (LOCALHOST ? /[?&]cloud\b/.test(location.search) : true);
+  if (!cloudOn) try { state = JSON.parse(localStorage.getItem(KEY)); } catch (e) {}
   if (!state || state.v !== 1) state = fresh();
+  if (cloudOn) state.cards = [];
   // What a window is looking at is its own business; materials and team are shared between windows.
   var TABKEY = 'auf-admin-tab', TABF = ['viewAs', 'view', 'month', 'editing', 'person'], PALETTE = ['#ff3d8b', '#4d63ff', '#12a36b', '#ff7a00', '#9b5cff', '#0097b8'], tab = null;
   try { tab = JSON.parse(sessionStorage.getItem(TABKEY)); } catch (e) {}
@@ -388,6 +406,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   function save() {
     TABF.forEach(function (k) { tab[k] = state[k]; });
     try { sessionStorage.setItem(TABKEY, JSON.stringify(tab)); } catch (e) {}
+    if (cloudOn) { cloudQueue(); return true; }
     try { localStorage.setItem(KEY, JSON.stringify(Object.assign({}, state, { editing: null, person: null }))); return true; } catch (e) { return false; }
   }
 
@@ -508,7 +527,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       var head = '<tr><th>Что можно</th>' + ROLES.map(function (r) { return '<th>' + r.name + '</th>'; }).join('') + '</tr>';
       var perm = PERMS.map(function (p) { return '<tr><td>' + p[0] + '</td>' + p.slice(1).map(function (v) { return '<td>' + (v === 1 ? '<span class="yes">да</span>' : v === 2 ? '<span class="part">только редакторов и журналистов</span>' : '<span class="no">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('');
       return (manage ? '<div class="panel" style="margin-top:0"><h2>Пригласить по почте</h2><form class="invite" id="invite"><div><label for="in">Имя</label><input id="in" name="name" type="text" required autocomplete="off"></div><div><label for="ie">Почта</label><input id="ie" name="email" type="email" required autocomplete="off" placeholder="name@example.com"></div><div><label for="ir">Роль</label><select id="ir" name="role">' + ROLES.filter(function (r) { return r.id !== 'owner' && (role() === 'owner' || RANK[r.id] < RANK.chief); }).map(function (r) { return '<option value="' + r.id + '"' + (r.id === 'reporter' ? ' selected' : '') + '>' + r.name + '</option>'; }).join('') + '</select></div><button class="btn" type="submit">Пригласить</button></form>'
-        + (lastInvite ? '<div class="mail"><b>Так будет выглядеть письмо (в прототипе оно не отправлено):</b>\n\nКому: ' + esc(lastInvite.email) + '\nТема: Приглашение в редакцию AUF MEDIA\n\n' + esc(lastInvite.name) + ', привет!\n\nТебя приглашают в редакцию AUF MEDIA с ролью «' + esc(lastInvite.role) + '».\nНажми на кнопку, придумай пароль — и ты внутри.\n\n[ Войти в редакцию ]\n\nСсылка действует 24 часа.</div>' : '')
+        + (lastInvite && cloudOn ? '<div class="mail"><b>' + esc(lastInvite.name) + ' в списке приглашённых.</b>\n\nПисьмо само не уходит. Отправьте человеку ссылку:\n' + location.origin + location.pathname + '\n\nТам он вводит почту ' + esc(lastInvite.email) + ' и получает письмо со ссылкой для входа. Уровень: «' + esc(lastInvite.role) + '».</div>' : lastInvite ? '<div class="mail"><b>Так будет выглядеть письмо (в прототипе оно не отправлено):</b>\n\nКому: ' + esc(lastInvite.email) + '\nТема: Приглашение в редакцию AUF MEDIA\n\n' + esc(lastInvite.name) + ', привет!\n\nТебя приглашают в редакцию AUF MEDIA с ролью «' + esc(lastInvite.role) + '».\nНажми на кнопку, придумай пароль — и ты внутри.\n\n[ Войти в редакцию ]\n\nСсылка действует 24 часа.</div>' : '')
         + '</div>' : '<div class="panel" style="margin-top:0"><p class="empty">Приглашать людей и менять роли могут владелец и главный редактор.</p></div>')
         + '<div class="panel"><h2>Команда</h2><div class="tw"><table><thead><tr><th>Имя</th><th>Почта</th><th>Роль</th><th>Статус</th><th></th></tr></thead><tbody>' + rows + '</tbody></table></div></div>'
         + '<div class="panel"><h2>Уровни</h2><p class="note" style="margin:0 0 6px">C-Level занято: ' + clevels() + ' из ' + CLEVEL_MAX + '.</p><ul class="list">' + ROLES.map(function (r) { return '<li><b>' + r.name + '</b><span style="flex:1 1 60%;color:var(--mute)">' + r.about + '</span></li>'; }).join('') + '</ul></div>'
@@ -519,10 +538,10 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
       var showSubs = atLeast('chief');
       if (inboxTab === 'subs' && !showSubs) inboxTab = 'apps';
       var body;
-      if (inboxTab === 'apps') body = state.apps.length ? '<div class="tw"><table><thead><tr><th>Контакт</th><th>О себе</th><th>Город</th><th>Условия</th><th>Дата</th></tr></thead><tbody>' + state.apps.map(function (a) { return '<tr><td>' + esc(a.contact) + '</td><td>' + esc(a.about) + '</td><td>' + esc(a.city) + '</td><td>' + esc(a.terms) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Заявок пока нет. Они появятся здесь, когда форма «Стать автором» на странице «Скоро» будет подключена к базе.</p>';
-      else body = state.subs.length ? '<div class="tw"><table><thead><tr><th>Канал</th><th>Контакт</th><th>Дата</th></tr></thead><tbody>' + state.subs.map(function (a) { return '<tr><td>' + esc(a.channel) + '</td><td>' + esc(a.contact) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Подписчиков пока нет. Они появятся здесь, когда форма «Узнай о запуске первым» будет подключена к базе.</p>';
+      if (inboxTab === 'apps') body = state.apps.length ? '<div class="tw"><table><thead><tr><th>Контакт</th><th>О себе</th><th>Город</th><th>Условия</th><th>Дата</th></tr></thead><tbody>' + state.apps.map(function (a) { return '<tr><td>' + esc(a.contact) + '</td><td>' + esc(a.about) + '</td><td>' + esc(a.city) + '</td><td>' + esc(a.terms) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Заявок пока нет. Они появятся здесь, когда кто-то заполнит форму «Стать автором» на странице «Скоро».</p>';
+      else body = state.subs.length ? '<div class="tw"><table><thead><tr><th>Канал</th><th>Контакт</th><th>Дата</th></tr></thead><tbody>' + state.subs.map(function (a) { return '<tr><td>' + esc(a.channel) + '</td><td>' + esc(a.contact) + '</td><td>' + human(a.date) + '</td></tr>'; }).join('') + '</tbody></table></div>' : '<p class="empty">Подписчиков пока нет. Они появятся здесь, когда кто-то оставит контакт в форме «Узнай о запуске первым».</p>';
       return '<div class="tabs" role="tablist"><button type="button" role="tab" data-tab="apps" aria-selected="' + (inboxTab === 'apps') + '">Заявки авторов · ' + state.apps.length + '</button>' + (showSubs ? '<button type="button" role="tab" data-tab="subs" aria-selected="' + (inboxTab === 'subs') + '">Подписчики на запуск · ' + state.subs.length + '</button>' : '') + '</div><div class="panel" style="margin-top:0">' + body + '</div>'
-        + '<p class="note">Из заявки автора одним нажатием можно будет сделать приглашение в команду — это появится вместе с настоящей базой.</p>';
+        + '<p class="note">Чтобы позвать автора из заявки в команду, добавьте его почту в разделе «Команда».</p>';
     },
     stats: function () { return '<div class="panel plan" style="margin-top:0"><h2>Аналитика</h2><p>Здесь будут посещаемость сайта, самые читаемые материалы, источники переходов и рост подписчиков.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Выбрать сервис статистики для сайта и поставить его счётчик.</li><li>Дать админке доступ к этим данным.</li><li>Подключить формы со страницы «Скоро», чтобы считать подписчиков.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
     shop: function () { return '<div class="panel plan" style="margin-top:0"><h2>Шоп</h2><p>Здесь будут товары, заказы, остатки и выручка магазина.</p><h2>Сейчас</h2><p class="empty" style="text-align:left;padding:6px 0 0">Данных нет: раздел ещё не подключён, цифры здесь не выдуманы и не показываются.</p><h2>Что нужно, чтобы заработало</h2><ul><li>Решить, что продаём и через какой сервис принимаем оплату.</li><li>Подключить этот сервис к админке.</li></ul><p class="note">Раздел видят только MAIN и C-Level.</p></div>'; },
@@ -530,9 +549,15 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     settings: function () {
       return '<div class="panel" style="margin-top:0"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». C-Level назначает только MAIN.</p></div>'
         + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
-        + '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>';
+        + (cloudOn ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn ghost" data-importcopy>Загрузить копию из прототипа</button><p class="note">Данные лежат в общей базе. «Загрузить копию» добавляет материалы, задачи и контакты из файла, который вы скачали в старом прототипе; то, что уже есть в базе, не перезаписывается. Настройки видит только MAIN.</p></div>'
+          : '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>');
     },
     plan: function () {
+      if (cloudOn) return '<div class="panel plan" style="margin-top:0">'
+        + '<h2>Что работает</h2><ul><li><b>Вход по почте.</b> Пароля нет: на почту приходит письмо со ссылкой. Войти может только тот, кого добавили в «Команде».</li><li><b>Общие данные.</b> Материалы, обе доски, календарь, контакты и команда лежат в общей базе. Изменения других людей появляются сами, без перезагрузки.</li><li><b>Уровни.</b> Права из таблицы «Кто что может» проверяет сама база: журналист не сможет изменить чужой материал, а редактор не увидит блок «Проект», даже если попробует обойти интерфейс.</li><li><b>Заметки в анкетах</b> подписаны тем, кто вошёл.</li><li><b>Заявки со страницы «Скоро»</b> падают в раздел «Заявки».</li><li><b>Совместная правка текста:</b> видно, кто открыт в материале и где чужой курсор, правки появляются на лету.</li></ul>'
+        + '<h2>Как позвать человека</h2><ol><li>В «Команде» введите имя, почту и уровень.</li><li>Отправьте человеку ссылку на эту страницу. Письмо-приглашение само не уходит.</li><li>Он вводит ту же почту и получает письмо со ссылкой для входа.</li></ol>'
+        + '<h2>Ограничения</h2><ul><li>Если двое одновременно печатают в одном абзаце, побеждает последняя правка. В разных абзацах правки не мешают друг другу.</li><li>Если двое одновременно меняют одну карточку (не текст), сохранится вариант того, кто сохранил позже.</li><li>«Смотреть как» есть только у MAIN и меняет лишь вид страницы: это способ посмотреть, что видит другой уровень.</li><li>Аналитика, Шоп и Финансы не подключены: цифр там нет.</li><li>Публикации на сайт кнопкой нет. Этап «Опубликовано» на доске — отметка, а не выпуск.</li></ul>'
+        + '</div>';
       return '<div class="panel plan" style="margin-top:0">'
         + '<h2>Что это сейчас</h2><p>Кликабельный прототип. Доска, календарь, материалы, команда и роли работают, но данные живут только в вашем браузере: другой человек откроет эту же страницу и увидит пустую копию. Настоящего входа и писем нет.</p>'
         + '<h2>Что нужно, чтобы заработало для команды</h2><ol><li><b>База и вход — Supabase.</b> Бесплатный проект: таблицы для материалов, команды и заявок, вход по почте и встроенные приглашения по ссылке. Права по ролям задаются в самой базе, а не в браузере, поэтому журналист физически не сможет удалить чужой материал.</li><li><b>Почта для приглашений.</b> Встроенная почта Supabase рассчитана на тесты — по документации это 2 письма в час. Для редакции нужен почтовый сервис (например, Resend или Brevo) и свой домен, с которого уходят письма.</li><li><b>Формы на «Скоро».</b> «Узнай о запуске первым» и «Стать автором» начинают писать в ту же базу и появляются в разделе «Заявки».</li></ol>'
@@ -913,7 +938,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (t.dataset.kick) { var m = member(t.dataset.kick); if (m && confirm('Убрать ' + m.name + ' из команды?')) { state.team = state.team.filter(function (x) { return x.id !== m.id; }); save(); render(); toast('Убрали из команды'); } return; }
     if (t.dataset.tab) { inboxTab = t.dataset.tab; return render(); }
     if ('export' in t.dataset) { var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' })); a.download = 'auf-admin-' + TODAY + '.json'; a.click(); return; }
-    if ('reset' in t.dataset) { if (confirm('Сбросить прототип к начальному состоянию? Все ваши изменения в этом браузере пропадут.')) { state = fresh(); lastInvite = null; save(); render(); toast('Прототип сброшен'); } }
+    if ('reset' in t.dataset) { if (!cloudOn && confirm('Сбросить прототип к начальному состоянию? Все ваши изменения в этом браузере пропадут.')) { state = fresh(); lastInvite = null; save(); render(); toast('Прототип сброшен'); } }
   });
   document.addEventListener('input', function (event) { var f = event.target.dataset && event.target.dataset.f; if (f) { filters[f] = event.target.value; render(); } });
   document.addEventListener('change', function (event) {
@@ -938,7 +963,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (f.role.value === 'chief' && clevels() >= CLEVEL_MAX) { toast('C-Level уже ' + CLEVEL_MAX + ' из ' + CLEVEL_MAX + '. Сначала освободите место'); return; }
     state.team.push({ id: uid(), name: name, email: email, role: f.role.value, status: 'invited' });
     lastInvite = { name: name, email: email, role: ROLES.filter(function (r) { return r.id === f.role.value; })[0].name };
-    save(); render(); toast('Добавлено в команду. Письмо в прототипе не отправляется');
+    save(); render(); toast(cloudOn ? 'Приглашение создано. Отправьте человеку ссылку на вход' : 'Добавлено в команду. Письмо в прототипе не отправляется');
   });
   // drag and drop between columns
   var dragging = null;
@@ -1243,9 +1268,9 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   var peers = {}, chan = null, edSent = { order: [], html: {}, title: '', lede: '' }, edWantFull = false, peerRaf = 0, hereRaf = 0;
   var edPeers = document.getElementById('edpeers'), edWho = document.getElementById('edwho');
   var IDRE = /^[a-z0-9]{4,12}$/;
-  try { chan = new BroadcastChannel('auf-admin-collab'); } catch (e) {}
-  function post(m) { if (!chan) return; m.tab = tab.id; try { chan.postMessage(m); } catch (e) {} }
-  function myName() { return role() === 'owner' ? mname(state.me) : ROLES.filter(function (x) { return x.id === role(); })[0].name; }
+  if (!cloudOn) try { chan = new BroadcastChannel('auf-admin-collab'); } catch (e) {}
+  function post(m) { m.tab = tab.id; if (cloudOn) return cloudCast(m); if (!chan) return; try { chan.postMessage(m); } catch (e) {} }
+  function myName() { return cloudOn || role() === 'owner' ? mname(state.me) : ROLES.filter(function (x) { return x.id === role(); })[0].name; }
   function byId(id) { return IDRE.test(id) ? edBody.querySelector(':scope > [data-id="' + id + '"]') : null; }
   function ensureIds() {
     var seen = {};
@@ -1276,7 +1301,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     return { id: id, s: textOff(b, r.startContainer, r.startOffset), e: topBlock(r.endContainer) === b ? textOff(b, r.endContainer, r.endOffset) : b.textContent.length };
   }
   function sendHere() { hereRaf = 0; post({ t: 'here', card: edCard ? edCard.id : null, name: myName(), color: tab.color, caret: edCard ? myCaret() : null }); }
-  function queueHere() { if (!hereRaf) hereRaf = setTimeout(sendHere, 40); }
+  function queueHere() { if (!hereRaf) hereRaf = setTimeout(sendHere, cloudOn ? 160 : 40); }
   function queuePeers() { if (!peerRaf) peerRaf = setTimeout(drawPeers, 16); }
 
   function syncOut() {
@@ -1349,7 +1374,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     });
     edPeers.innerHTML = html; edWho.innerHTML = chips;
   }
-  if (chan) chan.onmessage = function (ev) {
+  function onPeer(ev) {
     var m = ev.data; if (!m || typeof m !== 'object' || typeof m.tab !== 'string') return;
     if (m.tab === tab.id) { tab.id = uid(); save(); return sendHere(); }
     if (m.t === 'bye') { if (peers[m.tab]) { delete peers[m.tab]; peersChanged(true); } return; }
@@ -1362,7 +1387,8 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
     if (m.t === 'hello') return post({ t: 'full', card: edCard.id, to: m.tab, html: serialize(edBody, true), title: edTitle.value, lede: edLede.value });
     if (m.t === 'full') { if (m.to && (m.to !== tab.id || !edWantFull)) return; edWantFull = false; return applyFull(m); }
     if (m.t === 'ops') applyOps(m);
-  };
+  }
+  if (chan) chan.onmessage = onPeer;
   setInterval(function () {
     sendHere(); var gone = false, t = Date.now();
     Object.keys(peers).forEach(function (k) { if (t - peers[k].at > 6000) { delete peers[k]; gone = true; } });
@@ -1374,7 +1400,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   addEventListener('resize', queuePeers);
   addEventListener('pagehide', function () { post({ t: 'bye' }); });
   addEventListener('storage', function (e) {
-    if (e.key !== KEY || !e.newValue) return;
+    if (cloudOn || e.key !== KEY || !e.newValue) return;
     var s; try { s = JSON.parse(e.newValue); } catch (x) { return; }
     if (!s || s.v !== 1 || !Array.isArray(s.cards) || !Array.isArray(s.team)) return;
     state.team = s.team; state.cards = s.cards; state.subs = s.subs || []; state.apps = s.apps || []; state.tasks = s.tasks || []; state.contacts = s.contacts || []; state.pcols = s.pcols || []; state.pview = s.pview; state.me = s.me; fixTags();
@@ -1414,7 +1440,238 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
   });
 
 
+  // ---------- shared database (Supabase) ----------
+  // The rest of the page keeps working on `state` and calling save(). Here save() becomes "push what changed",
+  // and changes made by other people are pulled back in. Access rules live in the database, not in this file.
+  var sb = null, cloudUser = null, cloudRole = null, synced = null, raw = {}, pushT = 0, pushing = false, dirty = false, pullT = 0, pullWant = false, pullSet = {}, rtDb = null, rtLive = null, liveOk = false;
+  var UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/, TABLES = ['profiles', 'invites', 'cards', 'tasks', 'contacts', 'contact_notes', 'settings', 'subs', 'apps'];
+  var gate = document.getElementById('gate');
+  function canon(v) {
+    if (Array.isArray(v)) return '[' + v.map(canon).join(',') + ']';
+    if (v && typeof v === 'object') return '{' + Object.keys(v).sort().filter(function (k) { return v[k] !== undefined; }).map(function (k) { return JSON.stringify(k) + ':' + canon(v[k]); }).join(',') + '}';
+    return JSON.stringify(v === undefined ? null : v);
+  }
+  function stamp(list, step) { var t = Date.now(); list.forEach(function (x, i) { if (typeof x._at !== 'number') x._at = t + i * step; }); }
+  function rowsOf() {
+    var r = { cards: {}, tasks: {}, contacts: {}, team: {}, pcols: canon(state.pcols) };
+    stamp(state.cards, -1); stamp(state.tasks, -1); stamp(state.contacts, 1);
+    state.cards.forEach(function (c) { var d = Object.assign({}, c); delete d.id; delete d.stage; r.cards[c.id] = { id: c.id, author: UUID.test(c.author) ? c.author : null, stage: c.stage, data: d }; });
+    state.tasks.forEach(function (t) { var d = Object.assign({}, t); delete d.id; r.tasks[t.id] = { id: t.id, data: d }; });
+    state.contacts.forEach(function (p) { var d = Object.assign({}, p); delete d.id; delete d.log; r.contacts[p.id] = { id: p.id, data: d }; });
+    state.team.forEach(function (m) {
+      if (m.status === 'invited') { m.id = 'inv:' + m.email; r.team[m.id] = { email: m.email, role: m.role, name: m.name }; }
+      else r.team[m.id] = { role: m.role, name: m.name };
+    });
+    return r;
+  }
+  function markSynced() {
+    var r = rowsOf(), s = { cards: {}, tasks: {}, contacts: {}, team: {}, notes: {}, pcols: r.pcols };
+    ['cards', 'tasks', 'contacts', 'team'].forEach(function (t) { Object.keys(r[t]).forEach(function (id) { s[t][id] = canon(r[t][id]); }); });
+    state.contacts.forEach(function (p) { (p.log || []).forEach(function (n) { s.notes[n.id] = p.id; }); });
+    synced = s;
+  }
+  function ok(res) { if (res.error) throw res.error; return res.data; }
+  function chunks(a, n) { var o = []; for (var i = 0; i < a.length; i += n) o.push(a.slice(i, i + n)); return o; }
+  function cloudQueue() { if (!synced) return; dirty = true; clearTimeout(pushT); pushT = setTimeout(cloudPush, 350); }
+  async function cloudPush() {
+    if (pushing || !synced) return;
+    pushing = true; dirty = false;
+    try {
+      var now = rowsOf(), names = ['cards', 'tasks', 'contacts'];
+      for (var i = 0; i < names.length; i++) {
+        var t = names[i], up = [], del = [];
+        Object.keys(now[t]).forEach(function (id) { if (synced[t][id] !== canon(now[t][id])) up.push(now[t][id]); });
+        Object.keys(synced[t]).forEach(function (id) { if (!(id in now[t])) del.push(id); });
+        var parts = chunks(up, 40);
+        for (var k = 0; k < parts.length; k++) { ok(await sb.from(t).upsert(parts[k])); parts[k].forEach(function (row) { synced[t][row.id] = canon(row); }); }
+        if (del.length) { ok(await sb.from(t).delete().in('id', del)); del.forEach(function (id) { delete synced[t][id]; }); }
+      }
+      // signed notes: the database stamps the author itself
+      var add = [], keep = {};
+      state.contacts.forEach(function (p) { p.log.forEach(function (n) {
+        if (!UUID.test(n.id) || !(n.id in synced.notes)) { n.id = crypto.randomUUID(); n.by = state.me; add.push({ id: n.id, contact_id: p.id, body: String(n.text).slice(0, 5000) }); }
+        keep[n.id] = p.id;
+      }); });
+      var gone = Object.keys(synced.notes).filter(function (id) { return !(id in keep) && (synced.notes[id] in now.contacts); });
+      var np = chunks(add, 100);
+      for (var a = 0; a < np.length; a++) ok(await sb.from('contact_notes').insert(np[a]));
+      if (gone.length) ok(await sb.from('contact_notes').delete().in('id', gone));
+      synced.notes = keep;
+      // team: roles, removals, invitations
+      var ids = Object.keys(now.team).concat(Object.keys(synced.team).filter(function (id) { return !(id in now.team); }));
+      for (var m = 0; m < ids.length; m++) {
+        var id = ids[m], cur = now.team[id], was = synced.team[id], inv = id.indexOf('inv:') === 0;
+        if (cur && was === canon(cur)) continue;
+        if (inv) {
+          if (was) ok(await sb.from('invites').delete().eq('email', id.slice(4)));
+          if (cur) ok(await sb.from('invites').insert({ email: cur.email, role: cur.role, name: cur.name, invited_by: state.me }));
+        } else if (cur) ok(await sb.from('profiles').update({ role: cur.role, name: cur.name }).eq('id', id));
+        else ok(await sb.from('profiles').delete().eq('id', id));
+        if (cur) synced.team[id] = canon(cur); else delete synced.team[id];
+      }
+      if (synced.pcols !== now.pcols) { ok(await sb.from('settings').upsert({ key: 'pcols', data: { list: state.pcols } })); synced.pcols = now.pcols; }
+    } catch (e) {
+      toast('Не сохранено: ' + cloudWhy(e));
+      pushing = false; dirty = false;
+      return cloudPull(true);
+    }
+    pushing = false;
+    if (dirty) cloudQueue(); else if (pullWant) cloudPull();
+  }
+  function cloudWhy(e) {
+    var m = String(e && e.message || e);
+    if (/AUF: reporters/.test(m)) return 'журналист правит только свои материалы до фактчека';
+    if (/three C-Level/.test(m)) return 'C-Level уже три';
+    if (/row-level security|permission denied|AUF:/.test(m)) return 'на это нет прав';
+    if (/Failed to fetch|NetworkError|Load failed/.test(m)) return 'нет связи с базой';
+    return m.slice(0, 140);
+  }
+  function busy() { var a = document.activeElement; return dlg.open || !!(a && view.contains(a) && /^(INPUT|TEXTAREA|SELECT)$/.test(a.tagName)); }
+  async function cloudPull(force) {
+    if (!cloudUser) return;
+    if (!force && (pushing || dirty || busy())) { pullWant = true; return; }
+    var want = force || !synced ? TABLES : TABLES.filter(function (t) { return pullSet[t]; });
+    pullWant = false; pullSet = {};
+    if (!want.length) return;
+    var res;
+    try { res = await Promise.all(want.map(function (t) { return sb.from(t).select('*'); })); }
+    catch (e) { want.forEach(function (t) { pullSet[t] = 1; }); pullWant = true; return; }
+    for (var i = 0; i < res.length; i++) if (res[i].error) { if (!synced) return gateShow('error', cloudWhy(res[i].error)); want.forEach(function (t) { pullSet[t] = 1; }); pullWant = true; return; }
+    if (!force && (pushing || dirty || busy())) { want.forEach(function (t) { pullSet[t] = 1; }); pullWant = true; return; }
+    want.forEach(function (t, i) { raw[t] = res[i].data || []; });
+    cloudApply();
+  }
+  function cloudApply() {
+    var me = raw.profiles.filter(function (p) { return p.id === cloudUser.id; })[0];
+    if (!me) return cloudClaim();
+    cloudRole = me.role;
+    var by = function (k, dir) { return function (a, b) { return ((a[k] || 0) - (b[k] || 0)) * dir || (a.id < b.id ? -1 : 1); }; };
+    var notes = {};
+    raw.contact_notes.forEach(function (n) { (notes[n.contact_id] || (notes[n.contact_id] = [])).push({ id: n.id, by: n.author, at: Date.parse(n.created_at), text: n.body }); });
+    var next = {
+      team: raw.profiles.map(function (p) { return { id: p.id, name: p.name, email: p.email, role: p.role, status: 'active' }; })
+        .concat(raw.invites.map(function (v) { return { id: 'inv:' + v.email, name: v.name, email: v.email, role: v.role, status: 'invited' }; }))
+        .sort(function (a, b) { return RANK[b.role] - RANK[a.role] || (a.status < b.status ? -1 : a.status > b.status ? 1 : 0) || (a.email < b.email ? -1 : 1); }),
+      cards: raw.cards.map(function (r) { return Object.assign({}, r.data, { id: r.id, stage: r.stage, author: r.author || r.data.author || '' }); }).sort(by('_at', -1)),
+      tasks: raw.tasks.map(function (r) { return Object.assign({}, r.data, { id: r.id }); }).sort(by('_at', -1)),
+      contacts: raw.contacts.map(function (r) { return Object.assign({}, r.data, { id: r.id, log: (notes[r.id] || []).sort(by('at', 1)) }); }).sort(by('_at', 1)),
+      pcols: ((raw.settings.filter(function (s) { return s.key === 'pcols'; })[0] || {}).data || {}).list || [],
+      subs: raw.subs.map(function (s) { return { id: s.id, channel: s.way, contact: s.contact, date: String(s.created_at).slice(0, 10), at: s.created_at }; }).sort(function (a, b) { return a.at < b.at ? 1 : -1; }),
+      apps: raw.apps.map(function (s) { return { id: s.id, contact: s.contact, about: s.idea, city: s.city || '', terms: s.terms || '', date: String(s.created_at).slice(0, 10), at: s.created_at }; }).sort(function (a, b) { return a.at < b.at ? 1 : -1; })
+    };
+    var first = !synced, same = !first && Object.keys(next).every(function (k) { return canon(next[k]) === canon(state[k]); });
+    Object.assign(state, next); state.me = cloudUser.id;
+    if (cloudRole !== 'owner' || !RANK[state.viewAs]) state.viewAs = cloudRole;
+    if (!allowed(state.view)) state.view = 'home';
+    fixTags(); markSynced();
+    document.getElementById('asrole').hidden = cloudRole !== 'owner';
+    if (first) { gateShow(null); save(); return render(); }
+    if (same) return;
+    if (edCard) {
+      var live = cardById(edCard.id);
+      if (!live) { edCard = null; edLoaded = null; state.editing = null; if (dlg.open) dlg.close(); return render(); }
+      edCard = live; return edMeta();
+    }
+    render();
+  }
+  // Someone removed from the team and invited again already has a login, so the sign-up trigger does not fire for them.
+  var claimed = false;
+  async function cloudClaim() {
+    if (!claimed) { claimed = true; var r = await sb.rpc('claim_invite'); if (!r.error && r.data) return cloudPull(true); }
+    synced = null; gateShow('noaccess', cloudUser.email);
+  }
+  setInterval(function () { if (pullWant && !pushing && !dirty && !busy()) cloudPull(); }, 1500);
+  dlg.addEventListener('close', function () { if (cloudOn && pullWant) setTimeout(function () { if (!pushing && !dirty) cloudPull(); }, 60); });
+
+  function cloudCast(m) { if (rtLive && liveOk) rtLive.send({ type: 'broadcast', event: 'peer', payload: m }).catch(function () {}); }
+  function cloudListen() {
+    rtDb = sb.channel('auf-db').on('postgres_changes', { event: '*', schema: 'public' }, function (p) { pullSet[p.table] = 1; if (p.table === 'contacts') pullSet.contact_notes = 1; clearTimeout(pullT); pullT = setTimeout(function () { pullWant = true; cloudPull(); }, 500); });
+    rtDb.subscribe(function (st) { if (st === 'SUBSCRIBED' && synced) { TABLES.forEach(function (t) { pullSet[t] = 1; }); cloudPull(); } });
+    // Editor traffic goes through a private channel: only signed-in team members may join it.
+    rtLive = sb.channel('auf-live', { config: { private: true, broadcast: { self: false } } }).on('broadcast', { event: 'peer' }, function (p) { onPeer({ data: p.payload }); });
+    rtLive.subscribe(function (st) { liveOk = st === 'SUBSCRIBED'; if (liveOk) sendHere(); });
+  }
+  function cloudStop() { [rtDb, rtLive].forEach(function (c) { if (c) sb.removeChannel(c); }); rtDb = rtLive = null; liveOk = false; }
+
+  function gateShow(mode, info) {
+    if (!mode) { gate.hidden = true; gate.innerHTML = ''; return; }
+    var h = '<div class="gatebox"><p class="gatelogo">AUF MEDIA</p><h1>Редакция</h1>';
+    if (mode === 'wait') h += '<p class="gatenote">Загружаем…</p>';
+    if (mode === 'login') h += '<form id="gateform" novalidate><label for="gatemail">Почта, на которую вас пригласили</label><input id="gatemail" name="email" type="email" autocomplete="email" inputmode="email" required placeholder="you@example.com"><button type="submit" class="btn">Получить ссылку для входа</button><p class="gatenote" id="gatemsg" role="status">' + esc(info || 'Пароля нет: на почту придёт письмо со ссылкой.') + '</p></form>';
+    if (mode === 'sent') h += '<p class="gatenote">Письмо со ссылкой отправлено на <b>' + esc(info) + '</b>. Откройте ссылку из письма — и вы внутри. Если письма нет пару минут, проверьте «Спам».</p><button type="button" class="btn ghost" data-gate="login">Указать другую почту</button>';
+    if (mode === 'noaccess') h += '<p class="gatenote">Почты <b>' + esc(info) + '</b> нет в команде. Попросите MAIN или C-Level добавить вас в разделе «Команда».</p><button type="button" class="btn ghost" data-logout>Выйти</button>';
+    if (mode === 'error') h += '<p class="gatenote">Не получилось загрузить данные: ' + esc(info) + '.</p><button type="button" class="btn" data-gate="retry">Повторить</button> <button type="button" class="btn ghost" data-logout>Выйти</button>';
+    gate.innerHTML = h + '</div>'; gate.hidden = false;
+    var f = document.getElementById('gatemail'); if (f) f.focus();
+  }
+  gate.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-gate]'); if (!b) return;
+    if (b.dataset.gate === 'login') gateShow('login');
+    if (b.dataset.gate === 'retry') { gateShow('wait'); cloudPull(true); }
+  });
+  gate.addEventListener('submit', async function (e) {
+    e.preventDefault();
+    var email = e.target.email.value.trim().toLowerCase(), msg = document.getElementById('gatemsg'), btn = e.target.querySelector('button');
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) { msg.textContent = 'Проверьте адрес почты.'; return; }
+    btn.disabled = true; msg.textContent = 'Отправляем…';
+    var r = await sb.auth.signInWithOtp({ email: email, options: { emailRedirectTo: location.origin + location.pathname } });
+    btn.disabled = false;
+    if (!r.error) return gateShow('sent', email);
+    var m = String(r.error.message || '');
+    msg.textContent = /Database error|not invited/i.test(m) ? 'Эта почта не приглашена. Попросите MAIN или C-Level добавить вас в разделе «Команда».'
+      : /rate limit|security purposes|too many/i.test(m) ? 'Слишком часто. Подождите минуту и попробуйте снова.'
+      : 'Не получилось отправить письмо: ' + m.slice(0, 140);
+  });
+  function cloudLogout() { cloudStop(); synced = null; cloudUser = null; sb.auth.signOut().catch(function () {}); gateShow('login'); }
+  function cloudBoot() {
+    var bad = /error_description=([^&]+)/.exec(location.hash), hadLink = /access_token=|error=/.test(location.hash);
+    sb = supabase.createClient(CLOUD.url, CLOUD.key);
+    gateShow('wait');
+    sb.auth.onAuthStateChange(function (ev, session) {
+      setTimeout(function () {
+        if (!session) {
+          if (cloudUser) { cloudStop(); cloudUser = null; synced = null; }
+          var why = bad ? 'Ссылка из письма уже использована или устарела. Запросите новую.' : '';
+          bad = null; if (hadLink) { hadLink = false; try { history.replaceState(null, '', location.pathname); } catch (e) {} }
+          return gateShow('login', why);
+        }
+        sb.realtime.setAuth(session.access_token);
+        if (cloudUser && cloudUser.id === session.user.id) return;
+        cloudUser = session.user; claimed = false; synced = null;
+        cloudPull(true).then(function () { if (synced && !rtDb) cloudListen(); });
+      }, 0);
+    });
+  }
+  // Copy made in the browser prototype → shared database. Adds what is missing, never overwrites.
+  function importCopy() {
+    var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/json,.json';
+    inp.onchange = function () {
+      var file = inp.files[0]; if (!file) return;
+      file.text().then(function (text) {
+        var s; try { s = JSON.parse(text); } catch (e) { return toast('Это не файл копии: не читается как JSON'); }
+        if (!s || s.v !== 1 || !Array.isArray(s.cards)) return toast('Это не копия админки AUF');
+        var who = function (id) { return id === s.me ? state.me : (member(id) ? id : ''); }, n = 0;
+        var have = function (list) { var o = {}; list.forEach(function (x) { o[x.id] = 1; }); return o; };
+        var hc = have(state.cards), ht = have(state.tasks), hp = have(state.contacts), hx = have(state.pcols), names = {};
+        state.contacts.forEach(function (p) { names[String(p.name).toLowerCase()] = 1; });
+        s.cards.slice().reverse().forEach(function (c) { if (!c || !c.id || hc[c.id]) return; delete c._at; c.author = who(c.author) || state.me; c.editor = who(c.editor); state.cards.unshift(c); n++; });
+        (s.tasks || []).slice().reverse().forEach(function (t) { if (!t || !t.id || ht[t.id]) return; delete t._at; t.who = who(t.who); state.tasks.unshift(t); n++; });
+        (s.contacts || []).forEach(function (p) { if (!p || !p.id || hp[p.id] || names[String(p.name).toLowerCase()]) return; delete p._at; p.by = who(p.by) || state.me; if (!Array.isArray(p.log)) p.log = []; state.contacts.push(p); n++; });
+        (s.pcols || []).forEach(function (c) { if (c && c.id && !hx[c.id]) state.pcols.push(c); });
+        fixTags(); save(); render();
+        toast(n ? 'Перенесено записей: ' + n : 'Новых записей в файле нет');
+      });
+    };
+    inp.click();
+  }
+
+  document.addEventListener('click', function (e) {
+    if (!cloudOn || !e.target.closest) return;
+    if (e.target.closest('[data-logout]')) { if (gate.hidden && !confirm('Выйти из редакции на этом устройстве?')) return; return cloudLogout(); }
+    if (e.target.closest('[data-importcopy]') && cloudRole === 'owner') importCopy();
+  });
   render();
+  if (cloudOn) { document.getElementById('proto').hidden = true; document.getElementById('logout').hidden = false; document.querySelector('aside .foot').textContent = 'AUF MEDIA · редакция'; cloudBoot(); }
 })();
 </script>
 </body>

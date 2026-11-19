@@ -372,7 +372,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
 
 <dialog id="launch" class="dark" aria-label="Узнай о запуске первым">
   <div class="sheet">
-    <form id="call" novalidate data-endpoint="">
+    <form id="call" novalidate data-endpoint="https://osglfybsbugwmhadlpvm.supabase.co/rest/v1/subs">
       <fieldset class="ways">
         <legend>Узнай о&nbsp;запуске первым</legend>
         <label><input type="radio" name="way" value="email" checked><span>Почта</span></label>
@@ -399,7 +399,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     <p class="eyebrow">Стать автором</p>
     <h2 id="authors-title"><span>Давайте знакомиться</span></h2>
     <p class="txt">AUF открыт для новых авторов, журналистов, фотографов и&nbsp;людей, которым есть что рассказать.</p>
-    <form id="pitch" novalidate data-endpoint="">
+    <form id="pitch" novalidate data-endpoint="https://osglfybsbugwmhadlpvm.supabase.co/rest/v1/apps">
       <label for="pitch-contact">Как с тобой связаться</label>
       <input id="pitch-contact" name="contact" type="text" autocomplete="off" placeholder="Email, Telegram или телефон" required>
       <label for="pitch-idea">Расскажи о себе</label>
@@ -585,7 +585,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     var endpoint = form.dataset.endpoint;
     if (!endpoint) { say('Запись пока не подключена — контакт никуда не отправлен.', 'error'); return; }
     button.disabled = true; say('Записываем…');
-    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ channel: kind, contact: value, source: 'auf-soon' }) })
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: 'sb_publishable_L_cFIJO80f2XDw8Vr70Xeg_JokEtun8', Prefer: 'return=minimal' }, body: JSON.stringify({ way: kind, contact: value }) })
       .then(function (response) {
         if (!response.ok) throw new Error(response.status);
         var box = button.getBoundingClientRect();
@@ -620,7 +620,7 @@ dialog h2 span:nth-child(1) { font-size: 1em; }
     var endpoint = pitch.dataset.endpoint;
     if (!endpoint) { tell('Приём заявок пока не подключён — заявка никуда не отправлена.', 'error'); return; }
     pitchButton.disabled = true; tell('Отправляем…');
-    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify({ contact: contact, about: idea, city: city, terms: terms, source: 'auf-soon-authors' }) })
+    fetch(endpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', apikey: 'sb_publishable_L_cFIJO80f2XDw8Vr70Xeg_JokEtun8', Prefer: 'return=minimal' }, body: JSON.stringify({ contact: contact.slice(0, 200), idea: idea.slice(0, 4000), city: city.slice(0, 120), terms: terms.map(function (t) { return t === 'paid' ? 'За гонорар' : 'Без гонорара'; }).join(', ') }) })
       .then(function (response) { if (!response.ok) throw new Error(response.status); tell('Получили. Ответим по этому контакту.', 'ok'); pitch.reset(); })
       .catch(function () { tell('Не получилось отправить. Попробуй ещё раз чуть позже.', 'error'); })
       .then(function () { pitchButton.disabled = false; });
