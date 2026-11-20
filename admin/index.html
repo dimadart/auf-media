@@ -453,6 +453,8 @@ dialog { border: 1px solid var(--dlgline); border-radius: 6px; box-shadow: 0 24p
 .mx-f[aria-current=true] { background: var(--hover); color: var(--text); font-weight: 700; }
 .mx-f i { font-style: normal; font-size: 12px; font-weight: 700; color: var(--text); background: var(--chip); border-radius: 3px; padding: 2px 7px; }
 .mx-side .mx-set { margin-top: auto; padding-top: 12px; }
+.mx { grid-template-rows: minmax(0, 1fr); } .mx > * { min-height: 0; } /* the row must not outgrow the box, or the side buttons get cut off */
+.mx-side { position: static; top: auto; height: auto; } /* it is an <aside> too: do not take the main sidebar's full-screen height */
 .mx-top { display: none; }
 .mx-list { display: flex; flex-direction: column; min-width: 0; border-right: 1px solid var(--line); }
 .mx-q { padding: 10px; border-bottom: 1px solid var(--line); }
@@ -1285,7 +1287,7 @@ td.minus { white-space: nowrap; }
           + (mine.length ? '<button type="button" class="btn ghost" data-go="mail">Открыть почту</button><p class="note">Письма рабочего ящика читаются и пишутся в разделе «Почта».</p>' : '<p class="note">Рабочий адрес на auf.media выдаёт MAIN. Когда он появится, в меню откроется раздел «Почта».</p>')
           + '</div><div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>';
       }
-      return appPanel() + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
+      return appPanel() + (cloudOn ? '<div class="panel"><h2>Рабочая почта</h2><p class="note" style="margin:0 0 10px">Адреса на auf.media и кто какой ящик видит.</p><button type="button" class="btn ghost" data-mailsetup>Ящики и доступы</button></div>' : '') + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
         + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
         + (cloudOn ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn ghost" data-importcopy>Загрузить копию из прототипа</button><p class="note">Данные лежат в общей базе. «Загрузить копию» добавляет материалы, задачи и контакты из файла, который вы скачали в старом прототипе; то, что уже есть в базе, не перезаписывается. Настройки видит только MAIN.</p></div>'
           : '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>');
@@ -3279,6 +3281,7 @@ td.minus { white-space: nowrap; }
     if ('appinstall' in t.dataset && app.prompt) { app.prompt.prompt(); app.prompt.userChoice.then(function () { app.prompt = null; appRerender(); }); return; }
     if ('apphide' in t.dataset || 'apphow' in t.dataset) { try { localStorage.setItem('auf-admin-install', 'hide'); } catch (x) {} var b = document.getElementById('appbar'); if (b) b.remove(); if ('apphow' in t.dataset) go('settings'); }
   });
+  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('[data-mailsetup]') && allowed('mail')) { mail.admin = true; mail.open = null; go('mail'); } });
   document.addEventListener('change', function (e) { var t = e.target; if (t && t.dataset && t.dataset.pushtopic) pushTopic(t.dataset.pushtopic, t.checked); });
 
   // A tap on a notification opens what it is about: #card=ID, #mail, #tasks.
