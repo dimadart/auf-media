@@ -965,6 +965,54 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   .evbody { padding: 4px 12px 12px; }
   .evinfo { grid-template-columns: 1fr; gap: 2px; } .evinfo dd { margin-bottom: 6px; }
 }
+
+/* ---------- Install request and tour ---------- */
+#installgate { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: calc(24px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom)); background: var(--bg); color: var(--text); overflow: auto; }
+.ig { width: 100%; max-width: 420px; text-align: center; }
+.ig-ico { width: 84px; height: 84px; border-radius: 20px; box-shadow: 0 10px 30px rgb(0 0 0 / .4); }
+.ig h1 { margin: 20px 0 10px; font: 800 24px/1.2 Unbounded, Arial, sans-serif; }
+.ig > p { margin: 0 0 22px; color: var(--mute); font: 15.5px/1.5 Arial, Helvetica, sans-serif; }
+.ig-steps { list-style: none; margin: 0 0 22px; padding: 0; text-align: left; }
+.ig-steps li { display: flex; align-items: center; gap: 12px; padding: 13px 14px; margin-bottom: 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--panel); font: 15px/1.35 Arial, Helvetica, sans-serif; }
+.ig-steps span { flex: none; width: 26px; height: 26px; border-radius: 50%; background: var(--yellow); color: var(--on-acc, #000); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 13px; }
+.ig-btn { width: 100%; min-height: 50px; margin-bottom: 16px; font-size: 15px; }
+.ig-skip { border: 0; background: none; color: var(--mute); font: 14px Arial, Helvetica, sans-serif; text-decoration: underline; cursor: pointer; padding: 10px; }
+#tour { position: fixed; inset: 0; z-index: 85; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.tour-bg { position: absolute; inset: 0; background: rgb(0 0 0 / .55); }
+.tour-card { position: relative; width: 100%; max-width: 520px; max-height: calc(100vh - 32px); overflow-y: auto; padding: 26px 24px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--text); box-shadow: 0 24px 70px rgb(0 0 0 / .5); animation: tourin .25s ease-out; }
+@keyframes tourin { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
+.tour-x { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--mute); font-size: 22px; cursor: pointer; }
+.tour-ico { font-size: 42px; line-height: 1; margin-bottom: 12px; }
+.tour-card h2 { margin: 0 0 10px; font: 800 22px/1.25 Unbounded, Arial, sans-serif; }
+.tour-card > p { margin: 0 0 14px; font: 15.5px/1.55 Arial, Helvetica, sans-serif; color: var(--text); }
+.tour-card > p b { color: var(--link); }
+.tour-look { margin: 0 0 6px; }
+.tour-foot { display: flex; align-items: center; gap: 8px; margin-top: 18px; }
+.tour-dots { display: flex; gap: 5px; }
+.tour-dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--chip); }
+.tour-dots i.seen { background: var(--ghost); } .tour-dots i.on { background: var(--yellow); width: 18px; border-radius: 4px; }
+.tour-looks { grid-template-columns: repeat(3, 1fr); margin-bottom: 14px; }
+.tour-push { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px; border: 1px solid var(--line); border-radius: 8px; font-size: 14.5px; }
+.tour-ok { color: var(--ok); }
+.tour-can { list-style: none; margin: 0 0 16px; padding: 0; }
+.tour-can li { position: relative; padding: 7px 0 7px 30px; font: 15px/1.4 Arial, Helvetica, sans-serif; }
+.tour-can li::before { content: '✓'; position: absolute; left: 0; top: 6px; width: 20px; height: 20px; border-radius: 50%; background: var(--ok); color: #000; font-size: 12px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+.tour-big { width: 100%; min-height: 48px; font-size: 15px; }
+.confetti { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 95; pointer-events: none; }
+.tourpill { display: flex; align-items: center; gap: 9px; border: 1px solid var(--yellow); background: var(--y-soft, var(--hover)); color: var(--text); font: 600 13.5px/1.2 Arial, Helvetica, sans-serif; cursor: pointer; }
+.tourpill em { font-style: normal; color: var(--mute); font-weight: 500; margin-left: 4px; }
+.tp-dot { flex: none; width: 9px; height: 9px; border-radius: 50%; background: var(--yellow); animation: tpblink 1.2s ease-in-out infinite; }
+@keyframes tpblink { 0%, 100% { opacity: 1; box-shadow: 0 0 0 0 var(--yellow); } 50% { opacity: .45; box-shadow: 0 0 0 5px transparent; } }
+@media (prefers-reduced-motion: reduce) { .tp-dot, .tour-card { animation: none; } }
+.tp-side { width: calc(100% - 4px); margin: 0 2px 10px; padding: 9px 12px; border-radius: 6px; }
+.tp-phone { display: none; }
+.app.rail .tp-side .tp-tx { display: none; }
+@media (max-width: 860px) {
+  .tp-side { display: none !important; }
+  .tp-phone:not([hidden]) { display: flex; position: fixed; z-index: 16; left: 12px; bottom: calc(86px + env(safe-area-inset-bottom)); padding: 10px 14px; border-radius: 22px; box-shadow: 0 8px 24px rgb(0 0 0 / .4); }
+  #tour { align-items: flex-end; padding: 0; }
+  .tour-card { max-width: none; border-radius: 16px 16px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); max-height: 88vh; }
+}
 </style>
 </head>
 <body>
@@ -3444,6 +3492,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
     try { localStorage.setItem('auf-admin-look', JSON.stringify(c)); localStorage.setItem('auf-admin-theme', document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'); } catch (e) {}
     window.aufLook(c); applyTheme();
     if (!quiet && state.view === 'settings' && !dlg.open) render();
+    if (document.getElementById('tour')) tourRender();
   }
   function themePanel() {
     var cur = lookNow();
@@ -3595,6 +3644,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
     var inp = document.querySelector('[data-evnote="' + n.event_id + '"] input'); if (inp) inp.focus();
   });
 
+  // (tour helpers are declared below; hoisted functions)
   // ---------- Installable app and push notifications ----------
   // The admin installs to the home screen (manifest + sw.js next to this page). Push works on iPhone only from the
   // installed app (iOS 16.4+). Devices subscribe here; the database decides who gets what (auf-supabase-9.sql).
@@ -3605,7 +3655,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   var standalone = function () { return navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; };
   var pushable = function () { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; };
   var keyBytes = function (b) { var s = atob(b.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b.length + 3) % 4)), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; };
-  function appRerender() { if (state.view === 'settings' && !dlg.open) render(); }
+  function appRerender() { if (state.view === 'settings' && !dlg.open) render(); if (document.getElementById('tour')) tourRender(); }
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('sw.js', { scope: './' }).then(function (reg) {
       app.reg = reg;
@@ -3714,6 +3764,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   var askT = setInterval(function () {
     if (!cloudOn || !cloudUser || !synced || !gate.hidden || !app.reg) return;
     if (!pushable() || (isIOS && !standalone())) { clearInterval(askT); return; }
+    if (tourActive()) return; // the tour asks about notifications itself
     clearInterval(askT);
     var perm = Notification.permission;
     if (perm === 'granted' && !app.sub) return pushQuiet();
@@ -3746,7 +3797,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   var SHARE_ICON = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="vertical-align:-3px"><path d="M12 3v12M8 7l4-4 4 4M5 11v9h14v-9"/></svg>';
   setTimeout(function () {
     var t = 0; try { t = +localStorage.getItem('auf-admin-install') || 0; } catch (e) {}
-    if (standalone() || !matchMedia('(max-width: 860px)').matches || Date.now() - t < 864e5 || document.getElementById('pushask')) return;
+    if (standalone() || !matchMedia('(max-width: 860px)').matches || Date.now() - t < 864e5 || document.getElementById('pushask') || document.getElementById('installgate')) return;
     var b = document.createElement('div'); b.id = 'installask'; b.setAttribute('role', 'dialog'); b.setAttribute('aria-label', 'Установить приложение');
     b.innerHTML = '<img src="icon-180.png" alt=""><div><b>Установить AUF как приложение?</b><span>Иконка на экране «Домой», админка на весь экран и уведомления о письмах и материалах.</span></div>'
       + '<p><button type="button" class="btn" data-instyes>Установить</button><button type="button" class="btn ghost" data-instno>Не сейчас</button></p>';
@@ -3765,6 +3816,125 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
                : '<ol><li>Откройте меню браузера ⋮ вверху справа.</li><li>Выберите «Установить приложение» или «Добавить на главный экран».</li></ol>')
       + '</div><p><button type="button" class="btn" data-instok>Понятно</button></p>';
   });
+
+  // ---------- First run: install on phones, then a guided tour ----------
+  // Phones in a browser get a full-screen request to save the admin as an app (sign-in in Safari is not shared with it).
+  // The first time someone opens the admin (app or computer) a tour explains the sections, sets theme and notifications,
+  // and connects their AI assistant. Closing it early leaves a blinking «Знакомство» entry until the end is reached.
+  function installGate() {
+    if (standalone() || !matchMedia('(max-width: 860px)').matches) return;
+    try { if (sessionStorage.getItem('auf-browser-ok')) return; } catch (e) {}
+    var g = document.createElement('div'); g.id = 'installgate'; g.setAttribute('role', 'dialog'); g.setAttribute('aria-label', 'Установите приложение');
+    var steps = isIOS ? '<ol class="ig-steps"><li><span>1</span>Нажмите ' + SHARE_ICON + ' «Поделиться» внизу Safari</li><li><span>2</span>Выберите «На экран „Домой“» и нажмите «Добавить»</li><li><span>3</span>Откройте AUF с экрана «Домой» и войдите</li></ol>'
+      : '<button type="button" class="btn ig-btn" data-iginstall>Установить приложение</button><ol class="ig-steps"><li><span>1</span>Если кнопка не сработала: меню браузера ⋮</li><li><span>2</span>«Установить приложение» или «Добавить на главный экран»</li><li><span>3</span>Откройте AUF с главного экрана и войдите</li></ol>';
+    g.innerHTML = '<div class="ig"><img src="icon-180.png" alt="" class="ig-ico"><h1>Сохраните AUF как приложение</h1><p>С телефона админка работает как приложение: на весь экран, с уведомлениями о письмах и задачах, вход один раз.</p>' + steps + '<button type="button" class="ig-skip" data-igskip>Продолжить в браузере</button></div>';
+    document.body.appendChild(g);
+  }
+  installGate();
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-igskip],[data-iginstall]'); if (!t) return;
+    if ('iginstall' in t.dataset) { if (app.prompt) { app.prompt.prompt(); app.prompt.userChoice.then(function () { app.prompt = null; }); } else toast('Откройте меню браузера ⋮ → «Установить приложение»'); return; }
+    try { sessionStorage.setItem('auf-browser-ok', '1'); } catch (x) {}
+    var g = document.getElementById('installgate'); if (g) g.remove();
+  });
+
+  var tour = null, TOURKEY = function () { return 'auf-tour:' + state.me; };
+  function tourGet() { if (tour && tour.me === state.me) return tour; var t = null; try { t = JSON.parse(localStorage.getItem(TOURKEY()) || 'null'); } catch (e) {} tour = Object.assign({ me: state.me, step: 0, max: 0, done: false, started: false, open: false, key: '' }, t || {}); tour.open = false; tour.key = ''; return tour; }
+  function tourSave() { try { localStorage.setItem(TOURKEY(), JSON.stringify({ step: tour.step, max: tour.max, done: tour.done, started: tour.started })); } catch (e) {} }
+  function tourActive() { var t = tourGet(); return !t.done; }
+  function tourSteps() {
+    var me = member(state.me) || {}, first = String(me.name || '').trim().split(/\s+/)[0] || 'коллега';
+    var boxes = myBoxes().filter(function (b) { return b.address !== CATCH; });
+    var own = boxes.filter(function (b) { return (b.members || []).length <= 1; }), shared = boxes.filter(function (b) { return (b.members || []).length > 1; });
+    if (!own.length && !shared.length && boxes.length) own = boxes.slice(0, 1);
+    var mailText = boxes.length ? (own.length ? 'Твой ящик — <b>' + own.map(function (b) { return esc(b.address); }).join('</b>, <b>') + '</b>.' : '') + (shared.length ? ' Ещё у тебя есть общий ' + shared.map(function (b) { return '<b>' + esc(b.address) + '</b>'; }).join(', ') + ' — его видят несколько человек.' : '') + ' Письма читаются и пишутся прямо здесь, при отправке выбираешь, с какого ящика.'
+      : 'Рабочий адрес на auf.media выдаёт MAIN. Как только он появится, письма будут читаться и писаться прямо здесь.';
+    var list = [
+      { id: 'hi', icon: '👋', title: 'Привет, ' + esc(first) + '!', text: 'Добро пожаловать на борт AUF MEDIA. За минуту расскажу, как тут всё устроено.', next: 'Поехали' },
+      { id: 'home', icon: '🏠', go: 'home', title: 'Обзор — твой дашборд', text: 'Что в работе, что просрочено, что выходит на этой неделе, твои задачи и напоминания. Начинай день отсюда.' },
+      { id: 'mail', icon: '✉️', go: 'mail', need: 'mail', title: 'Почта', text: mailText },
+      { id: 'tasks', icon: '✅', go: 'tasks', need: 'tasks', title: 'Задачи проекта', text: 'Всё, что не про тексты: купить, договориться, позвонить. Пришла мысль — запиши одной строкой во «Входящие», разберёшь потом.' },
+      { id: 'board', icon: '🗂', go: 'board', title: 'Планирование материалов', text: (role() === 'reporter' ? 'Здесь твои темы и материалы' : role() === 'editor' ? 'Здесь материалы твоих рубрик' : 'Здесь все материалы редакции') + ': идея → в работе → редактура → фактчек → выпуск. В «Календаре» — даты выхода и дедлайны.' },
+      { id: 'events', icon: '🎟', go: 'events', need: 'events', title: 'Все меро', text: 'Единое место для всех мероприятий города. Отмечай 👍 или 👎 и пиши комментарии для команды — сюда же будут приходить находки AI и предложения читателей.' },
+      { id: 'setup', icon: '🎨', title: 'А теперь давай настроим', setup: true },
+      { id: 'ai', icon: '🤖', title: 'Подключи свой чат', ai: true },
+      { id: 'done', icon: '🎉', title: 'Готово!', text: 'Можно пользоваться. Если что-то забудешь — знакомство всегда можно пройти заново в «Настройках».', next: 'Начать работу', fin: true }
+    ];
+    return list.filter(function (x) { return !x.need || allowed(x.need); });
+  }
+  function tourHtml() {
+    var t = tourGet(), st = tourSteps(), i = Math.min(t.step, st.length - 1), x = st[i], body = x.text ? '<p>' + x.text + '</p>' : '';
+    if (x.setup) {
+      var cur = lookNow(), perm = 'Notification' in window ? Notification.permission : 'default', on = !!app.sub && perm === 'granted';
+      body = '<p>Выбери тему — её видишь только ты.</p><div class="looks tour-looks">' + LOOKS.map(function (L) { return '<button type="button" class="look" data-look="' + L.preset + '" aria-pressed="' + (cur.preset === L.preset) + '"><span class="look-pv" style="background:' + L.bg + '"><i style="background:' + L.panel + '"></i><b style="background:' + L.accent + '"></b></span><span>' + L.name + '</span></button>'; }).join('') + '</div>'
+        + (cloudOn && pushable() && (!isIOS || standalone()) ? '<div class="tour-push"><span>🔔 Уведомления о новых письмах, задачах и темах</span>' + (on ? '<b class="tour-ok">включены</b>' : perm === 'denied' ? '<span class="nil">запрещены в настройках телефона</span>' : '<button type="button" class="btn" data-pushon>Включить</button>') + '</div>' : '');
+    }
+    if (x.ai) {
+      var can = ['Спросить что угодно об админке: «что у меня сегодня?»', 'Поменять этап, даты, редактора материала', 'Написать письмо и отправить после твоего «да»', 'Записать тему или задачу, сделать заметку', atLeast('chief') ? 'Найти человека в контактах' : 'Найти коллегу в команде', 'Напомнить про задачу или дедлайн пушем'];
+      body = '<p>Свой Claude или ChatGPT получит доступ к твоей админке — буквально всё внутри, но только то, что видишь ты.</p><ul class="tour-can">' + can.map(function (c) { return '<li>' + c + '</li>'; }).join('') + '</ul>';
+      if (!cloudOn) body += '<p class="nil">Подключение работает после входа на auf.media/admin.</p>';
+      else if (t.key) body += '<div class="aikey"><b>Твоя ссылка</b><div class="aikey-row"><input type="text" readonly value="' + esc(MCP_URL + t.key) + '" id="tourkey" aria-label="Ссылка MCP"><button type="button" class="btn" data-tourcopy>Скопировать</button></div><p class="note" style="margin:8px 0 0">Claude: «Настройки» → «Connectors» → «Add custom connector». ChatGPT: «Settings» → «Apps &amp; Connectors» → «Developer mode» → «Create». Ссылка как пароль — не пересылай её.</p></div>';
+      else body += '<button type="button" class="btn tour-big" data-tourai>Подключить</button>';
+    }
+    var dots = st.map(function (y, k) { return '<i class="' + (k === i ? 'on' : k <= t.max ? 'seen' : '') + '"></i>'; }).join('');
+    return '<div class="tour-card" role="dialog" aria-modal="true" aria-label="Знакомство с админкой"><button type="button" class="tour-x" data-tourclose aria-label="Закрыть">×</button>'
+      + '<div class="tour-ico">' + x.icon + '</div><h2>' + x.title + '</h2>' + body
+      + (x.go ? '<button type="button" class="tgl tour-look" data-tourgo="' + x.go + '">Открыть раздел →</button>' : '')
+      + '<div class="tour-foot"><div class="tour-dots">' + dots + '</div><span class="grow"></span>' + (i > 0 && !x.fin ? '<button type="button" class="btn ghost" data-tourback>Назад</button>' : '')
+      + '<button type="button" class="btn" data-tournext>' + (x.next || (x.ai && !t.key ? 'Позже' : 'Дальше')) + '</button></div></div>';
+  }
+  function tourRender() {
+    var t = tourGet(), el = document.getElementById('tour');
+    if (!t.open) { if (el) el.remove(); }
+    else { if (!el) { el = document.createElement('div'); el.id = 'tour'; document.body.appendChild(el); } el.innerHTML = '<div class="tour-bg" data-tourclose></div>' + tourHtml(); }
+    var st = tourSteps(), n = Math.min(t.max + 1, st.length);
+    [].forEach.call(document.querySelectorAll('.tourpill'), function (b) { b.hidden = t.done || t.open; var c = b.querySelector('em'); if (c) c.textContent = n + ' из ' + st.length; });
+  }
+  function tourOpen(at) { var t = tourGet(); t.open = true; t.started = true; if (typeof at === 'number') t.step = at; tourSave(); tourRender(); }
+  function confetti() {
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    var c = document.createElement('canvas'); c.className = 'confetti'; c.width = innerWidth * devicePixelRatio; c.height = innerHeight * devicePixelRatio; document.body.appendChild(c);
+    var x = c.getContext('2d'), cols = ['#fdfd38', '#ff3d8b', '#4d63ff', '#5ed29a', '#ff8a3d', '#ffffff'], ps = [];
+    for (var i = 0; i < 160; i++) ps.push({ x: c.width / 2, y: c.height * 0.55, vx: (Math.random() - 0.5) * 22 * devicePixelRatio, vy: (-Math.random() * 22 - 8) * devicePixelRatio, r: (4 + Math.random() * 6) * devicePixelRatio, c: cols[i % cols.length], a: Math.random() * 6, s: (Math.random() - 0.5) * 0.4 });
+    var t0 = performance.now();
+    (function f(t) { var k = (t - t0) / 2600; x.clearRect(0, 0, c.width, c.height); ps.forEach(function (p) { p.vy += 0.55 * devicePixelRatio; p.vx *= 0.99; p.x += p.vx; p.y += p.vy; p.a += p.s; x.save(); x.globalAlpha = Math.max(0, 1 - k); x.translate(p.x, p.y); x.rotate(p.a); x.fillStyle = p.c; x.fillRect(-p.r / 2, -p.r / 4, p.r, p.r / 2); x.restore(); }); if (k < 1) requestAnimationFrame(f); else c.remove(); })(t0);
+  }
+  document.addEventListener('click', async function (e) {
+    var b = e.target.closest && e.target.closest('[data-tournext],[data-tourback],[data-tourclose],[data-tourgo],[data-tourai],[data-tourcopy],[data-tourpill],[data-tourrestart]');
+    if (!b) return;
+    var t = tourGet(), st = tourSteps();
+    if ('tourpill' in b.dataset) return tourOpen();
+    if ('tourrestart' in b.dataset) { t.done = false; t.max = 0; return tourOpen(0); }
+    if ('tourclose' in b.dataset) { t.open = false; tourSave(); return tourRender(); }
+    if ('tourgo' in b.dataset) { go(b.dataset.tourgo); return tourRender(); }
+    if ('tourcopy' in b.dataset) { var v = document.getElementById('tourkey'); try { await navigator.clipboard.writeText(v.value); } catch (x) { v.select(); document.execCommand('copy'); } return toast('Скопировано'); }
+    if ('tourai' in b.dataset) { if (!sb) return; var r = await sb.rpc('mcp_token_create', { p_name: 'Мой ассистент' }); if (r.error) return toast('Не создано: ' + cloudWhy(r.error)); t.key = r.data; ai.at = 0; return tourRender(); }
+    if ('tourback' in b.dataset) { t.step = Math.max(0, t.step - 1); tourSave(); return tourRender(); }
+    if ('tournext' in b.dataset) {
+      var cur = st[Math.min(t.step, st.length - 1)];
+      if (cur.fin) { t.done = true; t.open = false; t.key = ''; tourSave(); tourRender(); return toast('Добро пожаловать!'); }
+      t.step = Math.min(st.length - 1, t.step + 1); t.max = Math.max(t.max, t.step);
+      if (st[t.step].fin) { t.done = true; confetti(); }
+      if (st[t.step].go && state.view !== st[t.step].go) go(st[t.step].go);
+      tourSave(); tourRender();
+    }
+  });
+  // the blinking entry: left in the sidebar on computers, bottom left on phones
+  (function () {
+    var nav = document.getElementById('nav'), pill = '<span class="tp-dot"></span><span class="tp-tx">Знакомство <em></em></span>';
+    if (nav) { var a = document.createElement('button'); a.type = 'button'; a.className = 'tourpill tp-side'; a.dataset.tourpill = ''; a.hidden = true; a.innerHTML = pill; nav.parentNode.insertBefore(a, nav); }
+    var m = document.createElement('button'); m.type = 'button'; m.className = 'tourpill tp-phone'; m.dataset.tourpill = ''; m.hidden = true; m.setAttribute('aria-label', 'Продолжить знакомство'); m.innerHTML = pill; document.body.appendChild(m);
+  })();
+  // start once per person per device, after sign-in, in the app on phones
+  var tourT = setInterval(function () {
+    if (cloudOn && (!cloudUser || !synced || !gate.hidden)) return;
+    if (document.getElementById('installgate')) return;
+    clearInterval(tourT);
+    var t = tourGet(); if (!t.started && !t.done) tourOpen(0); else tourRender();
+  }, 1200);
+  // Settings: start the tour again
+  var themePanelBase = themePanel; themePanel = function () { return themePanelBase() + '<div class="panel"><h2>Знакомство</h2><p class="note" style="margin:0 0 10px">Короткий тур по админке: разделы, настройка, подключение AI-ассистента.</p><button type="button" class="btn ghost" data-tourrestart>Пройти заново</button></div>'; };
+
   // The app icon shows unread letters, where the system supports it.
   setInterval(function () { try { if (navigator.setAppBadge && cloudOn && allowed('mail')) { var n = mailUnread(''); if (n) navigator.setAppBadge(n); else navigator.clearAppBadge(); } } catch (e) {} }, 15000);
 
