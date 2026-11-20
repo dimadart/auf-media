@@ -830,6 +830,9 @@ td.minus { white-space: nowrap; }
 
 .blist li { padding-left: 14px; position: relative; }
 .blist li.mine::before { content: ''; position: absolute; left: 0; top: 12px; bottom: 12px; width: 3px; background: var(--yellow); border-radius: 2px; }
+
+.mx-adm.in-set { padding: 0 !important; overflow: visible; border: 0; background: none; }
+.mx-adm.in-set h2 { margin-top: 0; }
 </style>
 </head>
 <body>
@@ -1287,14 +1290,14 @@ td.minus { white-space: nowrap; }
           + (mine.length ? '<button type="button" class="btn ghost" data-go="mail">Открыть почту</button><p class="note">Письма рабочего ящика читаются и пишутся в разделе «Почта».</p>' : '<p class="note">Рабочий адрес на auf.media выдаёт MAIN. Когда он появится, в меню откроется раздел «Почта».</p>')
           + '</div><div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>';
       }
-      return appPanel() + (cloudOn ? '<div class="panel"><h2>Рабочая почта</h2><p class="note" style="margin:0 0 10px">Адреса на auf.media и кто какой ящик видит.</p><button type="button" class="btn ghost" data-mailsetup>Ящики и доступы</button></div>' : '') + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
+      return appPanel() + (cloudOn || mailDemo() ? '<div class="panel">' + mailAdminHtml(true) + '</div>' : '') + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
         + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
         + (cloudOn ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn ghost" data-importcopy>Загрузить копию из прототипа</button><p class="note">Данные лежат в общей базе. «Загрузить копию» добавляет материалы, задачи и контакты из файла, который вы скачали в старом прототипе; то, что уже есть в базе, не перезаписывается. Настройки видит только MAIN.</p></div>'
           : '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>');
     },
     plan: function () {
       if (cloudOn) return '<div class="panel plan" style="margin-top:0">'
-        + '<h2>Что работает</h2><ul><li><b>Вход по почте и паролю.</b> Войти может только тот, кого пригласил MAIN.</li><li><b>Общие данные.</b> Материалы, обе доски, календарь, контакты и команда лежат в общей базе. Изменения других людей появляются сами, без перезагрузки.</li><li><b>Уровни.</b> Права из таблицы «Кто что может» проверяет сама база: журналист не сможет изменить чужой материал, а редактор не увидит блок «Проект», даже если попробует обойти интерфейс.</li><li><b>Заметки в анкетах</b> подписаны тем, кто вошёл.</li><li><b>Заявки со страницы «Скоро»</b> падают в раздел «Заявки».</li><li><b>Рабочая почта.</b> MAIN создаёт адреса на auf.media и раздаёт доступ в «Почте» → «Ящики и доступы». Один ящик может быть у нескольких человек. Письма читаются и пишутся только здесь, в разделе «Почта».</li><li><b>Совместная правка текста:</b> видно, кто открыт в материале и где чужой курсор, правки появляются на лету.</li></ul>'
+        + '<h2>Что работает</h2><ul><li><b>Вход по почте и паролю.</b> Войти может только тот, кого пригласил MAIN.</li><li><b>Общие данные.</b> Материалы, обе доски, календарь, контакты и команда лежат в общей базе. Изменения других людей появляются сами, без перезагрузки.</li><li><b>Уровни.</b> Права из таблицы «Кто что может» проверяет сама база: журналист не сможет изменить чужой материал, а редактор не увидит блок «Проект», даже если попробует обойти интерфейс.</li><li><b>Заметки в анкетах</b> подписаны тем, кто вошёл.</li><li><b>Заявки со страницы «Скоро»</b> падают в раздел «Заявки».</li><li><b>Рабочая почта.</b> MAIN создаёт адреса на auf.media и раздаёт доступ в «Настройках» → «Рабочая почта». Один ящик может быть у нескольких человек. Письма читаются и пишутся только здесь, в разделе «Почта».</li><li><b>Совместная правка текста:</b> видно, кто открыт в материале и где чужой курсор, правки появляются на лету.</li></ul>'
         + '<h2>Как позвать человека</h2><ol><li>В «Команде» MAIN вводит имя, почту и уровень. Приглашать может только MAIN.</li><li>Человеку приходит письмо со ссылкой.</li><li>Он открывает ссылку, видит приветствие, придумывает пароль — и он внутри. Дальше входит по почте и паролю.</li></ol><p>Забыл пароль или письмо потерялось: на экране входа есть «Первый вход или забыли пароль?». Письмо можно отправить ещё раз и из «Команды».</p>'
         + '<h2>Ограничения</h2><ul><li>Если двое одновременно печатают в одном абзаце, побеждает последняя правка. В разных абзацах правки не мешают друг другу.</li><li>Если двое одновременно меняют одну карточку (не текст), сохранится вариант того, кто сохранил позже.</li><li>«Смотреть как» есть только у MAIN и меняет лишь вид страницы: это способ посмотреть, что видит другой уровень.</li><li>Аналитика, Шоп и Финансы не подключены: цифр там нет.</li><li>Публикации на сайт кнопкой нет. Этап «Опубликовано» на доске — отметка, а не выпуск.</li></ul>'
         + '</div>';
@@ -2551,7 +2554,7 @@ td.minus { white-space: nowrap; }
     var rows = mailFiltered(), month = '';
     if (mail.err) return '<p class="empty">' + esc(mail.err) + '</p>';
     if (!mail.at) return '<p class="empty">Загружаем…</p>';
-    if (!mailAddrs().length) return '<p class="empty">Вам пока не подключён ни один ящик.' + (role() === 'owner' ? ' Откройте «Ящики и доступы».' : '') + '</p>';
+    if (!mailAddrs().length) return '<p class="empty">Вам пока не подключён ни один ящик.' + (role() === 'owner' ? ' Создайте его в «Настройках» → «Рабочая почта».' : '') + '</p>';
     if (!rows.length) return '<p class="empty">' + (mail.q ? 'Ничего не нашлось.' : mail.folder === 'out' ? 'Отправленных писем нет.' : 'Писем пока нет.') + '</p>';
     return rows.map(function (m) {
       var d = new Date(m.at), mo = isNaN(d) ? '' : d.toLocaleDateString('ru-RU', { month: 'long', year: 'numeric' }), head = mo !== month ? '<p class="mx-m">' + esc(mo.charAt(0).toUpperCase() + mo.slice(1)) + '</p>' : '';
@@ -2576,10 +2579,10 @@ td.minus { white-space: nowrap; }
       + (mail.html && m.body_html ? '<iframe class="mailframe" sandbox="" referrerpolicy="no-referrer" title="Письмо" srcdoc="' + esc('<base target="_blank">' + m.body_html) + '"></iframe>'
         : '<div class="pre mailtext">' + esc(m.body_text || (m.body_html ? 'В письме нет текстовой версии. Нажмите «Показать оформление».' : '(пустое письмо)')) + '</div>');
   }
-  function mailAdminHtml() {
+  function mailAdminHtml(inSettings) {
     var people = state.team.filter(function (m) { return m.status === 'active'; }).sort(function (a, b) { return (b.id === state.me) - (a.id === state.me) || RANK[b.role] - RANK[a.role]; });
-    return '<div class="mx-adm"><div class="mx-bar"><button type="button" class="btn ghost" data-mailadmin>Закрыть</button></div><h2>Ящики и доступы</h2>'
-      + '<p class="note" style="margin:0">Создайте адрес и отметьте, кто его видит. Один ящик может быть у нескольких человек. Отметьте себя, чтобы ящик появился в вашем списке слева. Раздел видит только MAIN.</p>'
+    return '<div class="mx-adm' + (inSettings ? ' in-set' : '') + '">' + (inSettings ? '' : '<div class="mx-bar"><button type="button" class="btn ghost" data-mailadmin>Закрыть</button></div>') + '<h2>' + (inSettings ? 'Рабочая почта' : 'Ящики и доступы') + '</h2>'
+      + '<p class="note" style="margin:0">Создайте адрес и отметьте, кто его видит. Один ящик может быть у нескольких человек. Отметьте «Я», чтобы ящик появился в вашей почте. Этот блок видит только MAIN.</p>'
       + '<form class="bxnew" id="boxform"><input name="local" type="text" required maxlength="40" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="off" placeholder="ads" aria-label="Адрес до @"><span>@auf.media</span><input name="label" type="text" maxlength="60" placeholder="Имя отправителя, например AUF MEDIA" aria-label="Имя отправителя"><button type="submit" class="btn">Создать ящик</button></form>'
       + '<p class="note" style="margin:0 0 6px">Если имя отправителя пустое, письма уходят от имени того, кто пишет.</p>'
       + state.boxes.map(function (b) {
@@ -2593,7 +2596,7 @@ td.minus { white-space: nowrap; }
     if (!mail.at) mailLoad();
     var boxes = myBoxes(), owner = role() === 'owner' && (cloudOn ? cloudRole === 'owner' : true);
     if (mail.box && !boxes.some(function (b) { return b.address === mail.box; })) mail.box = '';
-    if (!owner) mail.admin = false;
+    mail.admin = false;
     var folders = [['in', 'Входящие'], ['out', 'Отправленные'], ['all', 'Все письма']], bname = function (b) { return b.address === CATCH ? 'Без ящика' : b.address; };
     var canWrite = boxes.some(function (b) { return b.address !== CATCH; });
     var side = '<aside class="mx-side">' + (canWrite ? '<button type="button" class="btn" data-mailnew>Написать</button>' : '')
@@ -2601,11 +2604,11 @@ td.minus { white-space: nowrap; }
       + '<p class="nav-h">Ящики</p>' + (boxes.length > 1 ? '<button type="button" class="mx-f" data-mailboxpick="" aria-current="' + (!mail.admin && !mail.box) + '"><span>Все ящики</span></button>' : '')
       + boxes.map(function (b) { var n = mailUnread(b.address); return '<button type="button" class="mx-f" data-mailboxpick="' + esc(b.address) + '" aria-current="' + (!mail.admin && (mail.box === b.address || boxes.length === 1)) + '" title="' + esc(bname(b)) + '"><span>' + esc(bname(b)) + '</span>' + (n ? '<i>' + n + '</i>' : '') + '</button>'; }).join('')
       + (boxes.length ? '' : '<p class="note" style="margin:4px 8px">Ящиков нет.</p>')
-      + '<div class="mx-set"><button type="button" class="mx-f" data-mailrefresh><span>Обновить</span></button>' + (owner ? '<button type="button" class="mx-f" data-mailadmin aria-current="' + mail.admin + '"><span>Ящики и доступы</span></button>' : '') + '</div></aside>';
+      + '<div class="mx-set"><button type="button" class="mx-f" data-mailrefresh><span>Обновить</span></button>' + '' + '</div></aside>';
     var top = '<div class="mx-top' + (mail.open ? ' open' : '') + '"><select id="mailboxsel" aria-label="Ящик">' + (boxes.length > 1 ? '<option value="">Все ящики</option>' : '') + boxes.map(function (b) { return '<option value="' + esc(b.address) + '"' + (mail.box === b.address ? ' selected' : '') + '>' + esc(bname(b)) + '</option>'; }).join('') + '</select>'
       + (canWrite ? '<button type="button" class="btn" data-mailnew>Написать</button>' : '<span></span>')
       + '<div class="tabs" role="tablist">' + folders.map(function (f) { return '<button type="button" role="tab" data-mailfolder="' + f[0] + '" aria-selected="' + (mail.folder === f[0]) + '">' + f[1] + (f[0] === 'in' && mailUnread(mail.box) ? ' · ' + mailUnread(mail.box) : '') + '</button>'; }).join('')
-      + (owner ? '<button type="button" data-mailadmin>Ящики и доступы</button>' : '') + '</div></div>';
+      + '' + '</div></div>';
     if (mail.admin) return '<div class="mx adm">' + side + mailAdminHtml() + '</div>';
     return top + '<div class="mx' + (mail.open ? ' open' : '') + '">' + side
       + '<section class="mx-list"><div class="mx-q"><input type="search" id="mailq" data-f="mailq" placeholder="Поиск по письмам" aria-label="Поиск по письмам" value="' + esc(mail.q) + '"></div><div class="mx-rows" id="mailrows">' + mailListHtml() + '</div></section>'
@@ -2683,7 +2686,7 @@ td.minus { white-space: nowrap; }
     render(); toast('Ящик ' + address + ' удалён'); boxSync();
   }
   document.addEventListener('click', function (e) {
-    if (state.view !== 'mail' || !e.target.closest) return;
+    if ((state.view !== 'mail' && state.view !== 'settings') || !e.target.closest) return;
     var q = function (k) { return e.target.closest('[' + k + ']'); }, x, m = mail.open;
     if (q('data-mailrefresh')) { mail.at = 0; if (sb) { mailLoad(); toast('Обновляем'); } return; }
     if ((x = q('data-mailfolder'))) { mail.folder = x.dataset.mailfolder; mail.admin = false; mail.open = null; return render(); }
@@ -3281,7 +3284,6 @@ td.minus { white-space: nowrap; }
     if ('appinstall' in t.dataset && app.prompt) { app.prompt.prompt(); app.prompt.userChoice.then(function () { app.prompt = null; appRerender(); }); return; }
     if ('apphide' in t.dataset || 'apphow' in t.dataset) { try { localStorage.setItem('auf-admin-install', 'hide'); } catch (x) {} var b = document.getElementById('appbar'); if (b) b.remove(); if ('apphow' in t.dataset) go('settings'); }
   });
-  document.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('[data-mailsetup]') && allowed('mail')) { mail.admin = true; mail.open = null; go('mail'); } });
   document.addEventListener('change', function (e) { var t = e.target; if (t && t.dataset && t.dataset.pushtopic) pushTopic(t.dataset.pushtopic, t.checked); });
 
   // A tap on a notification opens what it is about: #card=ID, #mail, #tasks.
