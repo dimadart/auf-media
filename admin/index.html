@@ -536,8 +536,9 @@ dialog { border: 1px solid var(--dlgline); border-radius: 6px; box-shadow: 0 24p
 .tile i.pin { background: var(--yellow); color: #000; }
 @media (max-width: 860px) {
   #tabbar { left: 50%; right: auto; bottom: calc(12px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; gap: 2px; padding: 6px; border: 1px solid var(--cline); border-radius: 10px; background: var(--chip); box-shadow: 0 10px 30px rgb(0 0 0 / .4); }
-  #tabbar button { position: relative; display: grid; place-items: center; width: 54px; height: 48px; min-height: 0; padding: 0; border-radius: 6px; color: var(--mute); overflow: visible; }
+  #tabbar button { position: relative; display: flex; align-items: center; justify-content: center; width: 54px; height: 48px; min-height: 0; padding: 0; border-radius: 6px; color: var(--mute); overflow: visible; }
   #tabbar button[aria-current=page] { background: var(--bg); color: var(--text); box-shadow: none; }
+  #tabbar button svg { display: block; flex: none; margin: auto; } /* Safari on iPhone does not center grid items inside a button */
   #tabbar button i { position: absolute; top: 10px; right: 13px; width: 8px; height: 8px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 0 2px var(--chip); }
   main { padding-bottom: calc(96px + env(safe-area-inset-bottom)) !important; }
 }
