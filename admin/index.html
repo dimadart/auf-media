@@ -866,6 +866,38 @@ td.minus { white-space: nowrap; }
   .msheet-r.ck::before { content: ''; flex: none; width: 18px; height: 18px; border: 1.5px solid var(--ghost); border-radius: 4px; }
   .msheet-r.ck[aria-pressed=true]::before { background: var(--yellow); border-color: var(--yellow); box-shadow: inset 0 0 0 3px var(--panel); }
 }
+
+/* ---------- AI assistants, reminders ---------- */
+.ainew, .remnew { display: flex; flex-wrap: wrap; gap: 8px; }
+.ainew input { flex: 1; min-width: 200px; }
+.remnew input[name=t] { flex: 1; min-width: 180px; }
+.aikey { padding: 14px; border: 1px solid var(--yellow); border-radius: 6px; margin-bottom: 4px; }
+.aikey-row { display: flex; gap: 8px; }
+.aikey-row input { flex: 1; min-width: 0; font: 13px/1.3 ui-monospace, Menlo, monospace; }
+.aihow { margin: 8px 0 12px; padding-left: 18px; line-height: 1.6; font-size: 14px; }
+.aihow code { font: 12px/1.4 ui-monospace, Menlo, monospace; background: var(--hover); padding: 2px 5px; border-radius: 3px; overflow-wrap: anywhere; }
+details.aitools { margin-top: 14px; }
+details summary { cursor: pointer; font-weight: 700; padding: 6px 0; }
+.aimx { width: 100%; font-size: 13.5px; } .aimx td, .aimx th { padding: 7px 6px; text-align: center; } .aimx td:first-child, .aimx th:first-child { text-align: left; }
+li.remdone > span:first-child { color: var(--mute); text-decoration: line-through; }
+
+/* ---------- Mail folder tree ---------- */
+.mx-fd { display: flex; align-items: center; }
+.mx-car { flex: none; width: 22px; height: 34px; border: 0; background: none; cursor: pointer; position: relative; color: var(--mute); }
+.mx-car::before { content: ''; position: absolute; left: 7px; top: 13px; border: 5px solid transparent; border-left: 6px solid currentColor; border-right: 0; transition: transform .15s; }
+.mx-car[aria-expanded=true]::before { transform: rotate(90deg); }
+.mx-fd .mx-f { gap: 8px; justify-content: flex-start; }
+.mx-fd .mx-f svg { flex: none; }
+.mx-fd .mx-f span:not(.mx-n) { flex: 1; text-align: left; }
+.mx-boxes { margin: 0 0 4px 12px; }
+.mx-b .mx-f { justify-content: space-between; }
+.mx-n { display: inline-flex; flex: none; border-radius: 4px; overflow: hidden; font-size: 12px; font-weight: 700; }
+.mx-n em, .mx-n b { font-style: normal; padding: 2px 7px; }
+.mx-n em { background: var(--yellow); color: #000; }
+.mx-n b { background: var(--chip); color: var(--text); font-weight: 600; }
+.mx-seg { display: flex; gap: 4px; margin: 10px 10px 0; padding: 3px; border: 1px solid var(--line); border-radius: 6px; }
+.mx-seg button { flex: 1; height: 32px; border: 0; border-radius: 4px; background: none; color: var(--mute); font: 600 13.5px/1 Arial, Helvetica, sans-serif; cursor: pointer; }
+.mx-seg button[aria-selected=true] { background: var(--inv); color: var(--inv-text); }
 </style>
 </head>
 <body>
@@ -1298,8 +1330,8 @@ td.minus { white-space: nowrap; }
     stats: function () { return statsView(); }, shop: function () { return shopView(); }, money: function () { return finView(); }, mail: function () { return mailView(); },
     log: function () {
       if (!auditAt || Date.now() - auditAt > 15000) auditLoad();
-      var names = { biz: 'Финансы и шоп', cards: 'Материал', tasks: 'Задача проекта', contacts: 'Контакт', contact_notes: 'Заметка в анкете', invites: 'Приглашение', profiles: 'Команда', session: 'Вход', mailboxes: 'Почтовый ящик', mail: 'Письмо' };
-      var acts = { insert: 'создал', update: 'изменил', delete: 'удалил', stage: 'перенёс', role: 'сменил уровень', login: 'зашёл в админку', first: 'первый вход', send: 'отправил письмо', assign: 'выдал ящик', unassign: 'забрал ящик', rubrics: 'назначил рубрики' };
+      var names = { mcp: 'AI-ассистент', biz: 'Финансы и шоп', cards: 'Материал', tasks: 'Задача проекта', contacts: 'Контакт', contact_notes: 'Заметка в анкете', invites: 'Приглашение', profiles: 'Команда', session: 'Вход', mailboxes: 'Почтовый ящик', mail: 'Письмо' };
+      var acts = { insert: 'создал', update: 'изменил', delete: 'удалил', stage: 'перенёс', role: 'сменил уровень', login: 'зашёл в админку', first: 'первый вход', send: 'отправил письмо', assign: 'выдал ящик', unassign: 'забрал ящик', rubrics: 'назначил рубрики', mcp: 'через ассистента:', mcp_token: 'подключил ассистента' };
       var stage = function (k, d) { return d.split(' → ').map(function (x) { var st = (k === 'cards' ? STAGES.map(function (q) { return [q.id, q.name]; }) : TSTAGES).filter(function (q) { return q[0] === x; })[0]; return st ? st[1] : x; }).join(' → '); };
       var roleName = function (d) { return d.split(' → ').map(function (x) { var r = ROLES.filter(function (q) { return q.id === x; })[0]; return r ? r.name : x; }).join(' → '); };
       var list = audit.filter(function (a) { return (!filters.lwho || a.actor === filters.lwho) && (!filters.lkind || a.kind === filters.lkind); });
@@ -1317,13 +1349,13 @@ td.minus { white-space: nowrap; }
     settings: function () {
       if (!atLeast('owner')) {
         var me = member(state.me) || {}, mine = myBoxes().filter(function (b) { return b.address !== CATCH; });
-        return appPanel() + '<div class="panel"><h2>Почта</h2><ul class="list">'
+        return appPanel() + aiPanel() + '<div class="panel"><h2>Почта</h2><ul class="list">'
           + (me.email ? '<li><b>Для входа</b><span>' + esc(me.email) + '</span></li>' : '')
           + '<li><b>Рабочая</b><span>' + (mine.length ? mine.map(function (b) { return esc(b.address); }).join(', ') : 'адрес не выдан') + '</span></li></ul>'
           + (mine.length ? '<button type="button" class="btn ghost" data-go="mail">Открыть почту</button><p class="note">Письма рабочего ящика читаются и пишутся в разделе «Почта».</p>' : '<p class="note">Рабочий адрес на auf.media выдаёт MAIN. Когда он появится, в меню откроется раздел «Почта».</p>')
           + '</div><div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>';
       }
-      return appPanel() + (cloudOn || mailDemo() ? '<div class="panel">' + mailAdminHtml(true) + '</div>' : '') + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
+      return appPanel() + aiPanel() + aiTeamPanel() + (cloudOn || mailDemo() ? '<div class="panel">' + mailAdminHtml(true) + '</div>' : '') + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
         + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
         + (cloudOn ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn ghost" data-importcopy>Загрузить копию из прототипа</button><p class="note">Данные лежат в общей базе. «Загрузить копию» добавляет материалы, задачи и контакты из файла, который вы скачали в старом прототипе; то, что уже есть в базе, не перезаписывается. Настройки видит только MAIN.</p></div>'
           : '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>');
@@ -2568,7 +2600,7 @@ td.minus { white-space: nowrap; }
     var addrs = mailAddrs(), key = addrs.join();
     if (!addrs.length) { mail.rows = []; mail.at = Date.now(); mail.err = ''; return mailShown(); }
     mail.busy = true;
-    var r = await sb.from('mail').select('id,mailbox,dir,from_addr,from_name,to_addr,subject,snip,attachments,at,read').in('mailbox', addrs).order('at', { ascending: false }).limit(MAILMAX);
+    var r = await sb.from('mail').select('id,mailbox,dir,from_addr,from_name,to_addr,subject,snip,attachments,at,read,sent_by').in('mailbox', addrs).order('at', { ascending: false }).limit(MAILMAX);
     mail.busy = false; mail.at = Date.now();
     if (key !== mailAddrs().join()) { mail.at = 0; return mailLoad(); }
     if (r.error) mail.err = 'Не получилось загрузить почту: ' + cloudWhy(r.error); else { mail.err = ''; mail.rows = r.data || []; }
@@ -2579,6 +2611,7 @@ td.minus { white-space: nowrap; }
     return mail.rows.filter(function (m) {
       if (mine.indexOf(m.mailbox) < 0 || !inSel(m.mailbox)) return false;
       if (mail.folder !== 'all' && m.dir !== mail.folder) return false;
+      if (mail.folder === 'out' && mail.mySent && m.sent_by && m.sent_by !== state.me) return false;
       return !q || [m.from_name, m.from_addr, m.to_addr, m.subject, m.snip].join(' ').toLowerCase().indexOf(q) >= 0;
     });
   }
@@ -2636,12 +2669,22 @@ td.minus { white-space: nowrap; }
     var canWrite = boxes.some(function (b) { return b.address !== CATCH; });
     var pill = function (n) { return n ? '<i>' + n + '</i>' : ''; };
     var totalIn = mailUnread('');
-    var boxRow = function (b) { var on = sel.indexOf(b.address) >= 0, n = mailUnread(b.address); return '<div class="mx-b' + (on && mail.folder === 'in' ? ' on' : '') + '"><button type="button" class="mx-ck" data-mailboxtoggle="' + esc(b.address) + '" aria-pressed="' + on + '" aria-label="Добавить к выбору: ' + esc(bname(b)) + '"></button><button type="button" class="mx-f" data-mailboxpick="' + esc(b.address) + '" title="' + esc(bname(b)) + '"><span>' + esc(bname(b)) + '</span>' + pill(n) + '</button></div>'; };
+    var FOLD = 'auf-mail-fold'; if (!mail.fold) { try { mail.fold = JSON.parse(localStorage.getItem(FOLD)) || null; } catch (e) {} mail.fold = mail.fold || { in: true, out: false, all: false }; }
+    var mineA = mailAddrs(), cnt = function (f, box) { var n = 0; mail.rows.forEach(function (m) { if (mineA.indexOf(m.mailbox) >= 0 && (!box || m.mailbox === box) && (f === 'all' || m.dir === f)) n++; }); return n; };
+    var badge = function (u, t) { return (u || t) ? '<span class="mx-n">' + (u ? '<em>' + u + '</em>' : '') + (t ? '<b>' + t + '</b>' : '') + '</span>' : ''; };
+    var FOLDERS = [['in', 'Входящие', 'M3 13h5l2 3h4l2-3h5M5 5h14l2 8v6H3v-6z'], ['out', 'Отправленные', 'M22 2 11 13M22 2l-7 20-4-9-9-4z'], ['all', 'Все письма', 'M3 5h18v4H3zM5 9v10h14V9M10 13h4']];
+    var tree = FOLDERS.map(function (f) {
+      var open = !!mail.fold[f[0]] && boxes.length > 1, cur = mail.folder === f[0];
+      var head = '<div class="mx-fd"><button type="button" class="mx-car" data-mailfold="' + f[0] + '" aria-expanded="' + open + '" aria-label="Свернуть или развернуть"' + (boxes.length > 1 ? '' : ' hidden') + '></button>'
+        + '<button type="button" class="mx-f' + (f[0] === 'in' ? ' mx-in' : '') + '" data-mailfolder="' + f[0] + '" aria-current="' + (cur && !sel.length) + '"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" aria-hidden="true"><path d="' + f[2] + '"/></svg><span>' + f[1] + '</span>' + badge(f[0] === 'in' ? totalIn : 0, cnt(f[0])) + '</button></div>';
+      var kids = open ? '<div class="mx-boxes">' + boxes.map(function (bx) {
+        var on = cur && sel.indexOf(bx.address) >= 0;
+        return '<div class="mx-b' + (on ? ' on' : '') + '"><button type="button" class="mx-ck" data-mailboxtoggle="' + esc(bx.address) + '" data-fd="' + f[0] + '" aria-pressed="' + on + '" aria-label="Добавить к выбору: ' + esc(bname(bx)) + '"></button><button type="button" class="mx-f" data-mailpick="' + f[0] + '|' + esc(bx.address) + '" title="' + esc(bname(bx)) + '"><span>' + esc(bname(bx)) + '</span>' + badge(f[0] === 'in' ? mailUnread(bx.address) : 0, cnt(f[0], bx.address)) + '</button></div>';
+      }).join('') + '</div>' : '';
+      return head + kids;
+    }).join('');
     var side = '<aside class="mx-side">' + (canWrite ? '<button type="button" class="btn" data-mailnew>Написать</button>' : '')
-      + '<button type="button" class="mx-f mx-in" data-mailboxpick="" aria-current="' + (mail.folder === 'in' && !sel.length) + '"><span>Входящие</span>' + pill(totalIn) + '</button>'
-      + (boxes.length > 1 ? '<div class="mx-boxes">' + boxes.map(boxRow).join('') + '</div>' : '')
-      + '<button type="button" class="mx-f" data-mailfolder="out" aria-current="' + (mail.folder === 'out') + '"><span>Отправленные</span></button>'
-      + '<button type="button" class="mx-f" data-mailfolder="all" aria-current="' + (mail.folder === 'all') + '"><span>Все письма</span></button>'
+      + tree
       + (boxes.length ? '' : '<p class="note" style="margin:4px 8px">Ящиков нет.</p>')
       + '<div class="mx-set"><button type="button" class="mx-f" data-mailrefresh><span>Обновить</span></button></div></aside>';
     // phone: one header button opens a sheet with folders and mailboxes
@@ -2655,7 +2698,7 @@ td.minus { white-space: nowrap; }
       + (boxes.length > 1 ? '<p class="nav-h">Ящики</p><button type="button" class="msheet-r" data-mailboxpick="" aria-pressed="' + !sel.length + '"><span>Все ящики</span></button>' + boxes.map(function (b) { var on = sel.indexOf(b.address) >= 0; return '<button type="button" class="msheet-r ck" data-mailboxtoggle="' + esc(b.address) + '" aria-pressed="' + on + '"><span>' + esc(bname(b)) + '</span>' + pill(mailUnread(b.address)) + '</button>'; }).join('') : '')
       + '<button type="button" class="btn" data-mailsheet style="width:100%;margin-top:14px">Готово</button></div>' : '';
     return top + sheet + '<div class="mx' + (mail.open ? ' open' : '') + '">' + side
-      + '<section class="mx-list"><div class="mx-q"><input type="search" id="mailq" data-f="mailq" placeholder="Поиск по письмам" aria-label="Поиск по письмам" value="' + esc(mail.q) + '"></div><div class="mx-rows" id="mailrows">' + mailListHtml() + '</div></section>'
+      + '<section class="mx-list">' + (mail.folder === 'out' ? '<div class="mx-seg" role="tablist"><button type="button" role="tab" data-mysent="1" aria-selected="' + !!mail.mySent + '">Мои</button><button type="button" role="tab" data-mysent="0" aria-selected="' + !mail.mySent + '">Все отправленные</button></div>' : '') + '<div class="mx-q"><input type="search" id="mailq" data-f="mailq" placeholder="Поиск по письмам" aria-label="Поиск по письмам" value="' + esc(mail.q) + '"></div><div class="mx-rows" id="mailrows">' + mailListHtml() + '</div></section>'
       + '<section class="mx-read">' + mailReadHtml() + '</section></div>';
   }
   async function openMail(id) {
@@ -2735,8 +2778,8 @@ td.minus { white-space: nowrap; }
     if ((state.view !== 'mail' && state.view !== 'settings') || !e.target.closest) return;
     var q = function (k) { return e.target.closest('[' + k + ']'); }, x, m = mail.open;
     if (q('data-mailrefresh')) { mail.at = 0; if (sb) { mailLoad(); toast('Обновляем'); } return; }
-    if ((x = q('data-mailfolder'))) { mail.folder = x.dataset.mailfolder; mail.admin = false; mail.open = null; return render(); }
-    if ((x = q('data-mailboxtoggle'))) { var ad = x.dataset.mailboxtoggle, cur = mailSel().slice(), ix = cur.indexOf(ad); if (ix >= 0) cur.splice(ix, 1); else cur.push(ad); mail.sel = cur; mail.folder = 'in'; mail.open = null; return render(); } if (q('data-mailsheet')) { mail.sheet = !mail.sheet; return render(); } if ((x = q('data-mailboxpick'))) { mail.sel = x.dataset.mailboxpick ? [x.dataset.mailboxpick] : []; mail.folder = 'in'; mail.box = x.dataset.mailboxpick; mail.admin = false; mail.open = null; return render(); }
+    if ((x = q('data-mailfolder'))) { mail.folder = x.dataset.mailfolder; mail.sel = []; mail.sheet = false; mail.admin = false; mail.open = null; return render(); }
+    if ((x = q('data-mailfold'))) { mail.fold[x.dataset.mailfold] = !mail.fold[x.dataset.mailfold]; try { localStorage.setItem('auf-mail-fold', JSON.stringify(mail.fold)); } catch (e2) {} return render(); } if ((x = q('data-mailpick'))) { var pk = x.dataset.mailpick.split('|'); mail.folder = pk[0]; mail.sel = [pk[1]]; mail.open = null; return render(); } if ((x = q('data-mysent'))) { mail.mySent = x.dataset.mysent === '1'; mail.open = null; return render(); } if ((x = q('data-mailboxtoggle'))) { var ad = x.dataset.mailboxtoggle, fd = x.dataset.fd || 'in', cur = mail.folder === fd ? mailSel().slice() : [], ix = cur.indexOf(ad); if (ix >= 0) cur.splice(ix, 1); else cur.push(ad); mail.sel = cur; mail.folder = fd; mail.open = null; return render(); } if (q('data-mailsheet')) { mail.sheet = !mail.sheet; return render(); } if ((x = q('data-mailboxpick'))) { mail.sel = x.dataset.mailboxpick ? [x.dataset.mailboxpick] : []; mail.folder = 'in'; mail.box = x.dataset.mailboxpick; mail.admin = false; mail.open = null; return render(); }
     if (q('data-mailadmin')) { mail.admin = !mail.admin; mail.open = null; return render(); }
     if (q('data-mailnew')) return mailCompose();
     if ((x = q('data-mail'))) return openMail(x.dataset.mail);
@@ -3237,6 +3280,87 @@ td.minus { white-space: nowrap; }
     if (t.dataset.order) return openOrder(t.dataset.order);
     if ('statsre' in t.dataset) { views.at = 0; return viewsLoad(); }
   });
+
+  // ---------- AI assistants (MCP) and reminders ----------
+  // Each person creates a personal key; the MCP server (supabase/functions/mcp) runs every tool as that person,
+  // so their assistant sees exactly what they see here. The tool list comes from the server's registry.
+  var ai = { tokens: null, catalog: null, key: '', busy: false, at: 0, err: '' };
+  var MCP_URL = CLOUD.url + '/functions/v1/mcp/';
+  async function aiLoad() {
+    if (!cloudOn || !sb || !cloudUser || ai.busy) return;
+    ai.busy = true;
+    try {
+      var r = await sb.from('mcp_tokens').select('id, user_id, name, prefix, created_at, last_used_at, uses').is('revoked_at', null).order('created_at', { ascending: false });
+      ai.tokens = r.error ? [] : r.data;
+      var c = await sb.functions.invoke('mcp/catalog', { body: {} });
+      ai.catalog = c.error ? null : c.data; ai.err = c.error ? 'Не удалось получить список инструментов' : '';
+    } catch (e) { ai.err = 'Не удалось загрузить'; }
+    ai.busy = false; ai.at = Date.now();
+    if (state.view === 'settings' && !dlg.open) render();
+  }
+  var when2 = function (t) { if (!t) return 'ещё не использовался'; var d = new Date(t); return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' }) + ', ' + d.toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' }); };
+  function aiPanel() {
+    if (cloudOn && (!ai.at || Date.now() - ai.at > 60000)) aiLoad();
+    var h = '<div class="panel" id="aipanel"><h2>AI-ассистенты (MCP)</h2><p class="note" style="margin:0 0 12px">Подключите свой Claude, ChatGPT или другой ассистент к админке: он сможет читать и отправлять письма с ваших ящиков, предлагать темы, смотреть материалы, календарь и задачи, ставить напоминания. Он работает от вашего имени и видит ровно то, что видите вы здесь. Всё, что он делает, попадает в журнал.</p>';
+    if (!cloudOn) return h + '<p class="note">Работает после входа на auf.media/admin.</p></div>';
+    if (ai.key) {
+      var link = MCP_URL + ai.key;
+      h += '<div class="aikey"><b>Ссылка для подключения</b><p class="note" style="margin:4px 0 8px">Скопируйте сейчас: она показывается один раз. Это как пароль — не пересылайте её никому.</p><div class="aikey-row"><input type="text" readonly value="' + esc(link) + '" id="aikeyval" aria-label="Ссылка MCP"><button type="button" class="btn" data-aicopy>Скопировать</button></div>'
+        + '<details open><summary>Как подключить</summary><ul class="aihow"><li><b>Claude</b> (claude.ai или приложение): «Настройки» → «Connectors» → «Add custom connector» → вставьте ссылку.</li><li><b>ChatGPT</b>: «Settings» → «Apps &amp; Connectors» → «Advanced» → включите «Developer mode» → «Create» → вставьте ссылку, Authentication: «No authentication».</li><li><b>Claude Code</b>: <code>claude mcp add --transport http auf ' + esc(link) + '</code></li></ul></details><button type="button" class="btn ghost" data-aidone>Готово, я сохранил</button></div>';
+    } else {
+      h += '<form class="ainew" data-ainew><input name="n" type="text" maxlength="60" placeholder="Название, например «Claude на ноутбуке»" aria-label="Название подключения"><button type="submit" class="btn">Подключить ассистента</button></form>';
+    }
+    var mine = (ai.tokens || []).filter(function (t) { return t.user_id === state.me; });
+    h += '<p class="nav-h" style="margin-top:16px">Мои подключения</p>' + (ai.tokens === null ? '<p class="note">Загружаем…</p>' : mine.length ? '<ul class="list">' + mine.map(function (t) { return '<li><span><b>' + esc(t.name) + '</b> <span class="nil">' + esc(t.prefix) + '…</span></span><span>' + (t.last_used_at ? 'был ' + when2(t.last_used_at) + ' · вызовов: ' + t.uses : 'ещё не использовался') + ' <button type="button" class="tgl" data-airevoke="' + t.id + '">Отключить</button></span></li>'; }).join('') + '</ul>' : '<p class="note">Пока ничего не подключено.</p>');
+    var tools = ai.catalog && ai.catalog.tools;
+    h += '<details class="aitools"><summary>Что умеет ваш ассистент' + (tools ? ' · ' + tools.length : '') + '</summary>' + (tools ? '<ul class="list">' + tools.map(function (t) { return '<li><span><b>' + esc(t.title) + '</b>' + (t.write ? ' <span class="tag p">меняет данные</span>' : '') + '<br><span class="note">' + esc(t.description) + '</span></span></li>'; }).join('') + '</ul><p class="note">Список зависит от вашего уровня: ' + esc(ai.catalog.level) + '. Когда в админке появляются новые функции, ассистент получает их сам.</p>' : '<p class="note">' + esc(ai.err || 'Загружаем…') + '</p>') + '</details>';
+    return h + '</div>';
+  }
+  function aiTeamPanel() {
+    if (!cloudOn || !atLeast('owner')) return '';
+    var all = ai.tokens || [], m = ai.catalog && ai.catalog.matrix, lv = ['Журналист', 'Редактор', 'C-Level', 'MAIN'];
+    return '<div class="panel"><h2>AI-ассистенты команды</h2><p class="note" style="margin:0 0 10px">Видите только вы. Любое подключение можно отключить — ассистент сразу потеряет доступ.</p>'
+      + (all.length ? '<ul class="list">' + all.map(function (t) { return '<li><span><b>' + esc(mname(t.user_id)) + '</b> · ' + esc(t.name) + '</span><span>' + (t.last_used_at ? when2(t.last_used_at) + ' · ' + t.uses : 'не использовался') + ' <button type="button" class="tgl" data-airevoke="' + t.id + '">Отключить</button></span></li>'; }).join('') + '</ul>' : '<p class="note">В команде пока никто не подключил ассистента.</p>')
+      + (m ? '<details class="aitools"><summary>Что доступно на каждом уровне · ' + m.length + ' инструментов</summary><div class="tw"><table class="aimx"><thead><tr><th>Инструмент</th>' + lv.map(function (l) { return '<th>' + l + '</th>'; }).join('') + '</tr></thead><tbody>' + m.map(function (t) { return '<tr><td>' + esc(t.title) + (t.write ? ' <span class="tag p">меняет</span>' : '') + (t.mail ? ' <span class="nil">при выданном ящике</span>' : '') + '</td>' + lv.map(function (l) { return '<td>' + (t.levels.indexOf(l) >= 0 ? '✓' : '<span class="nil">—</span>') + '</td>'; }).join('') + '</tr>'; }).join('') + '</tbody></table></div><p class="note">Права ассистента совпадают с правами человека в админке и проверяются базой на каждом запросе.</p></details>' : '')
+      + '</div>';
+  }
+  document.addEventListener('submit', async function (e) {
+    var f = e.target.closest && e.target.closest('[data-ainew]'); if (!f) return;
+    e.preventDefault(); if (!sb) return;
+    var r = await sb.rpc('mcp_token_create', { p_name: f.n.value.trim() || 'Ассистент' });
+    if (r.error) return toast('Не создано: ' + (/too many/.test(r.error.message) ? 'не больше 10 подключений' : cloudWhy(r.error)));
+    ai.key = r.data; ai.at = 0; render();
+  });
+  document.addEventListener('click', async function (e) {
+    var t = e.target.closest && e.target.closest('[data-aicopy],[data-aidone],[data-airevoke]'); if (!t) return;
+    if ('aicopy' in t.dataset) { var v = document.getElementById('aikeyval'); try { await navigator.clipboard.writeText(v.value); toast('Скопировано'); } catch (x) { v.select(); document.execCommand('copy'); toast('Скопировано'); } return; }
+    if ('aidone' in t.dataset) { ai.key = ''; return render(); }
+    if (t.dataset.airevoke) { if (!confirm('Отключить этого ассистента? Он сразу потеряет доступ к админке.')) return; var r = await sb.rpc('mcp_token_revoke', { p_id: t.dataset.airevoke }); toast(r.error ? 'Не отключено: ' + cloudWhy(r.error) : 'Отключено'); ai.at = 0; aiLoad(); }
+  });
+
+  // Reminders: personal, a push arrives at the set time (database schedule, auf-supabase-11.sql).
+  var rem = { rows: null, at: 0 };
+  async function remLoad() { if (!cloudOn || !sb || !cloudUser) return; var r = await sb.from('reminders').select('id, text, at, sent_at, link').or('sent_at.is.null,sent_at.gt.' + new Date(Date.now() - 864e5).toISOString()).order('at'); rem.rows = r.error ? [] : r.data; rem.at = Date.now(); if (state.view === 'home' && !dlg.open) render(); }
+  function remPanel() {
+    if (!cloudOn) return '';
+    if (!rem.at || Date.now() - rem.at > 60000) remLoad();
+    var rows = rem.rows || [];
+    var d0 = new Date(Date.now() + 3600e3), def = d0.getFullYear() + '-' + String(d0.getMonth() + 1).padStart(2, '0') + '-' + String(d0.getDate()).padStart(2, '0') + 'T' + String(d0.getHours()).padStart(2, '0') + ':00';
+    return '<div class="panel"><h2>Напоминания</h2>' + (rows.length ? '<ul class="list">' + rows.map(function (r) { return '<li' + (r.sent_at ? ' class="remdone"' : '') + '><span>' + esc(r.text) + '</span><span>' + when2(r.at) + (r.sent_at ? ' · пришло' : '') + ' <button type="button" class="tgl" data-remdel="' + r.id + '" aria-label="Удалить">×</button></span></li>'; }).join('') + '</ul>' : '<p class="note" style="margin:0 0 8px">Напоминаний нет. Поставьте здесь или попросите своего AI-ассистента: «напомни завтра в 10 позвонить в типографию».</p>')
+      + '<form class="remnew" data-remnew><input name="t" type="text" maxlength="300" required placeholder="О чём напомнить" aria-label="О чём напомнить"><input name="at" type="datetime-local" required value="' + def + '" aria-label="Когда"><button type="submit" class="btn ghost">Добавить</button></form><p class="note">Придёт пушем на устройства, где включены уведомления.</p></div>';
+  }
+  document.addEventListener('submit', async function (e) {
+    var f = e.target.closest && e.target.closest('[data-remnew]'); if (!f) return;
+    e.preventDefault(); if (!sb) return;
+    var when = new Date(f.at.value); if (isNaN(+when)) return toast('Не понял время');
+    var r = await sb.from('reminders').insert({ text: f.t.value.trim().slice(0, 300), at: when.toISOString() });
+    toast(r.error ? 'Не сохранено: ' + cloudWhy(r.error) : 'Напомню ' + when2(when)); rem.at = 0; remLoad();
+  });
+  document.addEventListener('click', async function (e) {
+    var t = e.target.closest && e.target.closest('[data-remdel]'); if (!t || !sb) return;
+    await sb.from('reminders').delete().eq('id', t.dataset.remdel); rem.at = 0; remLoad();
+  });
+  var homeBase = RENDER.home; RENDER.home = function () { return homeBase() + remPanel(); };
 
   // ---------- Installable app and push notifications ----------
   // The admin installs to the home screen (manifest + sw.js next to this page). Push works on iPhone only from the
