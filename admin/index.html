@@ -978,7 +978,10 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
 .ig-btn { width: 100%; min-height: 50px; margin-bottom: 16px; font-size: 15px; }
 .ig-skip { border: 0; background: none; color: var(--mute); font: 14px Arial, Helvetica, sans-serif; text-decoration: underline; cursor: pointer; padding: 10px; }
 #tour { position: fixed; inset: 0; z-index: 85; display: flex; align-items: center; justify-content: center; padding: 16px; }
-.tour-bg { position: absolute; inset: 0; background: rgb(0 0 0 / .55); }
+.tour-bg { position: absolute; inset: 0; background: rgb(0 0 0 / .4); }
+#tour.side .tour-bg { background: rgb(0 0 0 / .12); }
+@media (min-width: 861px) { #tour.side { align-items: flex-end; justify-content: flex-end; padding: 24px; } #tour.side .tour-card { max-width: 420px; } }
+.tour-hl { outline: 2px solid var(--yellow) !important; outline-offset: -2px; border-radius: 6px; }
 .tour-card { position: relative; width: 100%; max-width: 520px; max-height: calc(100vh - 32px); overflow-y: auto; padding: 26px 24px 20px; border: 1px solid var(--line); border-radius: 14px; background: var(--panel); color: var(--text); box-shadow: 0 24px 70px rgb(0 0 0 / .5); animation: tourin .25s ease-out; }
 @keyframes tourin { from { opacity: 0; transform: translateY(12px) scale(.98); } to { opacity: 1; transform: none; } }
 .tour-x { position: absolute; top: 10px; right: 10px; width: 36px; height: 36px; border: 0; border-radius: 50%; background: none; color: var(--mute); font-size: 22px; cursor: pointer; }
@@ -3893,14 +3896,23 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
     var dots = st.map(function (y, k) { return '<i class="' + (k === i ? 'on' : k <= t.max ? 'seen' : '') + '"></i>'; }).join('');
     return '<div class="tour-card" role="dialog" aria-modal="true" aria-label="Знакомство с админкой"><button type="button" class="tour-x" data-tourclose aria-label="Закрыть">×</button>'
       + '<div class="tour-ico">' + x.icon + '</div><h2>' + x.title + '</h2>' + body
-      + (x.go ? '<button type="button" class="tgl tour-look" data-tourgo="' + x.go + '">Открыть раздел →</button>' : '')
       + '<div class="tour-foot"><div class="tour-dots">' + dots + '</div><span class="grow"></span>' + (i > 0 && !x.fin ? '<button type="button" class="btn ghost" data-tourback>Назад</button>' : '')
       + '<button type="button" class="btn" data-tournext>' + (x.next || (x.ai && !t.key ? 'Позже' : 'Дальше')) + '</button></div></div>';
   }
   function tourRender() {
     var t = tourGet(), el = document.getElementById('tour');
     if (!t.open) { if (el) el.remove(); }
-    else { if (!el) { el = document.createElement('div'); el.id = 'tour'; document.body.appendChild(el); } el.innerHTML = '<div class="tour-bg" data-tourclose></div>' + tourHtml(); }
+    else {
+      // the step's section opens right away, and its menu item is outlined
+      var cur = tourSteps()[Math.min(t.step, tourSteps().length - 1)];
+      if (cur && cur.go && state.view !== cur.go && allowed(cur.go)) go(cur.go);
+      if (!el) { el = document.createElement('div'); el.id = 'tour'; document.body.appendChild(el); }
+      el.className = cur && cur.go ? 'side' : '';
+      el.innerHTML = '<div class="tour-bg" data-tourclose></div>' + tourHtml();
+    }
+    var hl = t.open ? (tourSteps()[Math.min(t.step, tourSteps().length - 1)] || {}).go : '';
+    [].forEach.call(document.querySelectorAll('.tour-hl'), function (b) { b.classList.remove('tour-hl'); });
+    if (hl) [].forEach.call(document.querySelectorAll('#nav [data-go="' + hl + '"], #tabbar [data-go="' + hl + '"]'), function (b) { b.classList.add('tour-hl'); });
     var st = tourSteps(), n = Math.min(t.max + 1, st.length);
     [].forEach.call(document.querySelectorAll('.tourpill'), function (b) { b.hidden = t.done || t.open; var c = b.querySelector('em'); if (c) c.textContent = n + ' из ' + st.length; });
   }
@@ -3929,7 +3941,6 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
       if (cur.fin) { t.done = true; t.open = false; t.key = ''; tourSave(); tourRender(); return toast('Добро пожаловать!'); }
       t.step = Math.min(st.length - 1, t.step + 1); t.max = Math.max(t.max, t.step);
       if (st[t.step].fin) { t.done = true; confetti(); }
-      if (st[t.step].go && state.view !== st[t.step].go) go(st[t.step].go);
       tourSave(); tourRender();
     }
   });
