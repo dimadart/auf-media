@@ -5,6 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#0b0b0b" id="themecolor">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon-180.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="apple-mobile-web-app-title" content="AUF">
 <script>try { if (localStorage.getItem('auf-admin-theme') === 'light') document.documentElement.dataset.theme = 'light'; if (localStorage.getItem('auf-admin-ui') === 'v2') document.documentElement.dataset.ui = 'v2'; } catch (e) {}</script>
 <title>AUF MEDIA — редакция</title>
 <style>
@@ -739,6 +745,18 @@ aside { padding: 14px 12px 12px; gap: 0; overflow: hidden; }
 .rbtn { margin-left: 4px; padding: 4px 8px; border-radius: 4px; color: var(--mute); }
 td .nil { color: var(--dim); }
 .warnnote { padding: 10px 12px; border: 1px solid var(--warnline); border-radius: 4px; color: var(--text); }
+
+/* ---------- Installable app and notifications ---------- */
+.appsteps { margin: 0 0 10px; padding-left: 20px; line-height: 1.6; }
+.appbtns { display: flex; flex-wrap: wrap; gap: 8px; }
+.apptopics { margin-top: 16px; }
+.apptopics label { display: flex; align-items: center; gap: 10px; min-height: 40px; margin: 0; font: 500 14px/1.3 Arial, Helvetica, sans-serif; letter-spacing: 0; text-transform: none; color: var(--text); cursor: pointer; }
+.apptopics input { width: 18px; height: 18px; margin: 0; accent-color: var(--yellow); }
+#appbar { position: fixed; z-index: 60; left: 12px; right: 12px; top: calc(10px + env(safe-area-inset-top)); display: flex; align-items: center; gap: 10px; padding: 8px 8px 8px 10px; background: var(--panel); color: var(--text); border: 1px solid var(--line); border-radius: 6px; box-shadow: 0 10px 30px rgb(0 0 0 / .35); font: 500 13.5px/1.3 Arial, Helvetica, sans-serif; }
+#appbar img { width: 32px; height: 32px; border-radius: 6px; flex: none; }
+#appbar span { flex: 1; }
+#appbar button { flex: none; min-height: 34px; padding: 0 10px; border: 1px solid var(--line); border-radius: 4px; background: transparent; color: var(--text); font: inherit; cursor: pointer; }
+#appbar [data-apphide] { width: 34px; padding: 0; font-size: 18px; }
 </style>
 </head>
 <body>
@@ -1184,13 +1202,13 @@ td .nil { color: var(--dim); }
     settings: function () {
       if (!atLeast('owner')) {
         var me = member(state.me) || {}, mine = myBoxes().filter(function (b) { return b.address !== CATCH; });
-        return '<div class="panel" style="margin-top:0"><h2>Почта</h2><ul class="list">'
+        return appPanel() + '<div class="panel"><h2>Почта</h2><ul class="list">'
           + (me.email ? '<li><b>Для входа</b><span>' + esc(me.email) + '</span></li>' : '')
           + '<li><b>Рабочая</b><span>' + (mine.length ? mine.map(function (b) { return esc(b.address); }).join(', ') : 'адрес не выдан') + '</span></li></ul>'
           + (mine.length ? '<button type="button" class="btn ghost" data-go="mail">Открыть почту</button><p class="note">Письма рабочего ящика читаются и пишутся в разделе «Почта».</p>' : '<p class="note">Рабочий адрес на auf.media выдаёт MAIN. Когда он появится, в меню откроется раздел «Почта».</p>')
           + '</div><div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>';
       }
-      return '<div class="panel" style="margin-top:0"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
+      return appPanel() + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
         + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
         + (cloudOn ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn ghost" data-importcopy>Загрузить копию из прототипа</button><p class="note">Данные лежат в общей базе. «Загрузить копию» добавляет материалы, задачи и контакты из файла, который вы скачали в старом прототипе; то, что уже есть в базе, не перезаписывается. Настройки видит только MAIN.</p></div>'
           : '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>');
@@ -2805,6 +2823,131 @@ td .nil { color: var(--dim); }
       }, 0);
     });
   }
+
+  // ---------- Installable app and push notifications ----------
+  // The admin installs to the home screen (manifest + sw.js next to this page). Push works on iPhone only from the
+  // installed app (iOS 16.4+). Devices subscribe here; the database decides who gets what (auf-supabase-9.sql).
+  var VAPID_PUBLIC = 'BE6rjgrjUmVjubJNx0Fq3In4taY4FWX9ABk3CLc5mc00HCiZwtcgG1Wr97xmdLjT-uLn6tYAVAdNJmZHp8dGog8';
+  var PUSH_TOPICS = [['mail', 'Новые письма в моих ящиках'], ['assign', 'Мне назначили материал или задачу'], ['stage', 'Мой материал перевели на другой этап'], ['idea', 'Новая тема в моих рубриках']];
+  var app = { reg: null, sub: null, off: null, busy: false, prompt: null, loaded: false };
+  var isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  var standalone = function () { return navigator.standalone === true || matchMedia('(display-mode: standalone)').matches; };
+  var pushable = function () { return 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window; };
+  var keyBytes = function (b) { var s = atob(b.replace(/-/g, '+').replace(/_/g, '/') + '==='.slice((b.length + 3) % 4)), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; };
+  function appRerender() { if (state.view === 'settings' && !dlg.open) render(); }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js', { scope: './' }).then(function (reg) {
+      app.reg = reg;
+      return reg.pushManager && reg.pushManager.getSubscription();
+    }).then(function (sub) { app.sub = sub || null; appRerender(); }).catch(function () {});
+    navigator.serviceWorker.addEventListener('message', function (e) { if (e.data && e.data.type === 'auf-open') openLink(e.data.url); });
+  }
+  window.addEventListener('beforeinstallprompt', function (e) { e.preventDefault(); app.prompt = e; appRerender(); });
+  async function appPrefs() {
+    if (app.loaded || !cloudOn || !sb || !cloudUser) return;
+    app.loaded = true;
+    try { var r = await sb.from('push_prefs').select('off').maybeSingle(); app.off = (r.data && r.data.off) || []; } catch (e) { app.off = []; }
+    appRerender();
+  }
+  function appPanel() {
+    appPrefs();
+    var inst = standalone(), perm = 'Notification' in window ? Notification.permission : 'default', on = !!app.sub && perm === 'granted';
+    var h = '<div class="panel" style="margin-top:0" id="apppanel"><h2>Приложение на телефоне</h2>';
+    if (inst) h += '<p class="note" style="margin:0">Админка установлена как приложение на этом устройстве.</p>';
+    else if (isIOS) h += '<ol class="appsteps"><li>Откройте <b>auf.media/admin</b> в Safari.</li><li>Нажмите «Поделиться» — квадрат со стрелкой вверх.</li><li>Выберите «На экран „Домой“» и нажмите «Добавить».</li><li>Откройте AUF с экрана «Домой» и войдите почтой и паролем.</li></ol><p class="note">Уведомления на iPhone работают только в установленном приложении, iOS 16.4 и новее. Ссылка для входа из письма открывается в Safari, поэтому в приложении входите паролем.</p>';
+    else if (app.prompt) h += '<button type="button" class="btn" data-appinstall>Установить приложение</button>';
+    else h += '<p class="note" style="margin:0">На Android: Chrome → меню ⋮ → «Установить приложение». На компьютере: значок установки справа в адресной строке Chrome или Edge. Можно и без установки: уведомления придут в браузер.</p>';
+    h += '<h2 style="margin-top:22px">Уведомления</h2>';
+    if (!cloudOn) h += '<p class="note" style="margin:0">Работают после входа на auf.media/admin, в прототипе их нет.</p>';
+    else if (isIOS && !inst) h += '<p class="note" style="margin:0">Сначала установите приложение на экран «Домой» и откройте его оттуда.</p>';
+    else if (!pushable()) h += '<p class="note" style="margin:0">Этот браузер не поддерживает уведомления.</p>';
+    else if (perm === 'denied') h += '<p class="note" style="margin:0">Уведомления запрещены для этого сайта. Разрешите их в настройках ' + (isIOS ? 'iPhone: «Настройки» → «Уведомления» → AUF.' : 'браузера для auf.media.') + '</p>';
+    else {
+      h += '<p class="note" style="margin:0 0 10px">' + (on ? 'Включены на этом устройстве.' : 'На этом устройстве выключены.') + ' Каждый телефон и компьютер включается отдельно.</p>'
+        + '<div class="appbtns">' + (on ? '<button type="button" class="btn ghost" data-pushtest' + (app.busy ? ' disabled' : '') + '>Проверить</button><button type="button" class="btn ghost" data-pushoff' + (app.busy ? ' disabled' : '') + '>Выключить здесь</button>'
+          : '<button type="button" class="btn" data-pushon' + (app.busy ? ' disabled' : '') + '>Включить уведомления</button>') + '</div>';
+      var topics = PUSH_TOPICS.filter(function (t) { return t[0] !== 'idea' || atLeast('editor'); });
+      if (app.off) h += '<div class="apptopics"><p class="nav-h">О чём сообщать</p>' + topics.map(function (t) { return '<label><input type="checkbox" data-pushtopic="' + t[0] + '"' + (app.off.indexOf(t[0]) < 0 ? ' checked' : '') + '><span>' + t[1] + '</span></label>'; }).join('') + '<p class="note">Это для всех ваших устройств. За свои действия уведомления не приходят.</p></div>';
+    }
+    return h + '</div>';
+  }
+  async function pushOn() {
+    var perm = await Notification.requestPermission(); // first, while the tap still counts
+    if (perm !== 'granted') { appRerender(); return toast('Не включено: уведомления не разрешены'); }
+    app.busy = true; appRerender();
+    try {
+      var reg = app.reg || await navigator.serviceWorker.ready;
+      var sub = await reg.pushManager.getSubscription() || await reg.pushManager.subscribe({ userVisibleOnly: true, applicationServerKey: keyBytes(VAPID_PUBLIC) });
+      var j = sub.toJSON();
+      var r = await sb.rpc('push_subscribe', { p_endpoint: j.endpoint, p_p256dh: j.keys.p256dh, p_auth: j.keys.auth, p_ua: navigator.userAgent.slice(0, 200) });
+      if (r.error) throw r.error;
+      app.sub = sub; toast('Уведомления включены');
+    } catch (e) { toast('Не включено: ' + (e && e.message || 'ошибка')); }
+    app.busy = false; appRerender();
+  }
+  async function pushOff() {
+    app.busy = true; appRerender();
+    try { if (app.sub) { await sb.rpc('push_unsubscribe', { p_endpoint: app.sub.endpoint }); await app.sub.unsubscribe(); } app.sub = null; toast('Уведомления на этом устройстве выключены'); }
+    catch (e) { toast('Не выключено: ' + (e && e.message || 'ошибка')); }
+    app.busy = false; appRerender();
+  }
+  async function pushTest() {
+    app.busy = true; appRerender();
+    try {
+      var r = await sb.functions.invoke('push-send', { body: { test: true } });
+      if (r.error) throw r.error;
+      toast(r.data && r.data.sent ? 'Отправлено. Уведомление придёт через пару секунд' : 'Не отправлено: устройство не найдено, включите заново');
+    } catch (e) { toast('Не отправлено: ' + cloudWhy(e)); }
+    app.busy = false; appRerender();
+  }
+  async function pushTopic(t, on) {
+    var off = (app.off || []).filter(function (x) { return x !== t; });
+    if (!on) off.push(t);
+    app.off = off;
+    var r = await sb.from('push_prefs').upsert({ user_id: cloudUser.id, off: off });
+    toast(r.error ? 'Не сохранено: ' + cloudWhy(r.error) : 'Сохранено');
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-pushon],[data-pushoff],[data-pushtest],[data-appinstall],[data-apphide],[data-apphow]');
+    if (!t) return;
+    if ('pushon' in t.dataset) return pushOn();
+    if ('pushoff' in t.dataset) return pushOff();
+    if ('pushtest' in t.dataset) return pushTest();
+    if ('appinstall' in t.dataset && app.prompt) { app.prompt.prompt(); app.prompt.userChoice.then(function () { app.prompt = null; appRerender(); }); return; }
+    if ('apphide' in t.dataset || 'apphow' in t.dataset) { try { localStorage.setItem('auf-admin-install', 'hide'); } catch (x) {} var b = document.getElementById('appbar'); if (b) b.remove(); if ('apphow' in t.dataset) go('settings'); }
+  });
+  document.addEventListener('change', function (e) { var t = e.target; if (t && t.dataset && t.dataset.pushtopic) pushTopic(t.dataset.pushtopic, t.checked); });
+
+  // A tap on a notification opens what it is about: #card=ID, #mail, #tasks.
+  var linkWant = null;
+  function openLink(url) {
+    var h = ''; try { h = new URL(url, location.href).hash; } catch (e) {}
+    if (!h) return;
+    linkWant = h; linkTry();
+  }
+  function linkTry() {
+    if (!linkWant) return;
+    if (cloudOn && !synced) return setTimeout(linkTry, 700);
+    var h = linkWant, m = /^#card=([\w-]+)$/.exec(h);
+    linkWant = null;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (e) {}
+    if (m) { if (cardById(m[1])) { go('board'); openCard(m[1]); } else toast('Материал не найден или недоступен'); return; }
+    if (h === '#mail' && allowed('mail')) return go('mail');
+    if (h === '#tasks' && allowed('tasks')) return go('tasks');
+  }
+  if (/^#(card=[\w-]+|mail|tasks)$/.test(location.hash)) { linkWant = location.hash; setTimeout(linkTry, 300); }
+
+  // A quiet hint on phones until the admin is installed.
+  setTimeout(function () {
+    var hidden = false; try { hidden = localStorage.getItem('auf-admin-install') === 'hide'; } catch (e) {}
+    if (hidden || standalone() || !matchMedia('(max-width: 860px)').matches || (cloudOn && !gate.hidden)) return;
+    var b = document.createElement('div'); b.id = 'appbar'; b.setAttribute('role', 'note');
+    b.innerHTML = '<img src="icon-180.png" alt=""><span>Установите AUF на экран «Домой»: так приходят уведомления.</span><button type="button" data-apphow>Как</button><button type="button" data-apphide aria-label="Скрыть">×</button>';
+    document.body.appendChild(b);
+  }, 2500);
+  // The app icon shows unread letters, where the system supports it.
+  setInterval(function () { try { if (navigator.setAppBadge && cloudOn && allowed('mail')) { var n = mailUnread(''); if (n) navigator.setAppBadge(n); else navigator.clearAppBadge(); } } catch (e) {} }, 15000);
+
   // Copy made in the browser prototype → shared database. Adds what is missing, never overwrites.
   function importCopy() {
     var inp = document.createElement('input'); inp.type = 'file'; inp.accept = 'application/json,.json';
