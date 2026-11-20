@@ -3821,16 +3821,18 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   // Phones in a browser get a full-screen request to save the admin as an app (sign-in in Safari is not shared with it).
   // The first time someone opens the admin (app or computer) a tour explains the sections, sets theme and notifications,
   // and connects their AI assistant. Closing it early leaves a blinking «Знакомство» entry until the end is reached.
+  // On phones the request comes after sign-in in the browser (and after the password is set): the installed app does not
+  // share the Safari session, so people sign in there with email and password.
+  function needInstall() { if (standalone() || !matchMedia('(max-width: 860px)').matches) return false; try { if (sessionStorage.getItem('auf-browser-ok')) return false; } catch (e) {} return true; }
   function installGate() {
-    if (standalone() || !matchMedia('(max-width: 860px)').matches) return;
-    try { if (sessionStorage.getItem('auf-browser-ok')) return; } catch (e) {}
+    if (!needInstall() || document.getElementById('installgate')) return;
     var g = document.createElement('div'); g.id = 'installgate'; g.setAttribute('role', 'dialog'); g.setAttribute('aria-label', 'Установите приложение');
-    var steps = isIOS ? '<ol class="ig-steps"><li><span>1</span>Нажмите ' + SHARE_ICON + ' «Поделиться» внизу Safari</li><li><span>2</span>Выберите «На экран „Домой“» и нажмите «Добавить»</li><li><span>3</span>Откройте AUF с экрана «Домой» и войдите</li></ol>'
-      : '<button type="button" class="btn ig-btn" data-iginstall>Установить приложение</button><ol class="ig-steps"><li><span>1</span>Если кнопка не сработала: меню браузера ⋮</li><li><span>2</span>«Установить приложение» или «Добавить на главный экран»</li><li><span>3</span>Откройте AUF с главного экрана и войдите</li></ol>';
+    var steps = isIOS ? '<ol class="ig-steps"><li><span>1</span>Нажмите ' + SHARE_ICON + ' «Поделиться» внизу Safari</li><li><span>2</span>Выберите «На экран „Домой“» и нажмите «Добавить»</li><li><span>3</span>Откройте AUF с экрана «Домой» и войдите своей почтой и паролем</li></ol>'
+      : '<button type="button" class="btn ig-btn" data-iginstall>Установить приложение</button><ol class="ig-steps"><li><span>1</span>Если кнопка не сработала: меню браузера ⋮</li><li><span>2</span>«Установить приложение» или «Добавить на главный экран»</li><li><span>3</span>Откройте AUF с главного экрана и войдите своей почтой и паролем</li></ol>';
     g.innerHTML = '<div class="ig"><img src="icon-180.png" alt="" class="ig-ico"><h1>Сохраните AUF как приложение</h1><p>С телефона админка работает как приложение: на весь экран, с уведомлениями о письмах и задачах, вход один раз.</p>' + steps + '<button type="button" class="ig-skip" data-igskip>Продолжить в браузере</button></div>';
     document.body.appendChild(g);
   }
-  installGate();
+  var installT = setInterval(function () { if (cloudOn && (!cloudUser || !synced || !gate.hidden)) return; clearInterval(installT); installGate(); }, 800);
   document.addEventListener('click', function (e) {
     var t = e.target.closest && e.target.closest('[data-igskip],[data-iginstall]'); if (!t) return;
     if ('iginstall' in t.dataset) { if (app.prompt) { app.prompt.prompt(); app.prompt.userChoice.then(function () { app.prompt = null; }); } else toast('Откройте меню браузера ⋮ → «Установить приложение»'); return; }
@@ -3928,7 +3930,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   // start once per person per device, after sign-in, in the app on phones
   var tourT = setInterval(function () {
     if (cloudOn && (!cloudUser || !synced || !gate.hidden)) return;
-    if (document.getElementById('installgate')) return;
+    if (document.getElementById('installgate') || needInstall()) return;
     clearInterval(tourT);
     var t = tourGet(); if (!t.started && !t.done) tourOpen(0); else tourRender();
   }, 1200);
