@@ -1024,6 +1024,46 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
 .ig-k { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; background: var(--chip); color: var(--text); font-style: normal; }
 .ig-k img { width: 26px; height: 26px; border-radius: 6px; }
 .ig-note { margin: -8px 0 14px; color: var(--mute); font: 13px/1.45 Arial, Helvetica, sans-serif; }
+
+/* ---------- Dialogs on phones: compact two-column forms, dates that fit, one row of actions ---------- */
+input[type=date], input[type=time] { min-width: 0; max-width: 100%; display: block; -webkit-appearance: none; appearance: none; }
+input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-and-time-value { text-align: left; }
+.grid2 > * { min-width: 0; }
+@media (max-width: 860px) {
+  dialog .grid2 { grid-template-columns: 1fr 1fr; gap: 10px 10px; }
+  dialog .grid2 label { font-size: 12px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  dialog .grid2 select, dialog .grid2 input:not([type=checkbox]):not([type=color]) { padding-left: 10px; padding-right: 8px; }
+  dialog h2 { margin-bottom: 12px; }
+  .actions { flex-wrap: nowrap; align-items: center; gap: 8px; }
+  .actions > span:first-child { flex: none; }
+  .actions > span:last-child { flex: 1; flex-wrap: nowrap; justify-content: flex-end; }
+  .actions > span:first-child:empty + span { flex: 1; }
+  .actions .btn { white-space: nowrap; padding: 0 12px; }
+  .actions .btn.ghost[id$=close] { display: none; }
+}
+
+/* ---------- «Все меро»: filters as chips ---------- */
+.evbar { display: flex; flex-direction: column; gap: 10px; margin-bottom: 6px; max-width: 860px; }
+.evtop { display: flex; gap: 8px; }
+.evtop input { flex: 1; min-width: 0; }
+.evseg { display: flex; gap: 4px; padding: 3px; border: 1px solid var(--line); border-radius: 8px; width: fit-content; max-width: 100%; overflow-x: auto; }
+.evseg button { flex: none; height: 34px; padding: 0 14px; border: 0; border-radius: 6px; background: none; color: var(--mute); font: 600 13.5px/1 Arial, Helvetica, sans-serif; cursor: pointer; white-space: nowrap; }
+.evseg button[aria-selected=true] { background: var(--inv); color: var(--inv-text); }
+.evchips { display: flex; align-items: center; gap: 6px; overflow-x: auto; scrollbar-width: none; padding-bottom: 2px; }
+.evchips::-webkit-scrollbar { display: none; }
+.evlbl { flex: none; width: 74px; font-size: 12px; color: var(--mute); text-transform: uppercase; letter-spacing: .04em; }
+.evc { flex: none; height: 32px; padding: 0 12px; border: 1px solid var(--line); border-radius: 16px; background: none; color: var(--text); font: 500 13.5px/1 Arial, Helvetica, sans-serif; cursor: pointer; white-space: nowrap; }
+.evc i { font-style: normal; color: var(--mute); margin-left: 2px; }
+.evc[aria-pressed=true] { background: var(--yellow); border-color: var(--yellow); color: var(--on-acc, #000); }
+.evc[aria-pressed=true] i { color: inherit; opacity: .7; }
+.evsep { flex: none; width: 1px; height: 22px; background: var(--line); margin: 0 4px; }
+.evsrc { font-size: 12.5px; color: var(--mute); }
+.evsrc.s-ai { color: var(--link); }
+@media (max-width: 860px) {
+  .evlbl { width: auto; margin-right: 2px; }
+  .evseg { width: 100%; } .evseg button { flex: 1 1 0; min-width: 0; padding: 0 4px; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; }
+  .evchips { margin: 0 -16px; padding: 0 16px 2px; }
+}
 </style>
 </head>
 <body>
@@ -1928,7 +1968,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
       + '<div class="full"><label for="ct">Заголовок или рабочее название</label><input id="ct" name="title" type="text" required value="' + esc(c.title) + '"' + dis + '></div>'
       + '<div><label for="cr">Рубрика</label><select id="cr" name="rubric"' + dis + '>' + opt(RUBRICS.concat(c.rubric && RUBRICS.indexOf(c.rubric) < 0 ? [c.rubric] : []), c.rubric, 'Без рубрики') + '</select></div>'
       + '<div><label for="cf">Формат</label><select id="cf" name="format"' + dis + '>' + opt(FORMATS, c.format) + '</select></div>'
-      + '<div><label for="cs">Этап</label><select id="cs" name="stage"' + dis + '>' + opt(stages, c.stage) + '</select></div>'
+      + '<div class="full"><label for="cs">Этап</label><select id="cs" name="stage"' + dis + '>' + opt(stages, c.stage) + '</select></div>'
       + '<div><label for="ca">Автор</label><select id="ca" name="author"' + (full ? '' : ' disabled') + '>' + opt(state.team, c.author) + '</select></div>'
       + '<div><label for="ce">Редактор</label><select id="ce" name="editor"' + (full ? '' : ' disabled') + '>' + opt(state.team.filter(function (m) { return RANK[m.role] >= RANK.editor; }), c.editor, 'Не назначен') + '</select></div>'
       + '<div><label for="cd">Дедлайн автора</label><input id="cd" name="deadline" type="date" value="' + esc(c.deadline) + '"' + dis + '></div>'
@@ -3531,6 +3571,8 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   var EVTYPES = ['Концерт', 'Вечеринка', 'Выставка', 'Лекция или talk', 'Кинопоказ', 'Театр', 'Фестиваль', 'Нетворкинг', 'Маркет', 'Спорт', 'Мастер-класс', 'Другое'];
   var EVFORMATS = ['Офлайн', 'Онлайн', 'Гибрид'];
   var EVSRC = { manual: 'добавили в админке', ai: 'нашёл ассистент', reader: 'предложил читатель', organizer: 'предложил организатор' };
+  var EVSRCS = { manual: ['✍️', 'Вручную'], ai: ['🤖', 'Ассистент'], reader: ['📨', 'Читатели'], organizer: ['🏢', 'Организаторы'] };
+  var evHost = function (u) { try { return new URL(u).hostname.replace(/^www\./, ''); } catch (e) { return ''; } };
   var ev = { rows: null, notes: [], votes: [], at: 0, busy: false, open: '', t: 0, err: '' };
   function evStale() { clearTimeout(ev.t); ev.t = setTimeout(function () { ev.at = 0; if (state.view === 'events') evLoad(); }, 600); }
   async function evLoad() {
@@ -3557,17 +3599,28 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   var evVotes = function (id) { var up = 0, dn = 0, mine = 0; ev.votes.forEach(function (v) { if (v.event_id === id) { if (v.v > 0) up++; else dn++; if (v.user_id === state.me) mine = v.v; } }); return { up: up, dn: dn, mine: mine }; };
   RENDER.events = function () {
     if (!ev.at || (cloudOn && Date.now() - ev.at > 60000)) evLoad();
-    var q = (filters.evq || '').trim().toLowerCase(), past = filters.evpast === '1';
-    var rows = (ev.rows || []).filter(function (r) {
+    var q = (filters.evq || '').trim().toLowerCase(), when = filters.evwhen || 'up', past = when === 'past';
+    var wk = iso(new Date(Date.now() + 6 * 864e5)), dow = new Date().getDay(), sat = iso(new Date(Date.now() + ((6 - dow + 7) % 7) * 864e5)), sun = iso(new Date(Date.now() + ((7 - dow) % 7) * 864e5));
+    if (dow === 0) sat = TODAY;
+    var inWhen = function (d) { var x = d.date || ''; if (when === 'past') return x && x < TODAY; if (x && x < TODAY) return false; if (when === 'week') return x && x <= wk; if (when === 'weekend') return x && x >= sat && x <= sun; return true; };
+    var base = (ev.rows || []).filter(function (r) { var d = r.data || {}; return inWhen(d) && (!q || [d.title, d.organizers, d.venue, d.city, d.about, d.type, d.url].join(' ').toLowerCase().indexOf(q) >= 0); });
+    var pass = function (r, skip) {
       var d = r.data || {};
-      if (past ? !(d.date && d.date < TODAY) : (d.date && d.date < TODAY)) return false;
-      if (filters.evtype && d.type !== filters.evtype) return false;
-      if (filters.evfmt && d.format !== filters.evfmt) return false;
+      if (skip !== 'type' && filters.evtype && d.type !== filters.evtype) return false;
+      if (skip !== 'src' && filters.evsrc && r.source !== filters.evsrc) return false;
+      if (filters.evfmt === '1' && d.format !== 'Онлайн' && d.format !== 'Гибрид') return false;
       if (filters.evlike === '1' && evVotes(r.id).mine !== 1) return false;
-      return !q || [d.title, d.organizers, d.venue, d.city, d.about, d.type].join(' ').toLowerCase().indexOf(q) >= 0;
-    }).sort(function (a, b) { var x = (a.data.date || '9999') + (a.data.time || ''), y = (b.data.date || '9999') + (b.data.time || ''); return past ? (x < y ? 1 : -1) : (x < y ? -1 : x > y ? 1 : 0); });
-    var h = '<div class="bar"><input class="grow" type="search" data-f="evq" placeholder="Поиск: название, организатор, место" value="' + esc(filters.evq || '') + '"><select data-f="evtype" aria-label="Тип">' + selOpts(EVTYPES, filters.evtype, 'Все типы') + '</select><select data-f="evfmt" aria-label="Формат">' + selOpts(EVFORMATS, filters.evfmt, 'Любой формат') + '</select>'
-      + '<select data-f="evlike" aria-label="Отметки">' + selOpts([{ id: '1', name: 'Мне нравится' }], filters.evlike, 'Все отметки') + '</select><select data-f="evpast" aria-label="Когда">' + selOpts([{ id: '1', name: 'Прошедшие' }], filters.evpast, 'Предстоящие') + '</select><button type="button" class="btn" data-evnew>+ Мероприятие</button></div>';
+      return true;
+    };
+    var rows = base.filter(function (r) { return pass(r); }).sort(function (a, b) { var x = (a.data.date || '9999') + (a.data.time || ''), y = (b.data.date || '9999') + (b.data.time || ''); return past ? (x < y ? 1 : -1) : (x < y ? -1 : x > y ? 1 : 0); });
+    var count = function (key, fn) { var o = {}; base.forEach(function (r) { if (pass(r, key)) { var k = fn(r); if (k) o[k] = (o[k] || 0) + 1; } }); return o; };
+    var types = count('type', function (r) { return r.data.type; }), srcs = count('src', function (r) { return r.source; });
+    var chip = function (key, val, label, n) { var on = (filters[key] || '') === val; return '<button type="button" class="evc" data-evf="' + key + '|' + esc(val) + '" aria-pressed="' + on + '">' + label + (n !== undefined ? ' <i>' + n + '</i>' : '') + '</button>'; };
+    var total = function (o) { return Object.keys(o).reduce(function (t, k) { return t + o[k]; }, 0); };
+    var h = '<div class="evbar"><div class="evtop"><input class="grow" type="search" data-f="evq" placeholder="Поиск: название, организатор, место, сайт" value="' + esc(filters.evq || '') + '"><button type="button" class="btn" data-evnew>+ Мероприятие</button></div>'
+      + '<div class="evseg" role="tablist">' + [['up', 'Предстоящие'], ['week', 'Эта неделя'], ['weekend', 'Выходные'], ['past', 'Прошедшие']].map(function (w) { return '<button type="button" role="tab" data-evf="evwhen|' + w[0] + '" aria-selected="' + (when === w[0]) + '">' + w[1] + '</button>'; }).join('') + '</div>'
+      + '<div class="evchips"><span class="evlbl">Тип</span>' + chip('evtype', '', 'Все', total(types)) + EVTYPES.filter(function (t) { return types[t]; }).map(function (t) { return chip('evtype', t, esc(t), types[t]); }).join('') + '</div>'
+      + '<div class="evchips"><span class="evlbl">Источник</span>' + chip('evsrc', '', 'Все', total(srcs)) + Object.keys(EVSRCS).map(function (k) { return chip('evsrc', k, EVSRCS[k][0] + ' ' + EVSRCS[k][1], srcs[k] || 0); }).join('') + '<span class="evsep"></span>' + chip('evlike', '1', '👍 Мне нравится') + chip('evfmt', '1', 'Онлайн') + '</div></div>';
     if (ev.err) h += '<p class="empty">' + esc(ev.err) + '</p>';
     if (!ev.rows) return h + '<p class="empty">Загружаем…</p>';
     if (!rows.length) return h + '<p class="empty">' + ((ev.rows || []).length ? 'Под фильтр ничего не подходит.' : 'Здесь пока пусто. Добавьте первое мероприятие или попросите своего AI-ассистента: «найди интересные события в Нью-Йорке на эти выходные и добавь в Все меро».') + '</p>';
@@ -3580,7 +3633,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
       var item = '<article class="ev' + (open ? ' open' : '') + '"><button type="button" class="evrow" data-evopen="' + esc(r.id) + '" aria-expanded="' + open + '">' + pic + '<span class="evtx">'
         + (d.organizers ? '<span class="evorg">' + esc(d.organizers) + '</span>' : '') + '<b>' + esc(d.title || 'Без названия') + '</b>'
         + '<span class="evmeta">' + [d.time ? esc(d.time) + (d.end_time ? '–' + esc(d.end_time) : '') : '', d.venue || d.city ? '📍 ' + esc([d.venue, d.city].filter(Boolean).join(', ')) : '', d.format && d.format !== 'Офлайн' ? esc(d.format) : ''].filter(Boolean).join(' · ') + '</span>'
-        + '<span class="evbadges">' + (d.type ? '<span class="tag">' + esc(d.type) + '</span>' : '') + (d.price ? '<span class="evprice">' + esc(d.price) + '</span>' : '') + (vt.up ? '<span>👍 ' + vt.up + '</span>' : '') + (vt.dn ? '<span>👎 ' + vt.dn + '</span>' : '') + (nn.length ? '<span>💬 ' + nn.length + '</span>' : '') + (r.source !== 'manual' ? '<span class="nil">' + esc(EVSRC[r.source] || r.source) + '</span>' : '') + '</span></span></button>';
+        + '<span class="evbadges">' + (d.type ? '<span class="tag">' + esc(d.type) + '</span>' : '') + (d.price ? '<span class="evprice">' + esc(d.price) + '</span>' : '') + (vt.up ? '<span>👍 ' + vt.up + '</span>' : '') + (vt.dn ? '<span>👎 ' + vt.dn + '</span>' : '') + (nn.length ? '<span>💬 ' + nn.length + '</span>' : '') + '<span class="evsrc s-' + esc(r.source) + '">' + (EVSRCS[r.source] || ['', r.source])[0] + ' ' + (EVSRCS[r.source] || ['', r.source])[1] + (r.created_by ? ' · ' + esc(mname(r.created_by)) : '') + (r.source === 'ai' && d.url && evHost(d.url) ? ' · ' + esc(evHost(d.url)) : '') + '</span>' + '</span></span></button>';
       if (open) {
         var links = [d.url].concat(evLinks(d.links)).filter(function (u) { return u && /^https?:\/\//i.test(u); });
         var info = [['Когда', [d.date ? new Date(d.date + 'T12:00:00').toLocaleDateString('ru-RU', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : 'дата не указана', d.time ? d.time + (d.end_time ? '–' + d.end_time : '') : ''].filter(Boolean).join(', ')], ['Тип', d.type], ['Формат', d.format], ['Цена', d.price], ['Место', [d.venue, d.address, d.city].filter(Boolean).join(', ')], ['Организаторы', d.organizers], ['Контакты', d.contacts], ['Аудитория', d.audience], ['Откуда', (EVSRC[r.source] || r.source) + (r.created_by ? ', ' + mname(r.created_by) : '')]].filter(function (x) { return x[1]; });
@@ -3627,9 +3680,10 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
     };
   }
   document.addEventListener('click', async function (e) {
-    var t = e.target.closest && e.target.closest('[data-evopen],[data-evnew],[data-evedit],[data-evvote],[data-evnotedel]');
+    var t = e.target.closest && e.target.closest('[data-evopen],[data-evnew],[data-evedit],[data-evvote],[data-evnotedel],[data-evf]');
     if (!t || state.view !== 'events') return;
     if (t.dataset.evopen) { ev.open = ev.open === t.dataset.evopen ? '' : t.dataset.evopen; return render(); }
+    if (t.dataset.evf) { var kv = t.dataset.evf.split('|'), k = kv[0], v = kv.slice(1).join('|'); filters[k] = (k !== 'evwhen' && filters[k] === v) ? '' : v; return render(); }
     if ('evnew' in t.dataset) return openEvent(null);
     if (t.dataset.evedit) return openEvent(t.dataset.evedit);
     if (t.dataset.evvote) {
