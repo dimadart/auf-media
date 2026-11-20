@@ -1064,6 +1064,15 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
   .evseg { width: 100%; } .evseg button { flex: 1 1 0; min-width: 0; padding: 0 4px; font-size: 12.5px; overflow: hidden; text-overflow: ellipsis; }
   .evchips { margin: 0 -16px; padding: 0 16px 2px; }
 }
+
+/* ---------- «Подслушано» moderation ---------- */
+.wsl { display: grid; gap: 10px; max-width: 860px; }
+.wsc { padding: 16px 18px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); }
+.wsm { margin: 0 0 8px; font-size: 12.5px; color: var(--mute); }
+.wsb { margin: 0 0 12px; font-size: 16px; line-height: 1.5; white-space: pre-line; }
+.wsedit { width: 100%; margin-bottom: 10px; }
+.wsa { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.wsr { display: grid; gap: 8px; }
 </style>
 </head>
 <body>
@@ -1178,9 +1187,9 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
   ];
   var RUBRICS = ['Музыка', 'Мода', 'Кино', 'Технологии', 'Арт', 'Город', 'Изнутри', 'Наш радар', 'Фотография', 'Секс и наука', 'Культура', 'На репите', 'Видео'];
   var FORMATS = ['Текст', 'Интервью', 'Репортаж', 'Видео', 'Фото', 'Подборка'];
-  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['mail', 'Почта', 'ed'], ['beta', 'Beta', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['events', 'Все меро', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['log', 'Журнал', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Справка', 'adm']];
+  var VIEWS = [['home', 'Обзор', 'ed'], ['board', 'Доска', 'ed'], ['calendar', 'Календарь', 'ed'], ['items', 'Материалы', 'ed'], ['inbox', 'Заявки', 'ed'], ['whispers', 'Подслушано', 'ed'], ['mail', 'Почта', 'ed'], ['beta', 'Beta', 'ed'], ['tasks', 'Задачи проекта', 'biz'], ['events', 'Все меро', 'biz'], ['people', 'Контакты', 'biz'], ['stats', 'Аналитика', 'biz'], ['shop', 'Шоп', 'biz'], ['money', 'Финансы', 'biz'], ['team', 'Команда', 'adm'], ['log', 'Журнал', 'adm'], ['settings', 'Настройки', 'adm'], ['plan', 'Справка', 'adm']];
   var GROUPS = [['ed', 'Редакция'], ['biz', 'Проект'], ['adm', 'Управление']];
-  var NEED = { inbox: 'editor', tasks: 'chief', events: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', log: 'owner', team: 'owner', plan: 'owner', beta: 'owner' };
+  var NEED = { whispers: 'editor', inbox: 'editor', tasks: 'chief', events: 'chief', people: 'chief', stats: 'chief', shop: 'chief', money: 'chief', log: 'owner', team: 'owner', plan: 'owner', beta: 'owner' };
 
   function uid() { return Math.random().toString(36).slice(2, 10); }
   function esc(v) { return String(v == null ? '' : v).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -1282,7 +1291,7 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
 
   function gname(g) { return g[0] === 'adm' && !atLeast('owner') ? 'Аккаунт' : g[1]; }
   function renderNav() {
-    var counts = { board: vcards().filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length, tasks: state.tasks.filter(function (t) { return t.stage !== 'done'; }).length, people: state.contacts.length, mail: mail ? mailUnread('') : 0 };
+    var counts = { whispers: (typeof ws !== 'undefined' && ws.rows || []).filter(function (w) { return w.status === 'review'; }).length, board: vcards().filter(function (c) { return c.stage !== 'published'; }).length, team: state.team.length, inbox: state.apps.length + state.subs.length, tasks: state.tasks.filter(function (t) { return t.stage !== 'done'; }).length, people: state.contacts.length, mail: mail ? mailUnread('') : 0 };
     if (mail && cloudOn && sb && synced && !mail.at && !mail.busy && allowed('mail')) mailLoad();
     var ss = sideState(), me = member(state.me), mrole = me && ROLES.filter(function (r) { return r.id === me.role; })[0];
     document.getElementById('app').classList.toggle('rail', ss.rail);
@@ -1332,7 +1341,7 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
   var ICONS = {
     home: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z', board: 'M4 4h4v14H4zM10 4h4v9h-4zM16 4h4v11h-4z', calendar: 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4',
     items: 'M6 3h8l4 4v14H6zM14 3v4h4M9 12h6M9 16h6', inbox: 'M3 13l3-8h12l3 8v6H3zM3 13h5l1 3h6l1-3h5', mail: 'M3 6h18v12H3zM3 7l9 6 9-6', beta: 'M13 2 4 14h7l-1 8 9-12h-7z',
-    tasks: 'M4 4h16v16H4zM8 12l3 3 5-6', events: 'M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4zM9 7v10', people: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.2a3.5 3.5 0 0 1 0 6.6M21.5 20a6.5 6.5 0 0 0-4-6',
+    tasks: 'M4 4h16v16H4zM8 12l3 3 5-6', events: 'M4 7h16v3a2 2 0 0 0 0 4v3H4v-3a2 2 0 0 0 0-4zM9 7v10', whispers: 'M4 5h16v11H9l-5 4zM8 9h8M8 12h5', people: 'M9 11a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7zM2.5 20a6.5 6.5 0 0 1 13 0M16 4.2a3.5 3.5 0 0 1 0 6.6M21.5 20a6.5 6.5 0 0 0-4-6',
     stats: 'M4 20V10M10 20V4M16 20v-7M22 20H2', shop: 'M5 8h14l-1 13H6zM9 8V6a3 3 0 0 1 6 0v2', money: 'M12 3v18M16 7.5h-5.5a2.5 2.5 0 0 0 0 5h3a2.5 2.5 0 0 1 0 5H8',
     team: 'M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM4 21a8 8 0 0 1 16 0', log: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM12 7v5l3 2', settings: 'M4 7h10M18 7h2M4 17h2M10 17h10M16 4.5v5M8 14.5v5',
     plan: 'M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18zM9.5 9.5a2.5 2.5 0 1 1 3.5 2.3c-.7.4-1 .9-1 1.7M12 17h.01', menu: 'M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h6v6h-6z',
@@ -1496,7 +1505,7 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
     stats: function () { return statsView(); }, shop: function () { return shopView(); }, money: function () { return finView(); }, mail: function () { return mailView(); },
     log: function () {
       if (!auditAt || Date.now() - auditAt > 15000) auditLoad();
-      var names = { events: 'Мероприятие', mcp: 'AI-ассистент', biz: 'Финансы и шоп', cards: 'Материал', tasks: 'Задача проекта', contacts: 'Контакт', contact_notes: 'Заметка в анкете', invites: 'Приглашение', profiles: 'Команда', session: 'Вход', mailboxes: 'Почтовый ящик', mail: 'Письмо' };
+      var names = { whispers: 'Подслушано', events: 'Мероприятие', mcp: 'AI-ассистент', biz: 'Финансы и шоп', cards: 'Материал', tasks: 'Задача проекта', contacts: 'Контакт', contact_notes: 'Заметка в анкете', invites: 'Приглашение', profiles: 'Команда', session: 'Вход', mailboxes: 'Почтовый ящик', mail: 'Письмо' };
       var acts = { insert: 'создал', update: 'изменил', delete: 'удалил', stage: 'перенёс', role: 'сменил уровень', login: 'зашёл в админку', first: 'первый вход', send: 'отправил письмо', assign: 'выдал ящик', unassign: 'забрал ящик', rubrics: 'назначил рубрики', mcp: 'через ассистента:', mcp_token: 'подключил ассистента' };
       var stage = function (k, d) { return d.split(' → ').map(function (x) { var st = (k === 'cards' ? STAGES.map(function (q) { return [q.id, q.name]; }) : TSTAGES).filter(function (q) { return q[0] === x; })[0]; return st ? st[1] : x; }).join(' → '); };
       var roleName = function (d) { return d.split(' → ').map(function (x) { var r = ROLES.filter(function (q) { return q.id === x; })[0]; return r ? r.name : x; }).join(' → '); };
@@ -2677,7 +2686,7 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
 
   function cloudCast(m) { if (rtLive && liveOk) rtLive.send({ type: 'broadcast', event: 'peer', payload: m }).catch(function () {}); }
   function cloudListen() {
-    rtDb = sb.channel('auf-db').on('postgres_changes', { event: '*', schema: 'public' }, function (p) { if (p.table === 'mail') return mailStale(); if (/^event/.test(p.table)) return evStale(); if (p.table === 'mailbox_access') { pullSet.mailboxes = 1; mailStale(); } pullSet[p.table] = 1; if (p.table === 'profiles') pullSet.cards = 1; if (p.table === 'contacts') pullSet.contact_notes = 1; clearTimeout(pullT); pullT = setTimeout(function () { pullWant = true; cloudPull(); }, 500); });
+    rtDb = sb.channel('auf-db').on('postgres_changes', { event: '*', schema: 'public' }, function (p) { if (p.table === 'mail') return mailStale(); if (/^event/.test(p.table)) return evStale(); if (p.table === 'whispers') return wsStale(); if (p.table === 'mailbox_access') { pullSet.mailboxes = 1; mailStale(); } pullSet[p.table] = 1; if (p.table === 'profiles') pullSet.cards = 1; if (p.table === 'contacts') pullSet.contact_notes = 1; clearTimeout(pullT); pullT = setTimeout(function () { pullWant = true; cloudPull(); }, 500); });
     rtDb.subscribe(function (st) { if (st === 'SUBSCRIBED' && synced) { TABLES.forEach(function (t) { pullSet[t] = 1; }); cloudPull(); } });
     // Editor traffic goes through a private channel: only signed-in team members may join it.
     rtLive = sb.channel('auf-live', { config: { private: true, broadcast: { self: false } } }).on('broadcast', { event: 'peer' }, function (p) { onPeer({ data: p.payload }); });
@@ -3710,6 +3719,75 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
   });
 
   // (tour helpers are declared below; hoisted functions)
+  // ---------- «Подслушано»: moderation of anonymous stories (editors and up) ----------
+  // Stories come from auf.media/podslushano through the function whisper; readers vote in the Изнанка, and a story with
+  // 10 votes for and over 70% approval (or 3 reports) lands here «На проверке». Authors are anonymous: only a device hash.
+  var WRUB = { work: 'Работа', love: 'Любовь', study: 'Учёба', city: 'Город', family: 'Семья', weird: 'Странное' };
+  var WTABS = [['review', 'На проверке'], ['pending', 'Изнанка'], ['published', 'В ленте'], ['rejected', 'Отклонённые']];
+  var WREASONS = ['Есть имена или приметы', 'Контакты или реклама', 'Травля или ненависть', 'Опасный контент', 'Чужая история', 'Не формат раздела'];
+  var ws = { rows: null, tab: 'review', at: 0, busy: false, t: 0, edit: 0, err: '' };
+  function wsStale() { clearTimeout(ws.t); ws.t = setTimeout(function () { ws.at = 0; if (state.view === 'whispers') wsLoad(); else renderNav(); }, 600); }
+  async function wsLoad() {
+    if (ws.busy || !cloudOn || !sb) { if (!cloudOn) { ws.rows = ws.rows || []; ws.at = Date.now(); } return; }
+    ws.busy = true;
+    var r = await sb.from('whispers').select('id, rubric, body, status, flags, up, down, r_laugh, r_sad, r_shock, r_warm, reports, reason, secret_day, created_at, reviewed_at, published_at, author_key').order('created_at', { ascending: false }).limit(500);
+    ws.busy = false; ws.at = Date.now();
+    if (r.error) { ws.err = 'Не загрузилось: ' + cloudWhy(r.error); ws.rows = ws.rows || []; } else { ws.err = ''; ws.rows = r.data; }
+    if (state.view === 'whispers' && !dlg.open) render(); else renderNav();
+  }
+  RENDER.whispers = function () {
+    if (!ws.at || Date.now() - ws.at > 60000) wsLoad();
+    var rows = ws.rows || [], cnt = {};
+    rows.forEach(function (w) { var k = w.status === 'removed' ? 'rejected' : w.status; cnt[k] = (cnt[k] || 0) + 1; });
+    var list = rows.filter(function (w) { return (w.status === 'removed' ? 'rejected' : w.status) === ws.tab; });
+    var h = '<div class="tabs" role="tablist">' + WTABS.map(function (t) { return '<button type="button" role="tab" data-wtab="' + t[0] + '" aria-selected="' + (ws.tab === t[0]) + '">' + t[1] + (cnt[t[0]] ? ' · ' + cnt[t[0]] : '') + '</button>'; }).join('') + '<span class="grow"></span><a class="tgl" href="/podslushano/" target="_blank" rel="noopener">Открыть раздел на сайте ↗</a></div>';
+    if (ws.err) h += '<p class="empty">' + esc(ws.err) + '</p>';
+    if (!cloudOn) return h + '<p class="empty">Раздел работает после входа на auf.media/admin.</p>';
+    if (!ws.rows) return h + '<p class="empty">Загружаем…</p>';
+    if (!list.length) return h + '<p class="empty">' + { review: 'Нечего проверять. Истории появятся здесь, когда наберут 10 голосов «за» в Изнанке или 3 жалобы.', pending: 'В Изнанке пусто.', published: 'В ленте пока ничего нет.', rejected: 'Отклонённых нет.' }[ws.tab] + '</p>';
+    h += '<div class="wsl">' + list.map(function (w) {
+      var fl = (w.flags || []).map(function (f) { return f === 'help' ? '<span class="tag p">тяжёлая тема — проверь</span>' : f === 'reports' ? '<span class="tag p">жалобы: ' + w.reports + '</span>' : '<span class="tag">' + esc(f) + '</span>'; }).join(' ');
+      var meta = '#' + w.id + ' · ' + (WRUB[w.rubric] || w.rubric) + ' · ' + when2(w.created_at) + ' · за ' + w.up + ' / против ' + w.down + (w.status === 'published' ? ' · 😂 ' + w.r_laugh + ' 🥲 ' + w.r_sad + ' 😱 ' + w.r_shock + ' ❤️ ' + w.r_warm : '') + (w.secret_day ? ' · секрет дня ' + human(w.secret_day) : '');
+      var body = ws.edit === w.id ? '<textarea class="wsedit" id="wsedit" rows="5" maxlength="1200">' + esc(w.body) + '</textarea>' : '<p class="wsb">' + esc(w.body) + '</p>';
+      var acts = ws.edit === w.id ? '<button type="button" class="btn" data-wsave="' + w.id + '">Сохранить текст</button><button type="button" class="btn ghost" data-wcancel>Отмена</button>'
+        : (w.status !== 'published' ? '<button type="button" class="btn" data-wpub="' + w.id + '">Опубликовать</button>' : '<button type="button" class="btn ghost" data-wremove="' + w.id + '">Снять с ленты</button>')
+          + (w.status === 'review' || w.status === 'pending' ? '<button type="button" class="btn ghost" data-wrej="' + w.id + '">Отклонить</button>' : '')
+          + '<button type="button" class="tgl" data-wedit="' + w.id + '">Править текст</button><button type="button" class="tgl" data-wban="' + w.id + '">Ограничить автора</button>';
+      return '<article class="wsc"><p class="wsm">' + esc(meta) + (fl ? ' ' + fl : '') + '</p>' + body + (w.reason ? '<p class="note">Причина: ' + esc(w.reason) + '</p>' : '') + '<div class="wsa">' + acts + '</div></article>';
+    }).join('') + '</div><p class="note">Авторы анонимны: в базе нет ни имени, ни почты, ни IP — только обезличенный ключ устройства. «Ограничить автора» закрывает подачу с этого устройства. Причину отклонения автор видит у себя во вкладке «Мои истории».</p>';
+    return h;
+  };
+  async function wsSet(id, patch, ok) {
+    var r = await sb.from('whispers').update(Object.assign({ decided_by: state.me }, patch)).eq('id', id);
+    if (r.error) return toast('Не сохранено: ' + cloudWhy(r.error));
+    var w = (ws.rows || []).filter(function (x) { return x.id === id; })[0]; if (w) Object.assign(w, patch);
+    render(); renderNav(); toast(ok);
+  }
+  function wsPick(title, fn) {
+    dlgbody.innerHTML = '<h2>' + title + '</h2><div class="wsr">' + WREASONS.map(function (r) { return '<button type="button" class="btn ghost" data-wreason="' + esc(r) + '">' + r + '</button>'; }).join('') + '</div><div class="actions"><span></span><span><button type="button" class="btn ghost" id="wsclose">Отмена</button></span></div>';
+    dlg.showModal(); document.getElementById('wsclose').onclick = function () { dlg.close(); };
+    [].forEach.call(dlgbody.querySelectorAll('[data-wreason]'), function (b) { b.onclick = function () { dlg.close(); fn(b.dataset.wreason); }; });
+  }
+  document.addEventListener('click', async function (e) {
+    var t = e.target.closest && e.target.closest('[data-wtab],[data-wpub],[data-wrej],[data-wremove],[data-wedit],[data-wsave],[data-wcancel],[data-wban]');
+    if (!t || state.view !== 'whispers') return;
+    if (t.dataset.wtab) { ws.tab = t.dataset.wtab; ws.edit = 0; return render(); }
+    var id = +(t.dataset.wpub || t.dataset.wrej || t.dataset.wremove || t.dataset.wedit || t.dataset.wsave || t.dataset.wban || 0);
+    if (t.dataset.wpub) return wsSet(id, { status: 'published', published_at: new Date().toISOString(), reviewed_at: new Date().toISOString(), reason: '', flags: [] }, 'Опубликовано в ленте');
+    if (t.dataset.wrej) return wsPick('Почему отклоняем?', function (r) { wsSet(id, { status: 'rejected', reason: r, reviewed_at: new Date().toISOString() }, 'Отклонено'); });
+    if (t.dataset.wremove) return wsPick('Почему снимаем с ленты?', function (r) { wsSet(id, { status: 'removed', reason: r }, 'Снято с ленты'); });
+    if (t.dataset.wedit) { ws.edit = id; render(); var a = document.getElementById('wsedit'); if (a) a.focus(); return; }
+    if ('wcancel' in t.dataset) { ws.edit = 0; return render(); }
+    if (t.dataset.wsave) { var v = document.getElementById('wsedit').value.trim(); if (v.length < 40 || v.length > 1200) return toast('Не сохранено: от 40 до 1200 знаков'); ws.edit = 0; return wsSet(id, { body: v }, 'Текст сохранён'); }
+    if (t.dataset.wban) {
+      var w = (ws.rows || []).filter(function (x) { return x.id === id; })[0]; if (!w) return;
+      var days = prompt('На сколько дней закрыть подачу историй с этого устройства? Пусто — навсегда.', '30'); if (days === null) return;
+      var until = days.trim() ? new Date(Date.now() + Math.max(1, parseInt(days, 10) || 30) * 864e5).toISOString() : null;
+      var r = await sb.from('whisper_bans').upsert({ key: w.author_key, kind: 'author', reason: 'История #' + w.id, until: until, created_by: state.me });
+      toast(r.error ? 'Не сохранено: ' + cloudWhy(r.error) : until ? 'Подача закрыта до ' + human(until.slice(0, 10)) : 'Подача закрыта навсегда');
+    }
+  });
+
   // ---------- Installable app and push notifications ----------
   // The admin installs to the home screen (manifest + sw.js next to this page). Push works on iPhone only from the
   // installed app (iOS 16.4+). Devices subscribe here; the database decides who gets what (auf-supabase-9.sql).
@@ -3820,8 +3898,9 @@ input[type=date]::-webkit-date-and-time-value, input[type=time]::-webkit-date-an
     if (m) { if (cardById(m[1])) { go('board'); openCard(m[1]); } else toast('Материал не найден или недоступен'); return; }
     if (h === '#mail' && allowed('mail')) return go('mail');
     if (h === '#tasks' && allowed('tasks')) return go('tasks');
+    if (h === '#whispers' && allowed('whispers')) return go('whispers');
   }
-  if (/^#(card=[\w-]+|mail|tasks)$/.test(location.hash)) { linkWant = location.hash; setTimeout(linkTry, 300); }
+  if (/^#(card=[\w-]+|mail|tasks|whispers)$/.test(location.hash)) { linkWant = location.hash; setTimeout(linkTry, 300); }
 
   // After sign-in: ask once for notifications with a card; «Включить» opens the system prompt right away.
   // «Не сейчас» hides it for 3 days; a refusal in the system prompt hides it for good. If permission is already
