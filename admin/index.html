@@ -360,7 +360,10 @@ td .tgl { padding: 5px 9px; }
   .ed-top [data-theme-toggle] { display: none; }
   .ed-top .tgl { min-height: 44px; }
   .ed-top .who { flex-wrap: nowrap; overflow: hidden; }
-  .ed-tools { padding-bottom: env(safe-area-inset-bottom); }
+  .ed-tools { padding-bottom: env(safe-area-inset-bottom); background: var(--panel); }
+  .ed-tools.kb { padding-bottom: 0; }
+  .ed-tools button { color: var(--text); }
+  .ed-tools button[aria-pressed=true] { color: #000; }
   #edtools button { flex: 1 1 0; min-width: 0; padding: 0 1px; font-size: 11px; overflow: hidden; }
   #edtools { overflow: hidden; }
   .ed-tools i { margin: 8px 0; }
@@ -800,6 +803,28 @@ td.minus { white-space: nowrap; }
 .prod > span:not(.tag):not(.noimg) { color: var(--mute); }
 .oi { display: grid; grid-template-columns: 1fr 76px 36px; gap: 6px; margin-bottom: 6px; }
 @media (max-width: 860px) { .hbars li { grid-template-columns: minmax(0, 46%) 1fr auto; } .vbars { gap: 6px; } }
+
+/* ---------- Project tasks: quick capture, phone list ---------- */
+.qadd { display: flex; gap: 8px; margin-bottom: 12px; }
+.qadd input { flex: 1; min-width: 0; }
+.tseg { display: flex; gap: 6px; overflow-x: auto; margin: 0 -16px 10px; padding: 0 16px 2px; scrollbar-width: none; }
+.tseg::-webkit-scrollbar { display: none; }
+.tseg button { flex: none; height: 36px; padding: 0 12px; border: 1px solid var(--line); border-radius: 4px; background: none; color: var(--mute); font: 600 13.5px/1 Arial, Helvetica, sans-serif; white-space: nowrap; cursor: pointer; }
+.tseg button[aria-selected=true] { background: var(--inv); border-color: var(--inv); color: var(--inv-text); }
+.tseg i { font-style: normal; opacity: .7; margin-left: 2px; }
+.tlist { list-style: none; margin: 0 0 14px; padding: 0; border-top: 1px solid var(--line); }
+.tlist li { display: flex; align-items: flex-start; gap: 4px; border-bottom: 1px solid var(--line); }
+.tcheck { flex: none; width: 44px; height: 52px; border: 0; background: none; cursor: pointer; position: relative; }
+.tcheck::before { content: ''; position: absolute; left: 11px; top: 15px; width: 20px; height: 20px; border: 2px solid var(--ghost); border-radius: 50%; }
+.tcheck[aria-pressed=true]::before { background: var(--ok); border-color: var(--ok); }
+.tcheck[aria-pressed=true]::after { content: ''; position: absolute; left: 18px; top: 19px; width: 6px; height: 11px; border: solid #000; border-width: 0 2px 2px 0; transform: rotate(45deg); }
+.tbody { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 4px; padding: 14px 4px 14px 0; border: 0; background: none; color: var(--text); text-align: left; font: 15px/1.35 Arial, Helvetica, sans-serif; cursor: pointer; }
+.tbody b { font-weight: 600; overflow-wrap: anywhere; }
+.tbody span { font-size: 13px; color: var(--mute); }
+.tbody em { font-style: normal; } .tbody em.late { color: var(--warn); }
+.tlist li.done .tbody b { color: var(--mute); text-decoration: line-through; }
+.board .col[data-tstage=inbox] { border-style: dashed; }
+@media (max-width: 860px) { .qadd { position: sticky; top: 0; z-index: 5; margin: -4px -16px 10px; padding: 8px 16px; background: var(--bg); } .qadd input { height: 44px; font-size: 16px; } }
 </style>
 </head>
 <body>
@@ -1274,7 +1299,7 @@ td.minus { white-space: nowrap; }
   };
 
   // ---------- project board and contacts (MAIN and C-Level only) ----------
-  var TSTAGES = [['todo', 'Надо сделать'], ['doing', 'В работе'], ['wait', 'Ждём ответа'], ['done', 'Готово']];
+  var TSTAGES = [['inbox', 'Входящие'], ['todo', 'Надо сделать'], ['doing', 'В работе'], ['wait', 'Ждём ответа'], ['done', 'Готово']];
   var TKINDS = ['Сделать', 'Купить', 'Написать', 'Созвон или встреча', 'Другое'];
   var NETS = ['Instagram', 'Telegram', 'YouTube', 'TikTok', 'X', 'Facebook', 'LinkedIn', 'Сайт', 'Другое'];
   var PSTAT = ['В списке', 'Написали', 'На связи', 'Уже работали'];
@@ -1302,15 +1327,43 @@ td.minus { white-space: nowrap; }
   }
   var bosses = function () { return state.team.filter(function (m) { return RANK[m.role] >= RANK.chief; }); };
 
+  var taskPhone = matchMedia('(max-width: 860px)');
   RENDER.tasks = function () {
     var list = state.tasks.filter(function (t) { return (!filters.tkind || t.kind === filters.tkind) && (!filters.twho || t.who === filters.twho); });
-    return '<div class="bar"><select data-f="tkind" aria-label="Тип задачи">' + selOpts(TKINDS, filters.tkind, 'Все типы') + '</select><select data-f="twho" aria-label="Ответственный">' + selOpts(bosses(), filters.twho, 'Все ответственные') + '</select><span class="grow"></span><button type="button" class="btn" data-newtask>+ Задача</button></div>'
-      + '<div class="board">' + TSTAGES.map(function (s) {
-        var col = list.filter(function (t) { return t.stage === s[0]; });
-        return '<section class="col" data-tstage="' + s[0] + '"><header><b>' + s[1] + '</b><i>' + col.length + '</i></header><div class="drop">' + col.map(taskHtml).join('') + '</div></section>';
-      }).join('') + '</div><p class="note">Доска проекта — всё, что не про тексты: что купить, что сделать, кому написать. Её видят только MAIN и C-Level. Перетаскивайте карточки между колонками; на телефоне откройте карточку и смените этап в ней. Материалы живут отдельно, на «Доске материалов».</p>';
+    var qadd = '<form class="qadd" data-qadd><input name="q" type="text" maxlength="200" autocomplete="off" enterkeyhint="done" placeholder="Записать задачу…" aria-label="Новая задача во «Входящие»"><button type="submit" class="btn">Добавить</button></form>';
+    var bar = '<div class="bar"><select data-f="tkind" aria-label="Тип задачи">' + selOpts(TKINDS, filters.tkind, 'Все типы') + '</select><select data-f="twho" aria-label="Ответственный">' + selOpts(bosses(), filters.twho, 'Все ответственные') + '</select><span class="grow"></span><button type="button" class="btn ghost" data-newtask>Подробная задача</button></div>';
+    if (taskPhone.matches) {
+      var cnt = {}; TSTAGES.forEach(function (st) { cnt[st[0]] = list.filter(function (t) { return t.stage === st[0]; }).length; });
+      var cur = filters.tseg && cnt[filters.tseg] !== undefined ? filters.tseg : (cnt.inbox ? 'inbox' : 'todo');
+      var rows = list.filter(function (t) { return t.stage === cur; }).sort(function (x, y) { return (x.due || '9999') < (y.due || '9999') ? -1 : (x.due || '9999') > (y.due || '9999') ? 1 : 0; });
+      return qadd + '<div class="tseg" role="tablist" aria-label="Этап">' + TSTAGES.map(function (st) { return '<button type="button" role="tab" data-tseg="' + st[0] + '" aria-selected="' + (st[0] === cur) + '">' + st[1] + (cnt[st[0]] ? ' <i>' + cnt[st[0]] + '</i>' : '') + '</button>'; }).join('') + '</div>'
+        + (rows.length ? '<ul class="tlist">' + rows.map(function (t) {
+          var late = t.due && t.due < TODAY && t.stage !== 'done';
+          return '<li' + (t.stage === 'done' ? ' class="done"' : '') + '><button type="button" class="tcheck" data-tdone="' + t.id + '" aria-label="' + (t.stage === 'done' ? 'Вернуть в работу' : 'Готово') + '" aria-pressed="' + (t.stage === 'done') + '"></button>'
+            + '<button type="button" class="tbody" data-task="' + t.id + '"><b>' + esc(t.title) + '</b><span>' + [t.stage === 'inbox' ? 'нажмите, чтобы разобрать' : esc(t.kind), t.who ? esc(mname(t.who)) : '', t.due ? '<em class="' + (late ? 'late' : '') + '">срок ' + human(t.due) + '</em>' : '', t.sum ? esc(t.sum) : ''].filter(Boolean).join(' · ') + '</span></button></li>';
+        }).join('') + '</ul>' : '<p class="empty">' + (cur === 'inbox' ? 'Входящие пусты. Записывайте сюда всё, что пришло в голову, разберёте потом.' : 'На этом этапе пусто.') + '</p>')
+        + bar + '<p class="note">Входящие — для быстрых записей: одна строка, без полей. Откройте задачу, чтобы указать тип, ответственного и срок, и перенесите её в «Надо сделать». Кружок слева отмечает задачу готовой.</p>';
+    }
+    return qadd + bar + '<div class="board">' + TSTAGES.map(function (st) { var col = list.filter(function (t) { return t.stage === st[0]; }); return '<section class="col" data-tstage="' + st[0] + '"><header><b>' + st[1] + '</b><i>' + col.length + '</i></header><div class="drop">' + col.map(taskHtml).join('') + '</div></section>'; }).join('') + '</div><p class="note">Доска проекта — всё, что не про тексты: что купить, что сделать, кому написать. Её видят только MAIN и C-Level. «Входящие» — для быстрых записей одной строкой: разберите их потом и перетащите в нужную колонку. Материалы живут отдельно, на «Доске материалов».</p>';
   };
-
+  document.addEventListener('submit', function (e) {
+    var f = e.target.closest && e.target.closest('[data-qadd]');
+    if (!f) return;
+    e.preventDefault();
+    var v = f.q.value.trim();
+    if (!v || !allowed('tasks')) return;
+    state.tasks.unshift({ id: uid(), title: v.slice(0, 200), kind: TKINDS[0], stage: 'inbox', who: '', due: '', contact: '', sum: '', notes: '' });
+    filters.tseg = 'inbox'; save(); render(); toast('Записано во «Входящие»');
+    var inp = document.querySelector('[data-qadd] input'); if (inp) inp.focus();
+  });
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-tseg],[data-tdone]');
+    if (!t || state.view !== 'tasks') return;
+    if (t.dataset.tseg) { filters.tseg = t.dataset.tseg; return render(); }
+    var tk = taskById(t.dataset.tdone); if (!tk) return;
+    var back = tk.stage === 'done'; tk.stage = back ? 'todo' : 'done'; save(); render(); toast(back ? 'Вернули в «Надо сделать»' : 'Готово');
+  });
+  if (taskPhone.addEventListener) taskPhone.addEventListener('change', function () { if (state.view === 'tasks' && !dlg.open) render(); });
   RENDER.people = function () {
     var p = state.person && personById(state.person);
     if (!p) {
@@ -1965,7 +2018,7 @@ td.minus { white-space: nowrap; }
       var on = { bold: document.queryCommandState('bold'), italic: document.queryCommandState('italic'), link: !!a, h2: b.tagName === 'H2', h3: b.tagName === 'H3', quote: b.tagName === 'BLOCKQUOTE', list: b.tagName === 'UL' || b.tagName === 'OL' };
       [].forEach.call(edTools.querySelectorAll('[data-cmd]'), function (x) { x.setAttribute('aria-pressed', on[x.dataset.cmd] ? 'true' : 'false'); });
     }
-    if (narrow()) { edTools.hidden = false; edPlus.hidden = true; return; }
+    if (narrow()) { edTools.hidden = !(live && document.activeElement === edBody); edPlus.hidden = true; return; }
     if (live && !r.collapsed && r.toString().trim()) {
       var rect = r.getBoundingClientRect(); edTools.hidden = false;
       edTools.style.left = Math.max(8, Math.min(innerWidth - edTools.offsetWidth - 8, rect.left + rect.width / 2 - edTools.offsetWidth / 2)) + 'px';
@@ -1979,9 +2032,10 @@ td.minus { white-space: nowrap; }
   }
 
   document.addEventListener('selectionchange', function () { if (edCard) placeTools(); });
+  ['focusin', 'focusout'].forEach(function (ev) { document.addEventListener(ev, function () { if (edCard) setTimeout(placeTools, 0); }); });
   addEventListener('scroll', function () { if (edCard) placeTools(); }, { passive: true });
   addEventListener('resize', function () { if (edCard) { grow(edTitle); grow(edLede); placeTools(); } });
-  if (window.visualViewport) visualViewport.addEventListener('resize', function () { edTools.style.bottom = narrow() ? Math.max(0, innerHeight - visualViewport.height - visualViewport.offsetTop) + 'px' : ''; });
+  if (window.visualViewport) { var kbFit = function () { var off = narrow() ? Math.max(0, Math.round(innerHeight - visualViewport.height - visualViewport.offsetTop)) : 0; edTools.style.bottom = narrow() ? off + 'px' : ''; edTools.classList.toggle('kb', off > 60); }; visualViewport.addEventListener('resize', kbFit); visualViewport.addEventListener('scroll', kbFit); }
   [edTools, edPlus, edIns].forEach(function (el) { el.addEventListener('mousedown', function (event) { event.preventDefault(); }); });
   edTools.addEventListener('click', function (event) { var b = event.target.closest('button'); if (!b) return; if (b.dataset.ins) doInsert(b.dataset.ins); else doCmd(b.dataset.cmd); });
   edIns.addEventListener('click', function (event) { var b = event.target.closest('button'); if (b) doInsert(b.dataset.ins); });
