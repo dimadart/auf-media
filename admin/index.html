@@ -11,7 +11,25 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black">
 <meta name="apple-mobile-web-app-title" content="AUF">
-<script>try { if (localStorage.getItem('auf-admin-theme') === 'light') document.documentElement.dataset.theme = 'light'; localStorage.removeItem('auf-admin-ui'); } catch (e) {}</script>
+<script>window.aufLook = function (c) {
+  var r = document.documentElement, P = ['--bg', '--panel', '--line', '--text', '--mute', '--yellow', '--side', '--field', '--fline', '--card', '--cline', '--hover', '--chip', '--ghost', '--dim', '--out', '--link', '--focus', '--part', '--dlg', '--dlgline', '--inv', '--inv-text', '--mark', '--on-acc', '--y-soft'];
+  P.forEach(function (k) { r.style.removeProperty(k); }); delete r.dataset.theme;
+  if (!c || c.preset === 'dark') return;
+  if (c.preset === 'light') { r.dataset.theme = 'light'; return; }
+  var h = function (x) { x = String(x || '#000000').replace('#', ''); return [parseInt(x.substr(0, 2), 16) || 0, parseInt(x.substr(2, 2), 16) || 0, parseInt(x.substr(4, 2), 16) || 0]; };
+  var hx = function (a) { return '#' + a.map(function (v) { v = Math.max(0, Math.min(255, Math.round(v))); return (v < 16 ? '0' : '') + v.toString(16); }).join(''); };
+  var mix = function (a, b, t) { a = h(a); b = h(b); return hx([a[0] + (b[0] - a[0]) * t, a[1] + (b[1] - a[1]) * t, a[2] + (b[2] - a[2]) * t]); };
+  var lum = function (x) { var v = h(x).map(function (q) { q /= 255; return q <= 0.03928 ? q / 12.92 : Math.pow((q + 0.055) / 1.055, 2.4); }); return 0.2126 * v[0] + 0.7152 * v[1] + 0.0722 * v[2]; };
+  var bg = c.bg, pn = c.panel, ac = c.accent, light = lum(bg) > 0.4, tx = light ? '#141414' : '#f2f0ec';
+  var set = { '--bg': bg, '--panel': pn, '--text': tx, '--mute': mix(tx, bg, 0.42), '--line': mix(bg, tx, 0.14), '--side': light ? mix(bg, '#ffffff', 0.5) : mix(bg, '#000000', 0.45),
+    '--field': light ? '#ffffff' : mix(bg, '#000000', 0.5), '--fline': mix(bg, tx, 0.4), '--card': light ? mix(pn, '#ffffff', 0.6) : mix(bg, '#000000', 0.35), '--cline': mix(bg, tx, 0.18),
+    '--hover': mix(pn, tx, 0.07), '--chip': mix(pn, tx, 0.13), '--ghost': mix(bg, tx, 0.32), '--dim': mix(tx, bg, 0.5), '--out': mix(bg, light ? '#ffffff' : '#000000', 0.2), '--dlg': pn,
+    '--dlgline': mix(pn, tx, 0.35), '--inv': tx, '--inv-text': bg, '--yellow': ac, '--part': ac, '--mark': ac, '--focus': ac, '--y-soft': mix(pn, ac, 0.18),
+    '--link': light && lum(ac) > 0.5 ? mix(ac, '#000000', 0.45) : ac, '--on-acc': lum(ac) > 0.4 ? '#000000' : '#ffffff' };
+  if (light) r.dataset.theme = 'light';
+  for (var k in set) r.style.setProperty(k, set[k]);
+};
+try { var L = JSON.parse(localStorage.getItem('auf-admin-look') || 'null'); if (!L && localStorage.getItem('auf-admin-theme') === 'light') L = { preset: 'light' }; window.aufLook(L); localStorage.removeItem('auf-admin-ui'); } catch (e) {}</script>
 <title>AUF MEDIA — редакция</title>
 <style>
 @font-face { font-family: Unbounded; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
@@ -36,7 +54,7 @@ aside { position: sticky; top: 0; height: 100vh; overflow-y: auto; padding: 20px
 nav { display: flex; flex-direction: column; gap: 2px; }
 nav button { display: flex; justify-content: space-between; align-items: center; gap: 8px; width: 100%; padding: 10px 12px; white-space: nowrap; border: 0; background: none; text-align: left; font: 700 11px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; color: var(--mute); cursor: pointer; }
 nav button:hover { color: var(--text); }
-nav button[aria-current=page] { background: var(--yellow); color: #000; }
+nav button[aria-current=page] { background: var(--yellow); color: var(--on-acc, #000); }
 nav button i { font-style: normal; font-size: 10px; opacity: .8; }
 aside .foot { margin-top: auto; font-size: 12px; color: var(--mute); padding: 0 6px; }
 main { min-width: 0; padding: 0 26px 60px; }
@@ -72,7 +90,7 @@ td select { width: auto; min-width: 130px; }
 .gatelink { display: block; width: 100%; margin-top: 16px; padding: 4px; border: 0; background: none; color: var(--mute); font-size: 13px; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 .gatelink:hover { color: var(--text); }
 .gatenote:empty { display: none; }
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 2px solid #000; background: var(--yellow); color: #000; font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0 var(--pink); white-space: nowrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 38px; padding: 0 14px; border: 2px solid #000; background: var(--yellow); color: var(--on-acc, #000); font: 800 11px/1 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; cursor: pointer; box-shadow: 3px 3px 0 var(--pink); white-space: nowrap; }
 .btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--pink); }
 .btn.ghost { background: none; color: var(--text); border-color: var(--ghost); box-shadow: none; }
 .btn.danger { background: none; color: var(--warn); border-color: var(--warnline); box-shadow: none; }
@@ -89,7 +107,7 @@ td select { width: auto; min-width: 130px; }
 .list li:first-child { border-top: 0; }
 .empty { padding: 26px 0; color: var(--mute); text-align: center; }
 .tag { display: inline-block; padding: 3px 7px 4px; font: 700 9.5px/1 Unbounded, Arial, sans-serif; letter-spacing: .05em; text-transform: uppercase; background: var(--chip); color: var(--text); white-space: nowrap; }
-.tag.y { background: var(--yellow); color: #000; } .tag.p { background: var(--pink); color: #000; } .tag.b { background: var(--blue); color: #fff; } .tag.g { background: var(--green); color: #000; } .tag.o { background: none; border: 1px solid var(--ghost); color: var(--mute); }
+.tag.y { background: var(--yellow); color: var(--on-acc, #000); } .tag.p { background: var(--pink); color: #000; } .tag.b { background: var(--blue); color: #fff; } .tag.g { background: var(--green); color: #000; } .tag.o { background: none; border: 1px solid var(--ghost); color: var(--mute); }
 /* board */
 .board { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(176px, 1fr); gap: 10px; overflow-x: auto; padding-bottom: 10px; align-items: start; }
 .col { background: var(--panel); border: 1px solid var(--line); min-height: 220px; }
@@ -115,7 +133,7 @@ td select { width: auto; min-width: 130px; }
 .cal .dow { padding: 7px 8px; font: 700 10px/1 Unbounded, Arial, sans-serif; color: var(--mute); border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); }
 .day { min-height: 104px; padding: 6px; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); background: var(--panel); display: flex; flex-direction: column; gap: 4px; cursor: pointer; }
 .day.out { background: var(--out); color: var(--dim); }
-.day.today .n { background: var(--yellow); color: #000; }
+.day.today .n { background: var(--yellow); color: var(--on-acc, #000); }
 .day .n { align-self: flex-start; padding: 1px 6px; font-size: 12px; font-weight: 700; }
 .chip { display: block; width: 100%; padding: 4px 6px; border: 0; background: var(--yellow); color: #000; font-size: 11.5px; line-height: 1.2; text-align: left; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .chip.dl { background: none; border: 1px dashed var(--ghost); color: var(--text); }
@@ -260,7 +278,7 @@ label.chk input { width: 16px; height: 16px; accent-color: var(--pink); }
 .ed-tools { position: fixed; z-index: 9; display: flex; background: var(--inv); box-shadow: 4px 4px 0 var(--pink); }
 .ed-tools button { min-width: 38px; height: 38px; padding: 0 9px; border: 0; background: none; color: var(--inv-text); font-size: 14px; line-height: 1; cursor: pointer; }
 .ed-tools button:hover { background: rgb(128 128 128 / .28); }
-.ed-tools button[aria-pressed=true] { background: var(--yellow); color: #000; }
+.ed-tools button[aria-pressed=true] { background: var(--yellow); color: var(--on-acc, #000); }
 .ed-tools .big { font-size: 21px; line-height: 0; position: relative; top: 2px; }
 .ed-tools i { width: 1px; margin: 8px 3px; background: rgb(128 128 128 / .5); }
 .ed-tools .ins { display: none; }
@@ -298,7 +316,7 @@ td .tgl { padding: 5px 9px; }
 .late { color: var(--warn); }
 .more { display: flex; flex-direction: column; }
 .more > button[data-go] { display: flex; justify-content: space-between; align-items: center; gap: 10px; min-height: 48px; padding: 0 12px; border: 0; border-top: 1px solid var(--line); background: none; text-align: left; font: 700 12px/1.2 Unbounded, Arial, sans-serif; letter-spacing: .04em; text-transform: uppercase; color: var(--text); cursor: pointer; }
-.more > button[aria-current=page] { background: var(--yellow); color: #000; }
+.more > button[aria-current=page] { background: var(--yellow); color: var(--on-acc, #000); }
 .more > button i { font-style: normal; font-size: 11px; opacity: .75; }
 .more .nav-h { margin: 16px 0 6px; padding: 0; border: 0; }
 .more .nav-h:first-child { margin-top: 0; }
@@ -317,7 +335,7 @@ td .tgl { padding: 5px 9px; }
   .proto { font-size: 12px; font-weight: 400; }
   #tabbar { position: fixed; z-index: 15; left: 0; right: 0; bottom: 0; display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); padding-bottom: env(safe-area-inset-bottom); background: var(--side); border-top: 1px solid var(--line); }
   #tabbar button { min-height: 56px; padding: 0 2px; border: 0; background: none; font: 700 9px/1.2 Unbounded, Arial, sans-serif; letter-spacing: 0; text-transform: uppercase; color: var(--mute); cursor: pointer; overflow: hidden; text-overflow: ellipsis; }
-  #tabbar button[aria-current=page] { background: var(--yellow); color: #000; }
+  #tabbar button[aria-current=page] { background: var(--yellow); color: var(--on-acc, #000); }
   .toast { bottom: calc(72px + env(safe-area-inset-bottom)); }
   dialog .toast, #gate:not([hidden]) ~ .toast { bottom: 18px; }
   .bar { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -363,7 +381,7 @@ td .tgl { padding: 5px 9px; }
   .ed-tools { padding-bottom: env(safe-area-inset-bottom); background: var(--panel); }
   .ed-tools.kb { padding-bottom: 0; }
   .ed-tools button { color: var(--text); }
-  .ed-tools button[aria-pressed=true] { color: #000; }
+  .ed-tools button[aria-pressed=true] { color: var(--on-acc, #000); }
   #edtools button { flex: 1 1 0; min-width: 0; padding: 0 1px; font-size: 11px; overflow: hidden; }
   #edtools { overflow: hidden; }
   .ed-tools i { margin: 8px 0; }
@@ -538,7 +556,7 @@ dialog { border: 1px solid var(--dlgline); border-radius: 6px; box-shadow: 0 24p
 .tile span { max-width: 100%; overflow: hidden; text-overflow: ellipsis; }
 .tile[aria-current=page], .tile[aria-pressed=true] { background: var(--hover); border-color: var(--ghost); color: var(--text); font-weight: 700; }
 .tile i { position: absolute; top: 6px; right: 6px; min-width: 18px; padding: 2px 5px; border-radius: 3px; background: var(--chip); color: var(--text); font: 700 11px/1.2 Arial, Helvetica, sans-serif; }
-.tile i.pin { background: var(--yellow); color: #000; }
+.tile i.pin { background: var(--yellow); color: var(--on-acc, #000); }
 @media (max-width: 860px) {
   #tabbar { left: 50%; right: auto; bottom: calc(12px + env(safe-area-inset-bottom)); transform: translateX(-50%); display: flex; gap: 2px; padding: 6px; border: 1px solid var(--cline); border-radius: 10px; background: var(--chip); box-shadow: 0 10px 30px rgb(0 0 0 / .4); }
   #tabbar button { position: relative; display: flex; align-items: center; justify-content: center; width: 54px; height: 48px; min-height: 0; padding: 0; border-radius: 6px; color: var(--mute); overflow: visible; }
@@ -575,7 +593,7 @@ aside { padding: 14px 12px 12px; gap: 0; overflow: hidden; }
 #nav button[data-go] .nl { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; }
 #nav button[data-go][aria-current=page]::before { content: ''; position: absolute; left: 0; top: 9px; bottom: 9px; width: 3px; border-radius: 3px; background: var(--yellow); }
 #nav button[data-go] i { min-width: 20px; padding: 2px 6px; border-radius: 3px; font: 600 11.5px/1.3 Arial, Helvetica, sans-serif; text-align: center; color: var(--mute); opacity: 1; }
-#nav button[data-go] i.hot { background: var(--yellow); color: #000; }
+#nav button[data-go] i.hot { background: var(--yellow); color: var(--on-acc, #000); }
 .sb-acct { display: flex; align-items: center; gap: 10px; width: 100%; margin-top: 10px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: none; color: var(--text); text-align: left; cursor: pointer; }
 .sb-acct:hover, .sb-acct[aria-expanded=true] { background: var(--hover); }
 .sb-acct .av { display: grid; place-items: center; flex: none; width: 32px; height: 32px; border-radius: 4px; background: var(--chip); font: 700 13px/1 Arial, Helvetica, sans-serif; }
@@ -637,7 +655,7 @@ aside { padding: 14px 12px 12px; gap: 0; overflow: hidden; }
   :root[data-ui=v2] #tabbar button[aria-current=page] { background: var(--hover); color: var(--text); }
   :root[data-ui=v2] #tabbar button[aria-current=page]::before { content: ''; position: absolute; top: 0; left: 50%; width: 20px; height: 3px; margin-left: -10px; border-radius: 0 0 2px 2px; background: var(--yellow); }
   :root[data-ui=v2] #tabbar button i { top: 6px; right: calc(50% - 17px); box-shadow: 0 0 0 2px var(--panel); }
-  :root[data-ui=v2] #fab:not([hidden]) { position: fixed; z-index: 15; right: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); display: inline-flex; align-items: center; gap: 6px; height: 48px; padding: 0 16px 0 12px; border: 0; border-radius: 8px; background: var(--yellow); color: #000; font: 700 15px/1 Arial, Helvetica, sans-serif; box-shadow: 0 8px 24px rgb(0 0 0 / .45); cursor: pointer; }
+  :root[data-ui=v2] #fab:not([hidden]) { position: fixed; z-index: 15; right: 12px; bottom: calc(84px + env(safe-area-inset-bottom)); display: inline-flex; align-items: center; gap: 6px; height: 48px; padding: 0 16px 0 12px; border: 0; border-radius: 8px; background: var(--yellow); color: var(--on-acc, #000); font: 700 15px/1 Arial, Helvetica, sans-serif; box-shadow: 0 8px 24px rgb(0 0 0 / .45); cursor: pointer; }
   :root[data-ui=v2] #fab svg { width: 20px; height: 20px; stroke-width: 2.2; }
   :root[data-ui=v2] #fab:active { filter: brightness(.9); }
   /* the main button of a section lives above the dock, not in the filters */
@@ -653,7 +671,7 @@ aside { padding: 14px 12px 12px; gap: 0; overflow: hidden; }
   :root[data-ui=v2] .fbtn { position: relative; flex: none; display: grid; place-items: center; width: 44px; height: 44px; padding: 0; border: 1px solid var(--fline); border-radius: 4px; background: var(--field); color: var(--mute); cursor: pointer; }
   :root[data-ui=v2] .fbtn svg { width: 20px; height: 20px; }
   :root[data-ui=v2] .fbtn[aria-expanded=true] { border-color: var(--text); color: var(--text); }
-  :root[data-ui=v2] .fbtn i { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--yellow); color: #000; font: 700 11px/18px Arial, Helvetica, sans-serif; text-align: center; }
+  :root[data-ui=v2] .fbtn i { position: absolute; top: -6px; right: -6px; min-width: 18px; height: 18px; padding: 0 4px; border-radius: 9px; background: var(--yellow); color: var(--on-acc, #000); font: 700 11px/18px Arial, Helvetica, sans-serif; text-align: center; }
   :root[data-ui=v2] .tabs { flex-wrap: nowrap !important; margin-right: -16px; padding-right: 16px; overflow-x: auto; scrollbar-width: none; }
   :root[data-ui=v2] .tabs button { flex: none; white-space: nowrap; }
   /* open blocks with hairlines instead of boxes in boxes */
@@ -843,7 +861,7 @@ td.minus { white-space: nowrap; }
 .mx-ck { flex: none; width: 28px; height: 34px; border: 0; background: none; cursor: pointer; position: relative; }
 .mx-ck::before { content: ''; position: absolute; left: 9px; top: 11px; width: 12px; height: 12px; border: 1.5px solid var(--ghost); border-radius: 3px; }
 .mx-ck[aria-pressed=true]::before { background: var(--yellow); border-color: var(--yellow); }
-.mx-f i { background: var(--yellow); color: #000; }
+.mx-f i { background: var(--yellow); color: var(--on-acc, #000); }
 .mx-fab { display: none; }
 @media (max-width: 860px) {
   .mx-top { display: flex !important; align-items: center; gap: 8px; margin: 0 0 10px; }
@@ -851,16 +869,16 @@ td.minus { white-space: nowrap; }
   .mx-pick { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; height: 44px; padding: 0 12px; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); color: var(--text); font: 15px/1.2 Arial, Helvetica, sans-serif; cursor: pointer; }
   .mx-pick b { flex: none; }
   .mx-pick span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--mute); text-align: left; font-size: 13.5px; }
-  .mx-pick i { flex: none; font-style: normal; font-size: 12px; font-weight: 700; background: var(--yellow); color: #000; border-radius: 3px; padding: 2px 7px; }
+  .mx-pick i { flex: none; font-style: normal; font-size: 12px; font-weight: 700; background: var(--yellow); color: var(--on-acc, #000); border-radius: 3px; padding: 2px 7px; }
   .mx-top .tgl { width: 44px; height: 44px; font-size: 18px; }
-  .mx-fab { display: flex; align-items: center; justify-content: center; position: fixed; z-index: 14; right: 16px; bottom: calc(90px + env(safe-area-inset-bottom)); width: 56px; height: 56px; border: 0; border-radius: 50%; background: var(--yellow); color: #000; box-shadow: 0 8px 24px rgb(0 0 0 / .45); cursor: pointer; }
+  .mx-fab { display: flex; align-items: center; justify-content: center; position: fixed; z-index: 14; right: 16px; bottom: calc(90px + env(safe-area-inset-bottom)); width: 56px; height: 56px; border: 0; border-radius: 50%; background: var(--yellow); color: var(--on-acc, #000); box-shadow: 0 8px 24px rgb(0 0 0 / .45); cursor: pointer; }
   .msheet-bg { position: fixed; inset: 0; z-index: 40; background: rgb(0 0 0 / .5); }
   .msheet { position: fixed; z-index: 41; left: 0; right: 0; bottom: 0; max-height: 80vh; overflow-y: auto; padding: 8px 16px calc(16px + env(safe-area-inset-bottom)); background: var(--panel); border-top: 1px solid var(--line); border-radius: 12px 12px 0 0; }
   .msheet-h { display: block; width: 40px; height: 4px; margin: 2px auto 10px; border-radius: 2px; background: var(--ghost); }
   .msheet .nav-h { margin: 12px 0 4px; }
   .msheet-r { display: flex; align-items: center; gap: 10px; width: 100%; min-height: 46px; padding: 0 4px; border: 0; border-bottom: 1px solid var(--line); background: none; color: var(--text); font: 15px/1.2 Arial, Helvetica, sans-serif; text-align: left; cursor: pointer; }
   .msheet-r span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .msheet-r i { font-style: normal; font-size: 12px; font-weight: 700; background: var(--yellow); color: #000; border-radius: 3px; padding: 2px 7px; }
+  .msheet-r i { font-style: normal; font-size: 12px; font-weight: 700; background: var(--yellow); color: var(--on-acc, #000); border-radius: 3px; padding: 2px 7px; }
   .msheet-r[aria-pressed=true]:not(.ck) span { font-weight: 700; }
   .msheet-r[aria-pressed=true]:not(.ck)::after { content: '✓'; color: var(--yellow); font-weight: 700; }
   .msheet-r.ck::before { content: ''; flex: none; width: 18px; height: 18px; border: 1.5px solid var(--ghost); border-radius: 4px; }
@@ -893,11 +911,22 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
 .mx-b .mx-f { justify-content: space-between; }
 .mx-n { display: inline-flex; flex: none; border-radius: 4px; overflow: hidden; font-size: 12px; font-weight: 700; }
 .mx-n em, .mx-n b { font-style: normal; padding: 2px 7px; }
-.mx-n em { background: var(--yellow); color: #000; }
+.mx-n em { background: var(--yellow); color: var(--on-acc, #000); }
 .mx-n b { background: var(--chip); color: var(--text); font-weight: 600; }
 .mx-seg { display: flex; gap: 4px; margin: 10px 10px 0; padding: 3px; border: 1px solid var(--line); border-radius: 6px; }
 .mx-seg button { flex: 1; height: 32px; border: 0; border-radius: 4px; background: none; color: var(--mute); font: 600 13.5px/1 Arial, Helvetica, sans-serif; cursor: pointer; }
 .mx-seg button[aria-selected=true] { background: var(--inv); color: var(--inv-text); }
+
+/* ---------- Appearance ---------- */
+.looks { display: grid; grid-template-columns: repeat(auto-fill, minmax(118px, 1fr)); gap: 10px; }
+.look { display: flex; flex-direction: column; gap: 7px; padding: 8px; border: 1px solid var(--line); border-radius: 6px; background: none; color: var(--text); font: 600 13px/1.2 Arial, Helvetica, sans-serif; text-align: left; cursor: pointer; }
+.look[aria-pressed=true] { border-color: var(--yellow); box-shadow: 0 0 0 1px var(--yellow); }
+.look-pv { position: relative; display: block; height: 54px; border-radius: 4px; overflow: hidden; border: 1px solid rgb(128 128 128 / .25); }
+.look-pv i { position: absolute; left: 10px; right: 10px; top: 10px; height: 22px; border-radius: 3px; }
+.look-pv b { position: absolute; right: 10px; bottom: 7px; width: 28px; height: 10px; border-radius: 2px; }
+.lookown { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+.lookown label { display: flex; align-items: center; gap: 8px; margin: 0; font: 500 14px/1.2 Arial, Helvetica, sans-serif; letter-spacing: 0; text-transform: none; color: var(--text); cursor: pointer; }
+.lookown input[type=color] { width: 40px; height: 32px; padding: 0; border: 1px solid var(--line); border-radius: 4px; background: none; cursor: pointer; }
 </style>
 </head>
 <body>
@@ -1110,7 +1139,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   function nfmt(n) { return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, '\u00a0'); }
   function applyTheme() {
     var light = document.documentElement.dataset.theme === 'light';
-    document.getElementById('themecolor').content = light ? '#f4f2ee' : '#0b0b0b';
+    document.getElementById('themecolor').content = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || (light ? '#f4f2ee' : '#0b0b0b');
     [].forEach.call(document.querySelectorAll('[data-theme-toggle]'), function (b) { b.textContent = light ? 'Тёмная тема' : 'Светлая тема'; });
   }
 
@@ -1353,10 +1382,10 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
           + (me.email ? '<li><b>Для входа</b><span>' + esc(me.email) + '</span></li>' : '')
           + '<li><b>Рабочая</b><span>' + (mine.length ? mine.map(function (b) { return esc(b.address); }).join(', ') : 'адрес не выдан') + '</span></li></ul>'
           + (mine.length ? '<button type="button" class="btn ghost" data-go="mail">Открыть почту</button><p class="note">Письма рабочего ящика читаются и пишутся в разделе «Почта».</p>' : '<p class="note">Рабочий адрес на auf.media выдаёт MAIN. Когда он появится, в меню откроется раздел «Почта».</p>')
-          + '</div><div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>';
+          + '</div>' + themePanel() + '';
       }
       return appPanel() + aiPanel() + aiTeamPanel() + (cloudOn || mailDemo() ? '<div class="panel">' + mailAdminHtml(true) + '</div>' : '') + '<div class="panel"><h2>Уровни аккаунтов</h2><ul class="list"><li><b>MAIN</b><span>1 из 1 — ' + esc(mname(state.me)) + '</span></li><li><b>C-Level</b><span>' + clevels() + ' из ' + CLEVEL_MAX + '</span></li><li><b>Редакторы</b><span>' + state.team.filter(function (m) { return m.role === 'editor'; }).length + '</span></li><li><b>Журналисты</b><span>' + state.team.filter(function (m) { return m.role === 'reporter'; }).length + '</span></li></ul><p class="note">Приглашать людей и менять уровни — в разделе «Команда». Сейчас это может только MAIN.</p></div>'
-        + '<div class="panel"><h2>Оформление</h2><button type="button" class="btn ghost" data-theme-toggle></button></div>'
+        + '' + themePanel() + ''
         + (cloudOn ? '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn ghost" data-importcopy>Загрузить копию из прототипа</button><p class="note">Данные лежат в общей базе. «Загрузить копию» добавляет материалы, задачи и контакты из файла, который вы скачали в старом прототипе; то, что уже есть в базе, не перезаписывается. Настройки видит только MAIN.</p></div>'
           : '<div class="panel"><h2>Данные</h2><button type="button" class="btn ghost" data-export>Скачать копию (JSON)</button> <button type="button" class="btn danger" data-reset>Сбросить прототип</button><p class="note">Копия пригодится, чтобы перенести доску в настоящую базу. Настройки видит только MAIN.</p></div>');
     },
@@ -1834,7 +1863,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   document.addEventListener('click', function (event) {
     var t = event.target.closest('[data-go],[data-task],[data-newtask],[data-person],[data-newperson],[data-editperson],[data-peopleback],[data-importpeople],[data-psort],[data-pcolsbtn],[data-ptags],[data-notedel],[data-checked],[data-card],[data-new],[data-rubrics],[data-month],[data-day],[data-kick],[data-tab],[data-export],[data-reset],[data-theme-toggle]');
     if (!t) return;
-    if ('themeToggle' in t.dataset) { var light = document.documentElement.dataset.theme !== 'light'; if (light) document.documentElement.dataset.theme = 'light'; else delete document.documentElement.dataset.theme; try { localStorage.setItem('auf-admin-theme', light ? 'light' : 'dark'); } catch (e) {} return applyTheme(); }
+    if ('themeToggle' in t.dataset) { var light = document.documentElement.dataset.theme !== 'light'; lookSave(LOOKS.filter(function (x) { return x.preset === (light ? 'light' : 'dark'); })[0]); return; }
     if (t.dataset.go) return go(t.dataset.go);
     if (t.dataset.task) { event.preventDefault(); return openTask(t.dataset.task); }
     if ('newtask' in t.dataset) return openTask(null, t.dataset.newtask ? { contact: t.dataset.newtask, kind: 'Написать' } : null);
@@ -3361,6 +3390,42 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
     await sb.from('reminders').delete().eq('id', t.dataset.remdel); rem.at = 0; remLoad();
   });
   var homeBase = RENDER.home; RENDER.home = function () { return homeBase() + remPanel(); };
+
+  // ---------- Appearance: presets or your own three colours (kept on this device) ----------
+  var LOOKS = [
+    { preset: 'dark', name: 'Тёмная', bg: '#0b0b0b', panel: '#151515', accent: '#fdfd38' },
+    { preset: 'light', name: 'Светлая', bg: '#f4f2ee', panel: '#ffffff', accent: '#fdfd38' },
+    { preset: 'night', name: 'Ночь', bg: '#0d1321', panel: '#151d2e', accent: '#7aa2ff' },
+    { preset: 'graphite', name: 'Графит', bg: '#1b1d21', panel: '#25282d', accent: '#ff8a3d' },
+    { preset: 'paper', name: 'Бумага', bg: '#f3ede2', panel: '#fbf7ef', accent: '#c2410c' },
+    { preset: 'mint', name: 'Мята', bg: '#0f1714', panel: '#16211c', accent: '#5ed29a' }
+  ];
+  function lookNow() { var L = null; try { L = JSON.parse(localStorage.getItem('auf-admin-look') || 'null'); } catch (e) {} if (!L) L = document.documentElement.dataset.theme === 'light' ? LOOKS[1] : LOOKS[0]; return L; }
+  function lookSave(L, quiet) {
+    var c = { preset: L.preset, bg: L.bg, panel: L.panel, accent: L.accent };
+    try { localStorage.setItem('auf-admin-look', JSON.stringify(c)); localStorage.setItem('auf-admin-theme', document.documentElement.dataset.theme === 'light' ? 'light' : 'dark'); } catch (e) {}
+    window.aufLook(c); applyTheme();
+    if (!quiet && state.view === 'settings' && !dlg.open) render();
+  }
+  function themePanel() {
+    var cur = lookNow();
+    return '<div class="panel" id="lookpanel"><h2>Оформление</h2><p class="note" style="margin:0 0 12px">Тема только для вас и только на этом устройстве.</p><div class="looks">'
+      + LOOKS.map(function (L) { return '<button type="button" class="look" data-look="' + L.preset + '" aria-pressed="' + (cur.preset === L.preset) + '"><span class="look-pv" style="background:' + L.bg + '"><i style="background:' + L.panel + '"></i><b style="background:' + L.accent + '"></b></span><span>' + L.name + '</span></button>'; }).join('')
+      + '</div><p class="nav-h" style="margin-top:16px">Свои цвета' + (cur.preset === 'custom' ? ' · выбраны' : '') + '</p><div class="lookown">'
+      + [['bg', 'Фон'], ['panel', 'Карточки'], ['accent', 'Акцент']].map(function (k) { return '<label><input type="color" data-lookc="' + k[0] + '" value="' + esc(cur[k[0]] || LOOKS[0][k[0]]) + '"><span>' + k[1] + '</span></label>'; }).join('')
+      + '<button type="button" class="btn ghost" data-lookreset>Сбросить</button></div><p class="note">Акцент — кнопки, выделения и счётчики. Цвет текста и линий подбирается сам, чтобы всё читалось.</p></div>';
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target.closest && e.target.closest('[data-look],[data-lookreset]'); if (!t) return;
+    if ('lookreset' in t.dataset) return lookSave(LOOKS[0]);
+    lookSave(LOOKS.filter(function (L) { return L.preset === t.dataset.look; })[0]);
+  });
+  document.addEventListener('input', function (e) {
+    var t = e.target; if (!t.dataset || !t.dataset.lookc) return;
+    var cur = lookNow(), c = { preset: 'custom', bg: cur.bg || LOOKS[0].bg, panel: cur.panel || LOOKS[0].panel, accent: cur.accent || LOOKS[0].accent };
+    c[t.dataset.lookc] = t.value; lookSave(c, true);
+  });
+  document.addEventListener('change', function (e) { if (e.target.dataset && e.target.dataset.lookc && state.view === 'settings') render(); });
 
   // ---------- Installable app and push notifications ----------
   // The admin installs to the home screen (manifest + sw.js next to this page). Push works on iPhone only from the
