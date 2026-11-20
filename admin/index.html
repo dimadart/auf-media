@@ -825,6 +825,9 @@ td.minus { white-space: nowrap; }
 .tlist li.done .tbody b { color: var(--mute); text-decoration: line-through; }
 .board .col[data-tstage=inbox] { border-style: dashed; }
 @media (max-width: 860px) { .qadd { position: sticky; top: 0; z-index: 5; margin: -4px -16px 10px; padding: 8px 16px; background: var(--bg); } .qadd input { height: 44px; font-size: 16px; } }
+
+.blist li { padding-left: 14px; position: relative; }
+.blist li.mine::before { content: ''; position: absolute; left: 0; top: 12px; bottom: 12px; width: 3px; background: var(--yellow); border-radius: 2px; }
 </style>
 </head>
 <body>
@@ -1191,6 +1194,14 @@ td.minus { white-space: nowrap; }
     },
     board: function () {
       var cards = filtered();
+      if (taskPhone.matches) {
+        var cnt = {}; STAGES.forEach(function (st) { cnt[st.id] = cards.filter(function (c) { return c.stage === st.id; }).length; });
+        var cur = filters.bseg && cnt[filters.bseg] !== undefined ? filters.bseg : ((STAGES.filter(function (st) { return st.id !== 'published' && cnt[st.id]; })[0] || STAGES.filter(function (st) { return cnt[st.id]; })[0] || STAGES[0]).id);
+        var rows = cards.filter(function (c) { return c.stage === cur; });
+        return filterBar(false) + rubricNote() + '<div class="tseg" role="tablist" aria-label="Этап">' + STAGES.map(function (st) { return '<button type="button" role="tab" data-bseg="' + st.id + '" aria-selected="' + (st.id === cur) + '">' + st.name + (cnt[st.id] ? ' <i>' + cnt[st.id] + '</i>' : '') + '</button>'; }).join('') + '</div>'
+          + (rows.length ? '<ul class="tlist blist">' + rows.map(function (c) { var late = c.deadline && c.deadline < TODAY && c.stage !== 'published'; return '<li' + (isMine(c) ? ' class="mine"' : '') + '><button type="button" class="tbody" data-card="' + c.id + '"><b>' + esc(c.title || 'Без названия') + '</b><span>' + [c.rubric ? esc(c.rubric) : '', c.author ? esc(mname(c.author)) : '', c.deadline && c.stage !== 'published' ? '<em class="' + (late ? 'late' : '') + '">дедлайн ' + human(c.deadline) + '</em>' : '', c.publish ? 'выход ' + human(c.publish) : ''].filter(Boolean).join(' · ') + '</span></button></li>'; }).join('') + '</ul>' : '<p class="empty">На этапе «' + STAGES[stageIx(cur)].name + '» материалов нет.</p>')
+          + '<p class="note">Откройте материал, чтобы сменить этап, даты или открыть текст. Жёлтая полоса слева — ваши материалы.</p>';
+      }
       return filterBar(false) + rubricNote() + '<div class="board">' + STAGES.map(function (s) {
         var list = cards.filter(function (c) { return c.stage === s.id; });
         return '<section class="col" data-stage="' + s.id + '"><header><b title="' + esc(s.hint) + '">' + s.name + '</b><i>' + list.length + '</i></header><div class="drop">' + list.map(cardHtml).join('') + '</div></section>';
@@ -1356,6 +1367,7 @@ td.minus { white-space: nowrap; }
     filters.tseg = 'inbox'; save(); render(); toast('Записано во «Входящие»');
     var inp = document.querySelector('[data-qadd] input'); if (inp) inp.focus();
   });
+  document.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('[data-bseg]'); if (b) { filters.bseg = b.dataset.bseg; render(); } });
   document.addEventListener('click', function (e) {
     var t = e.target.closest && e.target.closest('[data-tseg],[data-tdone]');
     if (!t || state.view !== 'tasks') return;
@@ -1628,7 +1640,7 @@ td.minus { white-space: nowrap; }
       return '<li class="' + (r[0] === TODAY ? 'now' : r[0] < TODAY ? 'past' : '') + '"><button type="button" data-card="' + c.id + '"><span class="ad"><b>' + d.getDate() + '</b>' + dn[d.getDay()] + '</span><span class="at">' + esc(c.title) + '<small>' + esc(mname(c.author)) + (c.rubric ? ' · ' + esc(c.rubric) : '') + '</small></span><span class="tag ' + r[2] + '">' + r[3] + '</span></button></li>';
     }).join('') + '</ul>' : '<p class="empty">В этом месяце нет дат выхода и дедлайнов.</p>') + '</div>';
   }
-  function v2After() {
+  function v2After() { var segSel = view.querySelector('.tseg [aria-selected=true]'); if (segSel) { var seg = segSel.parentNode; seg.scrollLeft = Math.max(0, segSel.offsetLeft - seg.clientWidth / 2 + segSel.offsetWidth / 2); }
     var root = document.documentElement, sw = document.getElementById('uisw'), fab = document.getElementById('fab'), me = member(state.me);
     root.dataset.view = state.view;
     sw.hidden = true; // the v1/v2 switch is retired; everyone sees v1
