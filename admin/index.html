@@ -30,7 +30,7 @@
   for (var k in set) r.style.setProperty(k, set[k]);
 };
 try { var L = JSON.parse(localStorage.getItem('auf-admin-look') || 'null'); if (!L && localStorage.getItem('auf-admin-theme') === 'light') L = { preset: 'light' }; window.aufLook(L); localStorage.removeItem('auf-admin-ui'); } catch (e) {}</script>
-<title>AUF MEDIA — редакция</title>
+<title>AUF MEDIA</title>
 <style>
 @font-face { font-family: Unbounded; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-cyrillic.woff2) format('woff2'); unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116; }
 @font-face { font-family: Unbounded; font-weight: 300 900; font-display: swap; src: url(../assets/editorial/fonts/unbounded-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+2000-206F, U+2191, U+2193; }
@@ -969,7 +969,7 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
 /* ---------- Install request and tour ---------- */
 #installgate { position: fixed; inset: 0; z-index: 90; display: flex; align-items: center; justify-content: center; padding: calc(24px + env(safe-area-inset-top)) 22px calc(24px + env(safe-area-inset-bottom)); background: var(--bg); color: var(--text); overflow: auto; }
 .ig { width: 100%; max-width: 420px; text-align: center; }
-.ig-ico { width: 84px; height: 84px; border-radius: 20px; box-shadow: 0 10px 30px rgb(0 0 0 / .4); }
+.ig-ico { width: 72px; height: 72px; border-radius: 20px; box-shadow: 0 10px 30px rgb(0 0 0 / .4); }
 .ig h1 { margin: 20px 0 10px; font: 800 24px/1.2 Unbounded, Arial, sans-serif; }
 .ig > p { margin: 0 0 22px; color: var(--mute); font: 15.5px/1.5 Arial, Helvetica, sans-serif; }
 .ig-steps { list-style: none; margin: 0 0 22px; padding: 0; text-align: left; }
@@ -1013,6 +1013,14 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   #tour { align-items: flex-end; padding: 0; }
   .tour-card { max-width: none; border-radius: 16px 16px 0 0; padding-bottom: calc(20px + env(safe-area-inset-bottom)); max-height: 88vh; }
 }
+
+.ig-steps li { position: relative; padding: 10px 12px; }
+.ig-t { flex: 1; min-width: 0; }
+.ig-steps small { display: block; margin-top: 3px; color: var(--mute); font-size: 13px; }
+.ig-steps small svg { width: 15px; height: 15px; vertical-align: -2px; }
+.ig-k { flex: none; display: inline-flex; align-items: center; justify-content: center; width: 34px; height: 34px; border-radius: 9px; background: var(--chip); color: var(--text); font-style: normal; }
+.ig-k img { width: 26px; height: 26px; border-radius: 6px; }
+.ig-note { margin: -8px 0 14px; color: var(--mute); font: 13px/1.45 Arial, Helvetica, sans-serif; }
 </style>
 </head>
 <body>
@@ -3827,7 +3835,11 @@ li.remdone > span:first-child { color: var(--mute); text-decoration: line-throug
   function installGate() {
     if (!needInstall() || document.getElementById('installgate')) return;
     var g = document.createElement('div'); g.id = 'installgate'; g.setAttribute('role', 'dialog'); g.setAttribute('aria-label', 'Установите приложение');
-    var steps = isIOS ? '<ol class="ig-steps"><li><span>1</span>Нажмите ' + SHARE_ICON + ' «Поделиться» внизу Safari</li><li><span>2</span>Выберите «На экран „Домой“» и нажмите «Добавить»</li><li><span>3</span>Откройте AUF с экрана «Домой» и войдите своей почтой и паролем</li></ol>'
+    // iPhone: Apple does not let a site install itself, so the steps follow Safari exactly, with the phone's own button names.
+    var en = !/^ru/i.test(navigator.language || ''), L = en ? { share: 'Share', more: 'View More', home: 'Add to Home Screen', add: 'Add' } : { share: 'Поделиться', more: 'Ещё', home: 'На экран „Домой“', add: 'Добавить' };
+    var ico = function (d) { return '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + d + '</svg>'; };
+    var DOTS = ico('<circle cx="5" cy="12" r="1.3" fill="currentColor"/><circle cx="12" cy="12" r="1.3" fill="currentColor"/><circle cx="19" cy="12" r="1.3" fill="currentColor"/>'), SH = ico('<path d="M12 3v12M8 7l4-4 4 4M5 11v9h14v-9"/>'), DOWN = ico('<path d="m6 9 6 6 6-6"/>'), PLUS = ico('<rect x="4" y="4" width="16" height="16" rx="3"/><path d="M12 8v8M8 12h8"/>');
+    var steps = isIOS ? '<ol class="ig-steps"><li><span>1</span><i class="ig-k">' + DOTS + '</i><div class="ig-t">Нажмите «•••» справа внизу Safari<small>если внизу виден значок ' + SH + ', можно сразу его</small></div></li><li><span>2</span><i class="ig-k">' + SH + '</i><div class="ig-t">«' + L.share + '»</div></li><li><span>3</span><i class="ig-k">' + DOWN + '</i><div class="ig-t">Пролистайте вниз и нажмите «' + L.more + '»</div></li><li><span>4</span><i class="ig-k">' + PLUS + '</i><div class="ig-t">«' + L.home + '», затем «' + L.add + '»</div></li><li><span>5</span><i class="ig-k"><img src="icon-180.png" alt=""></i><div class="ig-t">Откройте AUF с экрана «Домой» и войдите почтой и паролем</div></li></ol><p class="ig-note">Кнопкой одним нажатием на айфоне не получится: Apple разрешает ставить сайты на экран «Домой» только так.</p>'
       : '<button type="button" class="btn ig-btn" data-iginstall>Установить приложение</button><ol class="ig-steps"><li><span>1</span>Если кнопка не сработала: меню браузера ⋮</li><li><span>2</span>«Установить приложение» или «Добавить на главный экран»</li><li><span>3</span>Откройте AUF с главного экрана и войдите своей почтой и паролем</li></ol>';
     g.innerHTML = '<div class="ig"><img src="icon-180.png" alt="" class="ig-ico"><h1>Сохраните AUF как приложение</h1><p>С телефона админка работает как приложение: на весь экран, с уведомлениями о письмах и задачах, вход один раз.</p>' + steps + '<button type="button" class="ig-skip" data-igskip>Продолжить в браузере</button></div>';
     document.body.appendChild(g);
